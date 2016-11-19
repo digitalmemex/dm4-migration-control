@@ -26,7 +26,7 @@ public class Migration1 extends Migration {
 	 */
 	@Override
 	public void run() {
-		Topic typesWs = wsService.createWorkspace("Migration-ControlTypes", NS("workspace.types"),
+		Topic typesWs = wsService.createWorkspace("Migration-Control Types", NS("workspace.types"),
 				SharingMode.PUBLIC);
 		acService.setWorkspaceOwner(typesWs, AccessControlService.ADMIN_USERNAME);
 

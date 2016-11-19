@@ -9,11 +9,13 @@
                 "assoc_defs": [
                     {
                         "child_type_uri":         "dm4.datetime.year",
+                        "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.aggregation_def"
                     },
                     {
                         "child_type_uri":         "de.taz.migrationcontrol.statistic.entry.value",
+                        "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.aggregation_def"
                     }
@@ -35,11 +37,13 @@
                 "assoc_defs": [
                     {
                         "child_type_uri":         "de.taz.migrationcontrol.statistic.type",
+                        "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.aggregation_def"
                     },
                     {
                         "child_type_uri":         "dm4.contacts.country",
+                        "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.aggregation_def"
                     },
@@ -66,11 +70,13 @@
                 "assoc_defs": [
                      {
                         "child_type_uri":         "dm4.contacts.country",
+                        "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.aggregation_def"
                     },
                      {
                         "child_type_uri":         "de.taz.migrationcontrol.countryoverview.dossiertitle",
+                        "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.composition_def"
                     },

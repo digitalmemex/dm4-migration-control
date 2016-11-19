@@ -1,0 +1,64 @@
+[
+    {
+        "assoc_types": [
+        ]
+    },
+    {
+        "topic_types": [
+# Type of statistic type definition
+            {
+                "value":            "Statistic Type",
+                "uri":              "de.taz.migrationcontrol.statistic.type",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            }
+        ],
+        "topics": [
+# Type of statistic instances
+            {
+                "value": "HDI",
+                "type_uri": "de.taz.migrationcontrol.statistic.type"
+            },
+            {
+                "value": "Remittances",
+                "type_uri": "de.taz.migrationcontrol.statistic.type"
+            }
+       ]
+    },
+# Simple types for various composite types
+    {
+        "topic_types": [
+	    # for Statistic
+            {
+                "value":            "Value",
+                "uri":              "de.taz.migrationcontrol.statistic.entry.value",
+                "data_type_uri":    "dm4.core.number"
+            },
+            # for Country Overview
+            {
+                "value":            "Dossier title",
+                "uri":              "de.taz.migrationcontrol.countryoverview.dossiertitle",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Dossier subtitle",
+                "uri":              "de.taz.migrationcontrol.countryoverview.dossiersubtitle",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Intro",
+                "uri":              "de.taz.migrationcontrol.countryoverview.intro",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Feature Link",
+                "uri":              "de.taz.migrationcontrol.countryoverview.featurelink",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            }
+       ]
+    }
+]

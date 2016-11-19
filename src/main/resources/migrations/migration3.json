@@ -1,0 +1,104 @@
+[
+    {
+        "topic_types": [
+# Statistic Entry
+            {
+                "value":            "Statistic Entry",
+                "uri":              "de.taz.migrationcontrol.statistic.entry",
+                "data_type_uri":    "dm4.core.composite",
+                "assoc_defs": [
+                    {
+                        "child_type_uri":         "dm4.datetime.year",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.aggregation_def"
+                    },
+                    {
+                        "child_type_uri":         "de.taz.migrationcontrol.statistic.entry.value",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.aggregation_def"
+                    }
+                ],
+                "view_config_topics": [
+                    {
+                        "type_uri": "dm4.webclient.view_config",
+                        "childs": {
+                            "dm4.webclient.show_in_create_menu": true
+                        }
+                    }
+                ]
+            },
+# Statistic
+            {
+                "value":            "Statistic",
+                "uri":              "de.taz.migrationcontrol.statistic",
+                "data_type_uri":    "dm4.core.composite",
+                "assoc_defs": [
+                    {
+                        "child_type_uri":         "de.taz.migrationcontrol.statistic.type",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.aggregation_def"
+                    },
+                    {
+                        "child_type_uri":         "dm4.contacts.country",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.aggregation_def"
+                    },
+                    {
+                        "child_type_uri":         "de.taz.migrationcontrol.statistic.entry",
+                        "child_cardinality_uri":  "dm4.core.many",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    }
+                ],
+                "view_config_topics": [
+                    {
+                        "type_uri": "dm4.webclient.view_config",
+                        "childs": {
+                            "dm4.webclient.show_in_create_menu": true
+                        }
+                    }
+                ]
+            },
+# Country Overview
+            {
+                "value":            "Country Overview",
+                "uri":              "de.taz.migrationcontrol.countryoverview",
+                "data_type_uri":    "dm4.core.composite",
+                "assoc_defs": [
+                     {
+                        "child_type_uri":         "dm4.contacts.country",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.aggregation_def"
+                    },
+                     {
+                        "child_type_uri":         "de.taz.migrationcontrol.countryoverview.dossiertitle",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                     {
+                        "child_type_uri":         "de.taz.migrationcontrol.countryoverview.dossiersubtitle",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                     {
+                        "child_type_uri":         "de.taz.migrationcontrol.countryoverview.intro",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                     {
+                        "child_type_uri":         "de.taz.migrationcontrol.countryoverview.featurelink",
+                        "child_cardinality_uri":  "dm4.core.many",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    }
+                ],
+                "view_config_topics": [
+                    {
+                        "type_uri": "dm4.webclient.view_config",
+                        "childs": {
+                            "dm4.webclient.show_in_create_menu": true
+                        }
+                    }
+                ]
+            },
+        ],
+    }
+]

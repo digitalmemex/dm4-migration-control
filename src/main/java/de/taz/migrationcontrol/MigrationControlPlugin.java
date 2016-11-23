@@ -1,6 +1,8 @@
 package de.taz.migrationcontrol;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -43,15 +45,37 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	}
 
 	@GET
+	@Path("/v1/{languageCode}/countries")
+	@Override
+	public List<Country> getCountries(@PathParam("languageCode") String languageCode) {
+		List<Country> results = new ArrayList<>();
+		
+		for (Topic topic : dm4.getTopicsByType("dm4.contacts.country")) {
+			try {
+				Country country = dtoHelper.toCountryOrNull(topic);
+				if (country != null)
+					results.add(country);
+			} catch (JSONException jsone) {
+				// TODO: Log what object was dropped
+			}
+		}
+		
+		return results;
+	}
+
+	@GET
 	@Path("/v1/{languageCode}/country/{id}")
 	public Country getCountry(@PathParam("languageCode") String languageCode, @PathParam("id") long id) {
-		try {
-			Topic topic = dm4.getTopic(id);
+		Topic topic = dm4.getTopic(id);
 
-			return dtoHelper.toCountryOrNull(topic);
+		try {
+			if (topic != null)
+				return dtoHelper.toCountryOrNull(topic);
 		} catch (JSONException e) {
 			throw new RuntimeException(e);
 		}
+		
+		return null;
 	}
 
 	@PUT

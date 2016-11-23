@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import de.deepamehta.core.ChildTopics;
 import de.deepamehta.core.RelatedTopic;

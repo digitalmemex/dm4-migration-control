@@ -2,7 +2,6 @@ package de.taz.migrationcontrol;
 
 import static de.taz.migrationcontrol.MigrationControlService.NS;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -85,52 +84,6 @@ public class DTOHelper {
 		obj.put(yearAsString, value);
 		
 		return obj;
-	}
-	
-	private RelatedTopic findTopicWithMatchingChildValue(List<RelatedTopic> topics, String childTypeUri, String value) {
-		for (RelatedTopic t : topics) {
-			ChildTopics childs = t.getChildTopics();
-			
-			if (value.equals(childs.getStringOrNull(childTypeUri))) {
-				return t;
-			}
-		}
-		
-		return null;
-	}
-	
-	private Topic findStatisticsType(String statType) {		
-		for (Topic t : dm4.getTopicsByType(NS("statistic.type"))) {
-			if (statType.equals(t.getSimpleValue().toString())) {
-				return t;
-			}
-		}
-		
-		throw new IllegalStateException("Unknown statistics type: " + statType);
-	}
-
-
-	private List<String> toStringListOrNull(List<RelatedTopic> topics) {
-		if (topics != null && topics.size() > 0) {
-			List<String> list = new ArrayList<String>();
-			for (Topic t : topics) {
-				list.add(t.getSimpleValue().toString());
-			}
-
-			return list;
-		} else {
-			return null;
-		}
-	}
-
-	private int getInt(ChildTopics childs, String assocDefUri, int defaultValue) {
-		Integer value = childs.getIntOrNull(assocDefUri);
-
-		return (value != null) ? value.intValue() : defaultValue;
-	}
-
-	private static <T> T selfOrDefault(T instance, T defaultValue) {
-		return (instance != null) ? instance : defaultValue;
 	}
 	
 	private static class CountryImpl extends JSONEnabledImpl implements Country {

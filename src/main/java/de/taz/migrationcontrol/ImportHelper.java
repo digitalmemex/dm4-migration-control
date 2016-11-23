@@ -32,10 +32,6 @@ public class ImportHelper {
 		this.wsService = wsService;
 	}
 	
-	private static <T> T selfOrDefault(T instance, T defaultValue) {
-		return (instance != null) ? instance : defaultValue;
-	}
-	
 	public void importHDI(CSVParser data) throws IOException {
 		importStatistic("HDI", data);
 	}

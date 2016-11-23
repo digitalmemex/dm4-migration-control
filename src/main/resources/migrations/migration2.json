@@ -1,9 +1,5 @@
 [
     {
-        "assoc_types": [
-        ]
-    },
-    {
         "topic_types": [
 # Type of statistic type definition
             {
@@ -22,19 +18,27 @@
             {
                 "value": "Remittances",
                 "type_uri": "de.taz.migrationcontrol.statistic.type"
+            },
+            {
+                "value": "Migration Intensity",
+                "type_uri": "de.taz.migrationcontrol.statistic.type"
+            },
+            {
+                "value": "Payments",
+                "type_uri": "de.taz.migrationcontrol.statistic.type"
             }
        ]
     },
 # Simple types for various composite types
     {
         "topic_types": [
-	    # for Statistic
+# for Statistic
             {
                 "value":            "Value",
                 "uri":              "de.taz.migrationcontrol.statistic.entry.value",
                 "data_type_uri":    "dm4.core.number"
             },
-            # for Country Overview
+# for Country Overview
             {
                 "value":            "Dossier title",
                 "uri":              "de.taz.migrationcontrol.countryoverview.dossiertitle",
@@ -58,7 +62,29 @@
                 "uri":              "de.taz.migrationcontrol.countryoverview.featurelink",
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
+            },
+# for Treaty
+            {
+                "value":            "Treaty Name",
+                "uri":              "de.taz.migrationcontrol.treaty.name",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Treaty Link",
+                "uri":              "de.taz.migrationcontrol.treaty.link",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
             }
        ]
+    },
+    {
+        "assoc_types": [
+            {
+                "value": "Partner",
+                "uri": "de.taz.migrationcontrol.treaty.partner",
+                "data_type_uri": "dm4.core.text"
+            }
+        ]
     }
 ]

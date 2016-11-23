@@ -3,6 +3,7 @@ package de.taz.migrationcontrol;
 import java.io.IOException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -11,8 +12,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.codehaus.jettison.json.JSONException;
 
 import de.deepamehta.accesscontrol.AccessControlService;
+import de.deepamehta.core.Topic;
 import de.deepamehta.core.osgi.PluginActivator;
 import de.deepamehta.core.service.Inject;
 import de.deepamehta.core.service.Transactional;
@@ -29,30 +32,40 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	@Inject
 	private AccessControlService acService; // needed by migration 1
 
-	private DTOHelper helper;
+	private DTOHelper dtoHelper;
 
 	private ImportHelper importHelper;
-	
+
 	@Override
 	public void init() {
-		helper = new DTOHelper(dm4, mf, wsService);
+		dtoHelper = new DTOHelper(dm4, mf, wsService);
 		importHelper = new ImportHelper(dm4, mf, wsService);
+	}
+
+	@GET
+	@Path("/v1/{languageCode}/country/{id}")
+	public Country getCountry(@PathParam("languageCode") String languageCode, @PathParam("id") long id) {
+		try {
+			Topic topic = dm4.getTopic(id);
+
+			return dtoHelper.toCountryOrNull(topic);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Path("/v1/import/{importDataType}")
 	@Transactional
-	public void importData(
-			@PathParam("importDataType") String importDataType,
-			String importDataCsv) {
+	public void importData(@PathParam("importDataType") String importDataType, String importDataCsv) {
 		if (importDataType == null)
 			throw new IllegalArgumentException("Missing import data type!");
 
 		CSVParser parser = null;
 		try {
 			parser = CSVParser.parse(importDataCsv, CSVFormat.DEFAULT.withTrim());
-			
+
 			switch (importDataType) {
 			case "oda":
 				importHelper.importODA(parser);
@@ -75,7 +88,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 		} catch (IOException ioe) {
 			throw new IllegalArgumentException("Invalid CSV data!", ioe);
 		}
-		
+
 	}
 
 }

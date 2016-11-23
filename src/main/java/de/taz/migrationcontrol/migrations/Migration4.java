@@ -1,6 +1,6 @@
 package de.taz.migrationcontrol.migrations;
 
-import static de.taz.migrationcontrol.DTOHelper.NS;
+import static de.taz.migrationcontrol.MigrationControlService.NS;
 
 import de.deepamehta.core.Topic;
 import de.deepamehta.core.service.Inject;

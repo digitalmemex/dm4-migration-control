@@ -26,6 +26,10 @@
             {
                 "value": "Payments",
                 "type_uri": "de.taz.migrationcontrol.statistic.type"
+            },
+            {
+                "value": "ODA",
+                "type_uri": "de.taz.migrationcontrol.statistic.type"
             }
        ]
     },

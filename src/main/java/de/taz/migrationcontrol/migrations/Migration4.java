@@ -32,7 +32,11 @@ public class Migration4 extends Migration {
 				NS("countryoverview.dossiertitle"),
 				NS("countryoverview.dossiersubtitle"),
 				NS("countryoverview.intro"),
-				NS("countryoverview.featurelink")
+				NS("countryoverview.featurelink"),
+				NS("treaty"),
+				NS("treaty.name"),
+				NS("treaty.link"),
+				NS("treaty.partner")
 		);
 
 		// Assigns all the values for the 'type' topics

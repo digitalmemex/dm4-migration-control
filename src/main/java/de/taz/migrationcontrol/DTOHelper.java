@@ -2,6 +2,7 @@ package de.taz.migrationcontrol;
 
 import static de.taz.migrationcontrol.MigrationControlService.NS;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,8 +38,11 @@ public class DTOHelper {
 		
 		json.put("data", toStatisticData(countryTopic));
 		
+		json.put("factSheet", toFactSheet(countryTopic));
+		
+		
 		// TODO: slug
-		// TODO: statistics
+		// TODO: statistics -> facthsheet
 		// TODO: features
 		
 		return json;
@@ -60,6 +64,36 @@ public class DTOHelper {
 		}
 		
 		return data;
+	}
+	
+	private JSONObject toFactSheet(Topic country) throws JSONException {
+		Topic factSheetTopic = country.getRelatedTopic("dm4.core.aggregation_def", (String) null, (String) null, NS("factsheet"));
+
+		if (factSheetTopic != null && isFactSheetOfCountry(factSheetTopic, country)) {
+			ChildTopics childs= factSheetTopic.getChildTopics();
+			JSONObject data = new JSONObject();
+			
+			data.put("refugeesInCountry", childs.getIntOrNull(NS("factsheet.refugeesincountry")));
+			data.put("refugeesOutsideCountry", childs.getIntOrNull(NS("factsheet.refugeesoutsidecountry")));
+			data.put("refugeesInEU", childs.getIntOrNull(NS("factsheet.refugeesineu")));
+			data.put("idp", childs.getIntOrNull(NS("factsheet.idp")));
+			data.put("applicationsForAsylum", childs.getIntOrNull(NS("factsheet.applicationsforasylum")));
+			data.put("asylumApprovalRate", childs.getIntOrNull(NS("factsheet.asylumapprovalrate")));
+			data.put("countriesRepatriationAgreement", toStringListOrNull(childs.getTopicsOrNull("dm4.contacts.country#"+NS("factsheet.repatriationagreement"))));
+			data.put("countriesOtherMigrationAgreement", toStringListOrNull(childs.getTopicsOrNull("dm4.contacts.country#"+NS("factsheet.othermigrationagreement"))));
+			data.put("hasFrontexCooperation", childs.getBooleanOrNull(NS("factsheet.hasfrontexcooperation")));
+			data.put("detentionCenterCount", childs.getIntOrNull(NS("factsheet.detentioncentercount")));
+			data.put("departureIsIllegal", childs.getBooleanOrNull(NS("factsheet.departureisillegal")));
+			
+			return data;			
+		}
+		
+		return null;
+	}
+	
+	private boolean isFactSheetOfCountry(Topic factSheetTopic, Topic countryTopic) {
+		ChildTopics childs = factSheetTopic.getChildTopics();
+		return childs.getTopic("dm4.contacts.country").getId() == countryTopic.getId();
 	}
 	
 	private List<RelatedTopic> safe(List<RelatedTopic> originalList){
@@ -84,6 +118,19 @@ public class DTOHelper {
 		obj.put(yearAsString, value);
 		
 		return obj;
+	}
+	
+	private static List<String> toStringListOrNull(List<RelatedTopic> topics) {
+		if (topics != null && topics.size() > 0) {
+			List<String> list = new ArrayList<String>();
+			for (Topic t : topics) {
+				list.add(t.getSimpleValue().toString());
+			}
+
+			return list;
+		} else {
+			return null;
+		}
 	}
 	
 	private static class CountryImpl extends JSONEnabledImpl implements Country {

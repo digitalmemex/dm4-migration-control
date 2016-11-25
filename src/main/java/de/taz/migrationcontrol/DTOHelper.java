@@ -67,7 +67,7 @@ public class DTOHelper {
 	}
 	
 	private JSONObject toFactSheet(Topic country) throws JSONException {
-		Topic factSheetTopic = country.getRelatedTopic("dm4.core.aggregation_def", (String) null, (String) null, NS("factsheet"));
+		Topic factSheetTopic = country.getRelatedTopic((String) null, (String) null, (String) null, NS("factsheet"));
 
 		if (factSheetTopic != null && isFactSheetOfCountry(factSheetTopic, country)) {
 			ChildTopics childs= factSheetTopic.getChildTopics();

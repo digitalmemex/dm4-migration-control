@@ -1,0 +1,161 @@
+[
+# Simple types for various composite types
+    {
+        "topic_types": [
+# for Fact Sheet
+            {
+                "value":            "Refugees in Country",
+                "uri":              "de.taz.migrationcontrol.factsheet.refugeesincountry",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Refugees outside Country",
+                "uri":              "de.taz.migrationcontrol.factsheet.refugeesoutsidecountry",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Refugees in EU",
+                "uri":              "de.taz.migrationcontrol.factsheet.refugeesineu",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Internally Displaced People",
+                "uri":              "de.taz.migrationcontrol.factsheet.idp",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Applications for Asylum",
+                "uri":              "de.taz.migrationcontrol.factsheet.applicationsforasylum",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Asylum Approval Rate (Percentage)",
+                "uri":              "de.taz.migrationcontrol.factsheet.asylumapprovalrate",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Has Frontex Cooperation",
+                "uri":              "de.taz.migrationcontrol.factsheet.hasfrontexcooperation",
+                "data_type_uri":    "dm4.core.boolean",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Detention Center Count",
+                "uri":              "de.taz.migrationcontrol.factsheet.detentioncentercount",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Departure Is Illegal",
+                "uri":              "de.taz.migrationcontrol.factsheet.departureisillegal",
+                "data_type_uri":    "dm4.core.boolean",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            }
+       ]
+    },
+    {
+        "assoc_types": [
+            {
+                "value": "Repatriation Agreement With",
+                "uri": "de.taz.migrationcontrol.factsheet.repatriationagreement",
+                "data_type_uri": "dm4.core.text"
+            },
+            {
+                "value": "Other Migration Agreement With",
+                "uri": "de.taz.migrationcontrol.factsheet.othermigrationagreement",
+                "data_type_uri": "dm4.core.text"
+            }
+        ]
+    },
+    {
+        "topic_types": [
+# Fact Sheet
+		    {
+		        "value":            "Fact Sheet",
+		        "uri":              "de.taz.migrationcontrol.factsheet",
+		        "data_type_uri":    "dm4.core.composite",
+		        "assoc_defs": [
+		             {
+		                "child_type_uri":         "dm4.contacts.country",
+		                "parent_cardinality_uri":  "dm4.core.one",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.aggregation_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.refugeesincountry",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.refugeesoutsidecountry",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.refugeesineu",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.idp",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.applicationsforasylum",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.asylumapprovalrate",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+		            {
+		                "child_type_uri":         "dm4.contacts.country",
+		                "parent_cardinality_uri": "dm4.core.one",
+		                "child_cardinality_uri":  "dm4.core.many",
+		                "assoc_type_uri":         "dm4.core.aggregation_def",
+						"custom_assoc_type_uri":  "de.taz.migrationcontrol.factsheet.repatriationagreement"
+		            },
+		            {
+		                "child_type_uri":         "dm4.contacts.country",
+		                "parent_cardinality_uri": "dm4.core.one",
+		                "child_cardinality_uri":  "dm4.core.many",
+		                "assoc_type_uri":         "dm4.core.aggregation_def",
+						"custom_assoc_type_uri":  "de.taz.migrationcontrol.factsheet.othermigrationagreement"
+		            },
+			        {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.hasfrontexcooperation",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+			        {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.detentioncentercount",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+			        {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.departureisillegal",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            }
+		        ],
+		        "view_config_topics": [
+		            {
+		                "type_uri": "dm4.webclient.view_config",
+		                "childs": {
+		                    "dm4.webclient.show_in_create_menu": true
+		                }
+		            }
+		        ]
+		    }
+   		]
+   	}
+]

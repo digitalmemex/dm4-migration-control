@@ -103,8 +103,8 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "migrationintensity":
 				importHelper.importMigrationIntensity(parser);
 				break;
-			case "payments":
-				importHelper.importPayments(parser);
+			case "factsheet":
+				importHelper.importFactSheet(parser);
 				break;
 			default:
 				throw new IllegalArgumentException("Unkown import data type: " + importDataType);

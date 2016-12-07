@@ -28,6 +28,8 @@ public class ImportHelper {
 	CoreService dm4;
 	ModelFactory mf;
 	WorkspacesService wsService;
+
+	NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
 	
 	public ImportHelper(CoreService dm4, ModelFactory mf, WorkspacesService wsService) {
 		this.dm4 = dm4;
@@ -47,17 +49,12 @@ public class ImportHelper {
 		importStatistic("Migration Intensity", data);
 	}
 
-	public void importPayments(CSVParser data) throws IOException {
-		importStatistic("Payments", data);
-	}
-	
 	public void importODA(CSVParser data) throws IOException {
 		importStatistic("ODA", data);
 	}
 	
 	private void importStatistic(String statName, CSVParser data) throws IOException {
 		logger.info("importing " + statName);
-		NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
 		
 		Topic statType = findStatisticsType(statName);
 		
@@ -160,5 +157,54 @@ public class ImportHelper {
 		wsService.assignToWorkspace(obj, wsId);
 	}
 
+	public void importFactSheet(CSVParser data) throws IOException {
+		logger.info("importing factsheet");
+		
+		// first row :       just header, not used
+		// other rows: country name, value, value, value, ...
+		// special value: .. -> no value available
+		List<CSVRecord> records = data.getRecords();
+		logger.info("parsed CSV: " + records.size() + " countries");
+		
+		// iterates over all countries
+		for (int i = 1;i < records.size(); i++) {
+			CSVRecord row = records.get(i);
+			String country = row.get(0);
+			logger.info("importing factsheet for " + country);
+			try {
+				int refugeesInCountry = Integer.parseInt(row.get(1));
+				int refugeesOutsideCountry = Integer.parseInt(row.get(2));
+				int refugeesInEU = Integer.parseInt(row.get(3));
+				int idp = Integer.parseInt(row.get(4));
+				int applicationsForAsylum = Integer.parseInt(row.get(5));
+				double asylumApprovalRate = nf.parse(row.get(6)).doubleValue();
+				boolean hasFrontexCooperation = "ja".equals(row.get(7));
+				int detentionCentercount = Integer.parseInt(row.get(8));
+				boolean departureIsIllegal = "ja".equals(row.get(9));
+
+				ChildTopicsModel childs = mf.newChildTopicsModel();
+				childs.putRef("dm4.contacts.country",
+						findCountryOrCreate(country).getId());
+				childs.put(NS("factsheet.refugeesincountry"), refugeesInCountry);
+				childs.put(NS("factsheet.refugeesoutsidecountry"), refugeesOutsideCountry);
+				childs.put(NS("factsheet.refugeesineu"), refugeesInEU);
+				childs.put(NS("factsheet.idp"), idp);
+				childs.put(NS("factsheet.applicationsforasylum"), applicationsForAsylum);
+				childs.put(NS("factsheet.asylumapprovalrate"), asylumApprovalRate);
+				childs.put(NS("factsheet.hasfrontexcooperation"), hasFrontexCooperation);
+				childs.put(NS("factsheet.detentioncentercount"), detentionCentercount);
+				childs.put(NS("factsheet.departureisillegal"), departureIsIllegal);
+
+				// Creates the statistic for one country
+				Topic t = dm4.createTopic(mf.newTopicModel(NS("factsheet"), childs));
+				
+				assignToDataWorkspace(t);
+			} catch (NumberFormatException|ParseException e) {
+				// Ignored - factsheet for country will not be added
+				logger.warning("Failed to import factsheet for country: " + country);
+			}
+			
+		}
+	}
 	
 }

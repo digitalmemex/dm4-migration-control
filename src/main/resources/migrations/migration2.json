@@ -44,20 +44,8 @@
             },
 # for Country Overview
             {
-                "value":            "Dossier title",
-                "uri":              "de.taz.migrationcontrol.countryoverview.dossiertitle",
-                "data_type_uri":    "dm4.core.text",
-                "index_mode_uris": ["dm4.core.fulltext"]
-            },
-            {
-                "value":            "Dossier subtitle",
-                "uri":              "de.taz.migrationcontrol.countryoverview.dossiersubtitle",
-                "data_type_uri":    "dm4.core.text",
-                "index_mode_uris": ["dm4.core.fulltext"]
-            },
-            {
-                "value":            "Intro",
-                "uri":              "de.taz.migrationcontrol.countryoverview.intro",
+                "value":            "Finding Link",
+                "uri":              "de.taz.migrationcontrol.countryoverview.findinglink",
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
             },

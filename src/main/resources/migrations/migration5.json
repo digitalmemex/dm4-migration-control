@@ -62,12 +62,12 @@
     {
         "assoc_types": [
             {
-                "value": "Repatriation Agreement With",
+                "value": "Repatriation Agreement",
                 "uri": "de.taz.migrationcontrol.factsheet.repatriationagreement",
                 "data_type_uri": "dm4.core.text"
             },
             {
-                "value": "Other Migration Agreement With",
+                "value": "Other Migration Agreement",
                 "uri": "de.taz.migrationcontrol.factsheet.othermigrationagreement",
                 "data_type_uri": "dm4.core.text"
             }
@@ -118,14 +118,14 @@
 		                "assoc_type_uri":         "dm4.core.composition_def"
 		            },
 		            {
-		                "child_type_uri":         "dm4.contacts.country",
+		                "child_type_uri":         "de.taz.migrationcontrol.treaty",
 		                "parent_cardinality_uri": "dm4.core.one",
 		                "child_cardinality_uri":  "dm4.core.many",
 		                "assoc_type_uri":         "dm4.core.aggregation_def",
 						"custom_assoc_type_uri":  "de.taz.migrationcontrol.factsheet.repatriationagreement"
 		            },
 		            {
-		                "child_type_uri":         "dm4.contacts.country",
+		                "child_type_uri":         "de.taz.migrationcontrol.treaty",
 		                "parent_cardinality_uri": "dm4.core.one",
 		                "child_cardinality_uri":  "dm4.core.many",
 		                "assoc_type_uri":         "dm4.core.aggregation_def",

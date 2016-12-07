@@ -23,6 +23,9 @@ public class DTOHelper {
 	CoreService dm4;
 	ModelFactory mf;
 	WorkspacesService wsService;
+	
+	private static final String TREATYTYPE_REPATRIATION_AGREEMENT = "Repatriation Agreement";
+	private static final String TREATYTYPE_OTHER_AGREEMENT = "Other Migration Agreement";
 
 	public DTOHelper(CoreService dm4, ModelFactory mf, WorkspacesService wsService) {
 		this.dm4 = dm4;
@@ -78,8 +81,8 @@ public class DTOHelper {
 			data.put("idp", childs.getIntOrNull(NS("factsheet.idp")));
 			data.put("applicationsForAsylum", childs.getIntOrNull(NS("factsheet.applicationsforasylum")));
 			data.put("asylumApprovalRate", childs.getIntOrNull(NS("factsheet.asylumapprovalrate")));
-			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(childs.getTopicsOrNull(NS("treaty", "factsheet.repatriationagreement")), "dm4.contacts.country"));
-			data.put("otherMigrationAgreements", toStringListOfChildTopic(childs.getTopicsOrNull(NS("treaty", "factsheet.othermigrationagreement")), NS("treaty.name")));
+			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
+			data.put("otherMigrationAgreements", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
 			data.put("hasFrontexCooperation", childs.getBooleanOrNull(NS("factsheet.hasfrontexcooperation")));
 			data.put("detentionCenterCount", childs.getIntOrNull(NS("factsheet.detentioncentercount")));
 			data.put("departureIsIllegal", childs.getBooleanOrNull(NS("factsheet.departureisillegal")));
@@ -88,6 +91,21 @@ public class DTOHelper {
 		}
 		
 		return null;
+	}
+	
+	private List<RelatedTopic> getTreatiesForCountry(Topic country, String treatyType) {
+		List<RelatedTopic> treaties = country.getRelatedTopics((String) null, (String) null, (String) null, NS("treaty"));
+		
+		ArrayList<RelatedTopic> result = new ArrayList<>();
+		for (RelatedTopic topic : treaties) {
+			ChildTopics childs = topic.getChildTopics();
+			
+			if (treatyType.equals(childs.getStringOrNull("de.taz.migrationcontrol.treaty.type"))) {
+				result.add(topic);
+			}
+		}
+		
+		return result;
 	}
 
 	/*

@@ -42,7 +42,6 @@ public class DTOHelper {
 		
 		
 		// TODO: slug
-		// TODO: statistics -> facthsheet
 		// TODO: features
 		
 		return json;
@@ -69,7 +68,7 @@ public class DTOHelper {
 	private JSONObject toFactSheet(Topic country) throws JSONException {
 		Topic factSheetTopic = country.getRelatedTopic((String) null, (String) null, (String) null, NS("factsheet"));
 
-		if (factSheetTopic != null && isFactSheetOfCountry(factSheetTopic, country)) {
+		if (factSheetTopic != null) {
 			ChildTopics childs= factSheetTopic.getChildTopics();
 			JSONObject data = new JSONObject();
 			
@@ -79,8 +78,8 @@ public class DTOHelper {
 			data.put("idp", childs.getIntOrNull(NS("factsheet.idp")));
 			data.put("applicationsForAsylum", childs.getIntOrNull(NS("factsheet.applicationsforasylum")));
 			data.put("asylumApprovalRate", childs.getIntOrNull(NS("factsheet.asylumapprovalrate")));
-			data.put("countriesRepatriationAgreement", toStringListOrNull(childs.getTopicsOrNull("dm4.contacts.country#"+NS("factsheet.repatriationagreement"))));
-			data.put("countriesOtherMigrationAgreement", toStringListOrNull(childs.getTopicsOrNull("dm4.contacts.country#"+NS("factsheet.othermigrationagreement"))));
+			data.put("countriesRepatriationAgreement", toStringListOfChildTopicOrNull(childs.getTopicsOrNull(NS("treaty", "factsheet.repatriationagreement")), "dm4.contacts.country"));
+			data.put("otherMigrationAgreements", toStringListOfChildTopicOrNull(childs.getTopicsOrNull(NS("treaty", "factsheet.othermigrationagreement")), NS("treaty.name")));
 			data.put("hasFrontexCooperation", childs.getBooleanOrNull(NS("factsheet.hasfrontexcooperation")));
 			data.put("detentionCenterCount", childs.getIntOrNull(NS("factsheet.detentioncentercount")));
 			data.put("departureIsIllegal", childs.getBooleanOrNull(NS("factsheet.departureisillegal")));
@@ -90,11 +89,13 @@ public class DTOHelper {
 		
 		return null;
 	}
-	
+
+	/*
 	private boolean isFactSheetOfCountry(Topic factSheetTopic, Topic countryTopic) {
 		ChildTopics childs = factSheetTopic.getChildTopics();
 		return childs.getTopic("dm4.contacts.country").getId() == countryTopic.getId();
 	}
+	*/
 	
 	private List<RelatedTopic> safe(List<RelatedTopic> originalList){
 		return originalList != null ? originalList : Collections.emptyList();
@@ -125,6 +126,20 @@ public class DTOHelper {
 			List<String> list = new ArrayList<String>();
 			for (Topic t : topics) {
 				list.add(t.getSimpleValue().toString());
+			}
+
+			return list;
+		} else {
+			return null;
+		}
+	}
+	
+	private List<String> toStringListOfChildTopicOrNull(List<RelatedTopic> topics, String typeUri) {
+		if (topics != null && topics.size() > 0) {
+			List<String> list = new ArrayList<String>();
+			for (Topic t : topics) {
+				String string = t.getChildTopics().getStringOrNull(typeUri);
+				list.add(string);
 			}
 
 			return list;

@@ -9,6 +9,10 @@ public interface MigrationControlService {
 	static String NS(String suffix) {
 		return "de.taz.migrationcontrol." + suffix;
 	}
+
+	static String NS(String type, String associationType) {
+		return "de.taz.migrationcontrol." + type + "#" + "de.taz.migrationcontrol." + associationType;
+	}
 	
 	List<Country> getCountries(String languageCode);
 	

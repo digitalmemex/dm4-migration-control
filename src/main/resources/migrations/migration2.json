@@ -33,6 +33,28 @@
             }
        ]
     },
+    {
+        "topic_types": [
+# Type of treaty type definition
+            {
+                "value":            "Treaty Type",
+                "uri":              "de.taz.migrationcontrol.treaty.type",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            }
+        ],
+        "topics": [
+# Type of treaty type instances
+            {
+                "value": "Repatriation Agreement",
+                "type_uri": "de.taz.migrationcontrol.treaty.type"
+            },
+            {
+                "value": "Other Migration Agreement",
+                "type_uri": "de.taz.migrationcontrol.treaty.type"
+            }
+       ]
+    },
 # Simple types for various composite types
     {
         "topic_types": [

@@ -31,8 +31,6 @@ public class Migration6 extends Migration {
 				NS("factsheet.idp"),
 				NS("factsheet.applicationsforasylum"),
 				NS("factsheet.asylumapprovalrate"),
-				NS("factsheet.repatriationagreement"),
-				NS("factsheet.othermigrationagreement"),
 				NS("factsheet.hasfrontexcooperation"),
 				NS("factsheet.detentioncentercount"),
 				NS("factsheet.departureisillegal")

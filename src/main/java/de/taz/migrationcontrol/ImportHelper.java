@@ -7,6 +7,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -21,6 +22,8 @@ import de.deepamehta.core.service.ModelFactory;
 import de.deepamehta.workspaces.WorkspacesService;
 
 public class ImportHelper {
+	
+	static Logger logger = Logger.getLogger(ImportHelper.class.getName());
 	
 	CoreService dm4;
 	ModelFactory mf;
@@ -53,6 +56,7 @@ public class ImportHelper {
 	}
 	
 	private void importStatistic(String statName, CSVParser data) throws IOException {
+		logger.info("importing " + statName);
 		NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
 		
 		Topic statType = findStatisticsType(statName);
@@ -62,10 +66,12 @@ public class ImportHelper {
 		// special value: .. -> no value available
 		List<CSVRecord> records = data.getRecords();
 		CSVRecord firstRow = records.get(0);
+		logger.info("parsed CSV: " + records.size() + " countries");
 		
 		// iterates over all countries
 		for (int i = 1;i < records.size(); i++) {
 			CSVRecord row = records.get(i);
+			logger.info("importing " + statName + " for " + row.get(0));
 
 			ChildTopicsModel childs = mf.newChildTopicsModel();
 			childs.putRef(NS("statistic.type"), statType.getId());

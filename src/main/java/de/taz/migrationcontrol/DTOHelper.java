@@ -78,8 +78,8 @@ public class DTOHelper {
 			data.put("idp", childs.getIntOrNull(NS("factsheet.idp")));
 			data.put("applicationsForAsylum", childs.getIntOrNull(NS("factsheet.applicationsforasylum")));
 			data.put("asylumApprovalRate", childs.getIntOrNull(NS("factsheet.asylumapprovalrate")));
-			data.put("countriesRepatriationAgreement", toStringListOfChildTopicOrNull(childs.getTopicsOrNull(NS("treaty", "factsheet.repatriationagreement")), "dm4.contacts.country"));
-			data.put("otherMigrationAgreements", toStringListOfChildTopicOrNull(childs.getTopicsOrNull(NS("treaty", "factsheet.othermigrationagreement")), NS("treaty.name")));
+			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(childs.getTopicsOrNull(NS("treaty", "factsheet.repatriationagreement")), "dm4.contacts.country"));
+			data.put("otherMigrationAgreements", toStringListOfChildTopic(childs.getTopicsOrNull(NS("treaty", "factsheet.othermigrationagreement")), NS("treaty.name")));
 			data.put("hasFrontexCooperation", childs.getBooleanOrNull(NS("factsheet.hasfrontexcooperation")));
 			data.put("detentionCenterCount", childs.getIntOrNull(NS("factsheet.detentioncentercount")));
 			data.put("departureIsIllegal", childs.getBooleanOrNull(NS("factsheet.departureisillegal")));
@@ -134,17 +134,18 @@ public class DTOHelper {
 		}
 	}
 	
-	private List<String> toStringListOfChildTopicOrNull(List<RelatedTopic> topics, String typeUri) {
+	private List<String> toStringListOfChildTopic(List<RelatedTopic> topics, String typeUri) {
+		List<String> list = new ArrayList<String>();
 		if (topics != null && topics.size() > 0) {
-			List<String> list = new ArrayList<String>();
 			for (Topic t : topics) {
 				String string = t.getChildTopics().getStringOrNull(typeUri);
-				list.add(string);
+				if (string != null)
+					list.add(string);
 			}
 
 			return list;
 		} else {
-			return null;
+			return list;
 		}
 	}
 	

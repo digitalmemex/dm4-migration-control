@@ -190,6 +190,11 @@ public class DTOHelper {
 				
 				item.put("headline", headline.text());
 				item.put("lead", lead.text());
+			} else {
+				// No link, then use built-in text
+				item.put("headline", "89 ABKOMMEN SEIT 1990");
+				item.put("lead", "Eine Geschichte der EU-Migrations-Außenpolitik: Von...");
+				item.put("treaties", toTreaties());
 			}
 			
 			int ci = Math.min(childs.getInt(NS("backgrounditem.columnindex")), 2);
@@ -204,6 +209,42 @@ public class DTOHelper {
 		json.put("col2", cols[2]);
 		
 		return json;
+	}
+	
+	List<JSONObject> toTreaties() throws JSONException {
+		ArrayList<JSONObject> result = new ArrayList<>();
+		
+		// TODO: First EU, then EU countries, then african countries
+		addTreatiesForCountries(result, dm4.getTopicsByType("dm4.contacts.country"));
+		
+		return result;
+	}
+	
+	private void addTreatiesForCountries(List<JSONObject> list, List<Topic> countryTopics) throws JSONException {
+		for (Topic countryTopic : countryTopics) {
+			List<RelatedTopic> treaties = safe(countryTopic.getRelatedTopics((String) null, (String) null, (String) null, NS("treaty")));
+			
+			JSONArray treatyArray = new JSONArray();
+			
+			for (RelatedTopic treatyTopic : treaties) {
+				ChildTopics childs = treatyTopic.getChildTopics();
+				
+				JSONObject json = new JSONObject();
+				json.put("name", childs.getString(NS("treaty.name")));
+				json.put("country", childs.getString("dm4.contacts.country"));
+				json.put("partner", childs.getString("dm4.contacts.country#" + NS("treaty.partner")));
+				json.put("link", childs.getString(NS("treaty.link")));
+				
+				treatyArray.put(json);
+			}
+			
+			JSONObject countryJson = new JSONObject();
+			countryJson.put("country", countryTopic.getSimpleValue().toString());
+			countryJson.put("treaties", treatyArray);
+			
+			list.add(countryJson);
+		}
+
 	}
 	
 	BackgroundItem toBackgroundItem(Topic backgroundItem) throws JSONException, IOException {

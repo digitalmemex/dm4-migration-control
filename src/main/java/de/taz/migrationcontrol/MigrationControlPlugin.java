@@ -86,7 +86,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	public List<Thesis> getTheses(@PathParam("languageCode") String languageCode) {
 		List<Thesis> results = new ArrayList<>();
 		
-		for (Topic topic : dm4.getTopicsByType(NS("thesis")) {
+		for (Topic topic : dm4.getTopicsByType(NS("thesis"))) {
 			try {
 				Thesis thesis = dtoHelper.toThesisOrNull(topic);
 				if (thesis != null)

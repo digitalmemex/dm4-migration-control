@@ -116,6 +116,8 @@ public class DTOHelper {
 		json.put("title", childs.getString(NS("thesis.name")));
 		
 		json.put("text", childs.getString(NS("thesis.text")));
+		json.put("contextualisation", childs.getString(NS("thesis.contextualisation")));
+		json.put("sourceinfo", childs.getString(NS("thesis.sourceinfo")));
 		
 		json.put("diagramType", childs.getString(NS("thesis.diagramtype")));
 		

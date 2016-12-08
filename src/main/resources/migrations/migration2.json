@@ -128,6 +128,18 @@
                 "uri":              "de.taz.migrationcontrol.thesis.text",
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Contextualisation",
+                "uri":              "de.taz.migrationcontrol.thesis.contextualisation",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Thesis Source Info",
+                "uri":              "de.taz.migrationcontrol.thesis.sourceinfo",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
             }
        ]
     },

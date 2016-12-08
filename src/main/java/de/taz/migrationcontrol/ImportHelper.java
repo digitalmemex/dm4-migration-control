@@ -353,13 +353,21 @@ public class ImportHelper {
 			try {
 				String thesisName = row.get(1);
 				String thesisText = row.get(2);
-				String thesisDiagramType = row.get(3);
+				String thesisContextualisation = row.get(3);
+				String thesisSourceInfo = row.get(4);
+				String thesisDiagramType = row.get(5);
 				
 				if (thesisName.length() == 0) {
 					throw new ParseException("Thesis name should not be empty!", -1);
 				}
 				if (thesisText.length() == 0) {
 					throw new ParseException("Thesis text should not be empty!", -1);
+				}
+				if (thesisContextualisation.length() == 0) {
+					throw new ParseException("Thesis contextualisation should not be empty!", -1);
+				}
+				if (thesisSourceInfo.length() == 0) {
+					throw new ParseException("Thesis source info should not be empty!", -1);
 				}
 				Topic diagramTypeTopic = findThesisDiagramType(thesisDiagramType);
 				if (diagramTypeTopic == null) {
@@ -370,6 +378,8 @@ public class ImportHelper {
 				childs.putRef(NS("thesis.diagramtype"), diagramTypeTopic.getId());
 				childs.put(NS("thesis.name"), thesisName);
 				childs.put(NS("thesis.text"), thesisText);
+				childs.put(NS("thesis.contextualisation"), thesisContextualisation);
+				childs.put(NS("thesis.sourceinfo"), thesisSourceInfo);
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("thesis"), childs));

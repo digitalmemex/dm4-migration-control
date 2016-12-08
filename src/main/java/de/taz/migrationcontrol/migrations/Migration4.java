@@ -38,6 +38,8 @@ public class Migration4 extends Migration {
 				NS("treaty.partner"),
 				NS("thesis.name"),
 				NS("thesis.text"),
+				NS("thesis.contextualisation"),
+				NS("thesis.sourceinfo"),
 				NS("thesis.diagramtype")
 		);
 

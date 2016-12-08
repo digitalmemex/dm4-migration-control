@@ -157,6 +157,16 @@
                         "assoc_type_uri":         "dm4.core.composition_def"
                     },
                     {
+                        "child_type_uri":         "de.taz.migrationcontrol.thesis.contextualisation",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                    {
+                        "child_type_uri":         "de.taz.migrationcontrol.thesis.sourceinfo",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                    {
                         "child_type_uri":         "de.taz.migrationcontrol.thesis.diagramtype",
                         "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",

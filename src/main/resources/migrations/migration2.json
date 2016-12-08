@@ -55,6 +55,32 @@
             }
        ]
     },
+    {
+        "topic_types": [
+# Type of thesis diagram type definition
+            {
+                "value":            "Thesis Diagram Type",
+                "uri":              "de.taz.migrationcontrol.thesis.diagramtype",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            }
+        ],
+        "topics": [
+# Type of thesis type instances
+            {
+                "value": "hdi",
+                "type_uri": "de.taz.migrationcontrol.thesis.diagramtype"
+            },
+            {
+                "value": "payments",
+                "type_uri": "de.taz.migrationcontrol.thesis.diagramtype"
+            },
+            {
+                "value": "remittances",
+                "type_uri": "de.taz.migrationcontrol.thesis.diagramtype"
+            }
+       ]
+    },
 # Simple types for various composite types
     {
         "topic_types": [
@@ -87,6 +113,19 @@
             {
                 "value":            "Treaty Link",
                 "uri":              "de.taz.migrationcontrol.treaty.link",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+# for Thesis
+            {
+                "value":            "Thesis Name",
+                "uri":              "de.taz.migrationcontrol.thesis.name",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Thesis Text",
+                "uri":              "de.taz.migrationcontrol.thesis.text",
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
             }

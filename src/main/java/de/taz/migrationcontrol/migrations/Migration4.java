@@ -35,12 +35,16 @@ public class Migration4 extends Migration {
 				NS("treaty.name"),
 				NS("treaty.type"),
 				NS("treaty.link"),
-				NS("treaty.partner")
+				NS("treaty.partner"),
+				NS("thesis.name"),
+				NS("thesis.text"),
+				NS("thesis.diagramtype")
 		);
 
 		// Assigns all the values for the 'type' topics
 		groupAssignToWorkspace(dataWsId, dm4.getTopicsByType(NS("statistic.type")));
 		groupAssignToWorkspace(dataWsId, dm4.getTopicsByType(NS("treaty.type")));
+		groupAssignToWorkspace(dataWsId, dm4.getTopicsByType(NS("thesis.diagramtype")));
 	}
 	
 	private void groupAssignToWorkspace(long wsId, String... topicTypeUris) {

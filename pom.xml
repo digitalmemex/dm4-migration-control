@@ -60,6 +60,11 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.4</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.jsoup</groupId>
+		    <artifactId>jsoup</artifactId>
+		    <version>1.10.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -71,7 +76,7 @@
 					<instructions>
 						<Bundle-SymbolicName>de.taz.migrationcontrol</Bundle-SymbolicName>
 						<Bundle-Activator>de.taz.migrationcontrol.MigrationControlPlugin</Bundle-Activator>
-                        <Export-Package>org.apache.commons.csv*</Export-Package>
+                        <Export-Package>org.apache.commons.csv*; org.jsoup*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

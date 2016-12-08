@@ -2,6 +2,7 @@ package de.taz.migrationcontrol;
 
 import static de.taz.migrationcontrol.MigrationControlService.NS;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +10,10 @@ import java.util.List;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 
 import de.deepamehta.core.ChildTopics;
 import de.deepamehta.core.RelatedTopic;
@@ -34,21 +39,55 @@ public class DTOHelper {
 		this.wsService = wsService;
 	}
 	
-	Country toCountryOrNull(Topic countryTopic) throws JSONException {
-		ChildTopics childs = countryTopic.getChildTopics();
-		
+	Country toCountryOrNull(Topic countryTopic) throws JSONException, IOException {
 		CountryImpl json = new CountryImpl();
-		json.put("title", countryTopic.getSimpleValue().toString());
 		
+		json.put("countryName", countryTopic.getSimpleValue().toString());
 		json.put("data", toStatisticData(countryTopic));
-		
 		json.put("factSheet", toFactSheet(countryTopic));
-		
+		addFinding(json, countryTopic);
 		
 		// TODO: slug
 		// TODO: features
 		
 		return json;
+	}
+	
+	private void addFinding(CountryImpl json, Topic countryTopic) throws JSONException, IOException {
+		RelatedTopic topic = countryTopic.getRelatedTopic((String) null, (String) null, (String) null, NS("countryoverview"));
+		
+		if (topic == null)
+			return;
+		
+		ChildTopics childs = topic.getChildTopics();
+		String findingLink = childs.getStringOrNull(NS("countryoverview.findinglink"));
+		
+		Document doc = retrieveDocument(findingLink);
+		Element article = doc.select("content > item[type=article]").get(0);
+		Element headline = article.getElementsByTag("headline").get(0);
+		Element lead = article.getElementsByTag("lead").get(0);
+		Element corpus = article.getElementsByTag("corpus").get(0);
+		
+		json.put("headline", headline.text());
+		json.put("lead", lead.text());
+		json.put("corpus", fullText(corpus));
+	}
+	
+	private String fullText(Element e) {
+		StringBuilder sb = new StringBuilder();
+		for (Node tn : e.childNodes()) {
+			sb.append(tn.toString());
+		}
+		
+		return sb.toString();
+	}
+	
+	private Document retrieveDocument(String tazUrl) throws IOException {
+		if (!tazUrl.endsWith("/")) {
+			tazUrl += "/";
+		}
+		
+		return Jsoup.connect(tazUrl + "c.xml").get();
 	}
 
 	private JSONObject toStatisticData(Topic country) throws JSONException {

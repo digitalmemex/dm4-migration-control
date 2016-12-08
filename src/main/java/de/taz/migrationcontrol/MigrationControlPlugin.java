@@ -57,7 +57,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 				Country country = dtoHelper.toCountryOrNull(topic);
 				if (country != null)
 					results.add(country);
-			} catch (JSONException jsone) {
+			} catch (JSONException|IOException jsone) {
 				// TODO: Log what object was dropped
 			}
 		}
@@ -73,7 +73,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 		try {
 			if (topic != null)
 				return dtoHelper.toCountryOrNull(topic);
-		} catch (JSONException e) {
+		} catch (JSONException|IOException e) {
 			throw new RuntimeException(e);
 		}
 		

@@ -282,6 +282,64 @@ public class ImportHelper {
 			
 		}
 	}
+	
+	public void importFindingsAndFeatures(CSVParser data) throws IOException {
+		logger.info("importing findings and features");
+		
+		List<CSVRecord> records = data.getRecords();
+		logger.info("parsed CSV: " + records.size() + " countries");
+		
+		// iterates over all theses
+		for (int i = 1;i < records.size(); i++) {
+			CSVRecord row = records.get(i);
+			String country = row.get(0);
+			logger.info("importing findings and features for " + country);
+			try {
+				String findingUrl = row.get(1);
+				String featureUrl1 = row.get(2);
+				String featureUrl2 = row.get(3);
+				String featureUrl3 = row.get(4);
+				
+				if (findingUrl.length() == 0) {
+					throw new ParseException("Finding URL should not be empty!", -1);
+				}
+				if (featureUrl1.length() == 0) {
+					throw new ParseException("Feature URL 1 should not be empty!", -1);
+				}
+				if (featureUrl2.length() == 0) {
+					throw new ParseException("Feature URL 2 should not be empty!", -1);
+				}
+				if (featureUrl3.length() == 0) {
+					throw new ParseException("Feature URL 3 should not be empty!", -1);
+				}
+
+				ChildTopicsModel childs = mf.newChildTopicsModel();
+				childs.putRef("dm4.contacts.country",
+						findCountryOrCreate(country).getId());
+				childs.put(NS("countryoverview.findinglink"), findingUrl);
+				
+				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl1));
+				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl2));
+				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl3));
+
+				// Creates the statistic for one country
+				Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));
+				
+				assignToDataWorkspace(t);
+			} catch (ParseException e) {
+				// Ignored - thesis will not be added
+				logger.log(Level.WARNING, "Failed to import findings", e);
+			}
+			
+		}
+	}
+	
+	private TopicModel newFeatureLink(String string) {
+		TopicModel tm = mf.newTopicModel(NS("countryoverview.featurelink"));
+		tm.setSimpleValue(string);
+		
+		return tm;
+	}
 
 	public void importTheses(CSVParser data) throws IOException {
 		logger.info("importing theses");

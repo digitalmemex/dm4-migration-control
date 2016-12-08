@@ -17,6 +17,7 @@ import de.deepamehta.core.service.CoreService;
 import de.deepamehta.core.service.ModelFactory;
 import de.deepamehta.workspaces.WorkspacesService;
 import de.taz.migrationcontrol.MigrationControlService.Country;
+import de.taz.migrationcontrol.MigrationControlService.Thesis;
 
 public class DTOHelper {
 
@@ -108,12 +109,18 @@ public class DTOHelper {
 		return result;
 	}
 
-	/*
-	private boolean isFactSheetOfCountry(Topic factSheetTopic, Topic countryTopic) {
-		ChildTopics childs = factSheetTopic.getChildTopics();
-		return childs.getTopic("dm4.contacts.country").getId() == countryTopic.getId();
+	Thesis toThesisOrNull(Topic thesisTopic) throws JSONException {
+		ChildTopics childs = thesisTopic.getChildTopics();
+		
+		ThesisImpl json = new ThesisImpl();
+		json.put("title", childs.get(NS("thesis.name")));
+		
+		json.put("text", childs.get(NS("thesis.text")));
+		
+		json.put("diagramType", childs.get(NS("thesis.diagramtype")));
+		
+		return json;
 	}
-	*/
 	
 	private List<RelatedTopic> safe(List<RelatedTopic> originalList){
 		return originalList != null ? originalList : Collections.emptyList();
@@ -168,6 +175,9 @@ public class DTOHelper {
 	}
 	
 	private static class CountryImpl extends JSONEnabledImpl implements Country {
+	}
+
+	private static class ThesisImpl extends JSONEnabledImpl implements Thesis {
 	}
 
 }

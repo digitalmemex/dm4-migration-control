@@ -18,8 +18,14 @@ public interface MigrationControlService {
 	
 	Country getCountry(String languageCode, long id);
 	
+	List<Thesis> getTheses(String languageCode);
+	
+	Thesis getThesis(String languageCode, long id);
+	
 	void importData(String importDataType, String importDataCsv);
 
 	interface Country extends JSONEnabled {}
+	
+	interface Thesis extends JSONEnabled {}
 
 }

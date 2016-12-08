@@ -1,5 +1,7 @@
 package de.taz.migrationcontrol;
 
+import static de.taz.migrationcontrol.MigrationControlService.NS;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +80,40 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 		return null;
 	}
 
+	@GET
+	@Path("/v1/{languageCode}/theses")
+	@Override
+	public List<Thesis> getTheses(@PathParam("languageCode") String languageCode) {
+		List<Thesis> results = new ArrayList<>();
+		
+		for (Topic topic : dm4.getTopicsByType(NS("thesis")) {
+			try {
+				Thesis thesis = dtoHelper.toThesisOrNull(topic);
+				if (thesis != null)
+					results.add(thesis);
+			} catch (JSONException jsone) {
+				// TODO: Log what object was dropped
+			}
+		}
+		
+		return results;
+	}
+
+	@GET
+	@Path("/v1/{languageCode}/thesis/{id}")
+	public Thesis getThesis(@PathParam("languageCode") String languageCode, @PathParam("id") long id) {
+		Topic topic = dm4.getTopic(id);
+
+		try {
+			if (topic != null)
+				return dtoHelper.toThesisOrNull(topic);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return null;
+	}
+	
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Path("/v1/import/{importDataType}")

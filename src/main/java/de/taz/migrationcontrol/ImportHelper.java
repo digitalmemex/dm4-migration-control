@@ -7,6 +7,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.csv.CSVParser;
@@ -201,7 +202,7 @@ public class ImportHelper {
 				assignToDataWorkspace(t);
 			} catch (NumberFormatException|ParseException e) {
 				// Ignored - factsheet for country will not be added
-				logger.warning("Failed to import factsheet for country: " + country);
+				logger.log(Level.WARNING, "Failed to import factsheet for country: " + country, e);
 			}
 			
 		}

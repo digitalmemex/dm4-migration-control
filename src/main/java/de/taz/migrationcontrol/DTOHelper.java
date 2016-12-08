@@ -80,7 +80,7 @@ public class DTOHelper {
 			data.put("refugeesInEU", childs.getIntOrNull(NS("factsheet.refugeesineu")));
 			data.put("idp", childs.getIntOrNull(NS("factsheet.idp")));
 			data.put("applicationsForAsylum", childs.getIntOrNull(NS("factsheet.applicationsforasylum")));
-			data.put("asylumApprovalRate", childs.getIntOrNull(NS("factsheet.asylumapprovalrate")));
+			data.put("asylumApprovalRate", childs.getDoubleOrNull(NS("factsheet.asylumapprovalrate")));
 			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
 			data.put("otherMigrationAgreements", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
 			data.put("hasFrontexCooperation", childs.getBooleanOrNull(NS("factsheet.hasfrontexcooperation")));

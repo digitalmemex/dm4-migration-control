@@ -21,11 +21,15 @@ public interface MigrationControlService {
 	List<Thesis> getTheses(String languageCode);
 	
 	Thesis getThesis(String languageCode, long id);
+
+	Background getBackground(String languageCode);
 	
 	void importData(String importDataType, String importDataCsv);
 
 	interface Country extends JSONEnabled {}
 	
 	interface Thesis extends JSONEnabled {}
+
+	interface Background extends JSONEnabled {}
 
 }

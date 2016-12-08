@@ -21,6 +21,7 @@ import de.deepamehta.core.Topic;
 import de.deepamehta.core.service.CoreService;
 import de.deepamehta.core.service.ModelFactory;
 import de.deepamehta.workspaces.WorkspacesService;
+import de.taz.migrationcontrol.MigrationControlService.Background;
 import de.taz.migrationcontrol.MigrationControlService.Country;
 import de.taz.migrationcontrol.MigrationControlService.Thesis;
 
@@ -163,6 +164,12 @@ public class DTOHelper {
 		return json;
 	}
 	
+	Background toBackground(List<Topic> backgroundItemTopics) throws JSONException, IOException {
+		BackgroundImpl json = new BackgroundImpl();
+		
+		return json;
+	}
+	
 	private List<RelatedTopic> safe(List<RelatedTopic> originalList){
 		return originalList != null ? originalList : Collections.emptyList();
 	}
@@ -219,6 +226,9 @@ public class DTOHelper {
 	}
 
 	private static class ThesisImpl extends JSONEnabledImpl implements Thesis {
+	}
+
+	private static class BackgroundImpl extends JSONEnabledImpl implements Background {
 	}
 
 }

@@ -114,6 +114,16 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 		return null;
 	}
 	
+	@GET
+	@Path("/v1/{languageCode}/background")
+	public Background getBackground(@PathParam("languageCode") String languageCode) {
+		try {
+			return dtoHelper.toBackground(dm4.getTopicsByType(NS("backgrounditem")));
+		} catch (JSONException|IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Path("/v1/import/{importDataType}")

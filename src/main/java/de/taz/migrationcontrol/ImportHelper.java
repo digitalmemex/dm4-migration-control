@@ -342,6 +342,45 @@ public class ImportHelper {
 		}
 	}
 	
+	public void importBackground(CSVParser data) throws IOException {
+		logger.info("importing background");
+		
+		List<CSVRecord> records = data.getRecords();
+		logger.info("parsed CSV: " + records.size() + " background items");
+		
+		// iterates over all theses
+		for (int i = 1;i < records.size(); i++) {
+			CSVRecord row = records.get(i);
+			logger.info("importing background " + i);
+			try {
+				int columnIndex = Integer.parseInt(row.get(0));
+				String name = row.get(1);
+				String link = row.get(2);
+				
+				if (name.length() == 0) {
+					throw new ParseException("Background name should not be empty!", -1);
+				}
+				if (link.length() == 0) {
+					throw new ParseException("Background link should not be empty!", -1);
+				}
+
+				ChildTopicsModel childs = mf.newChildTopicsModel();
+				childs.put(NS("backgrounditem.name"), name);
+				childs.put(NS("backgrounditem.link"), link);
+				childs.put(NS("backgrounditem.columnindex"), columnIndex);
+
+				// Creates the statistic for one country
+				Topic t = dm4.createTopic(mf.newTopicModel(NS("backgrounditem"), childs));
+				
+				assignToDataWorkspace(t);
+			} catch (ParseException e) {
+				// Ignored - thesis will not be added
+				logger.log(Level.WARNING, "Failed to import findings", e);
+			}
+			
+		}
+	}
+	
 	private TopicModel newFeatureLink(String string) {
 		TopicModel tm = mf.newTopicModel(NS("countryoverview.featurelink"));
 		tm.setSimpleValue(string);

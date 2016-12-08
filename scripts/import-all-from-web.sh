@@ -39,3 +39,7 @@ importFromWeb oda ${oda}
 importFromWeb hdi ${hdi}
 importFromWeb remittances ${remittances}
 importFromWeb migrationintensity ${migrationintensity}
+importFromWeb factsheet ${factsheet}
+importFromWeb repatriation_treaties ${repatration_treaties}
+importFromWeb other_treaties ${other_treaties}
+importFromWeb theses ${theses}

@@ -140,7 +140,7 @@
                 "uri":              "de.taz.migrationcontrol.thesis.sourceinfo",
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
-            }
+            },
 # for BackgroundItem
             {
                 "value":            "Background Item Name",

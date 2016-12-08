@@ -22,6 +22,7 @@ import de.deepamehta.core.service.CoreService;
 import de.deepamehta.core.service.ModelFactory;
 import de.deepamehta.workspaces.WorkspacesService;
 import de.taz.migrationcontrol.MigrationControlService.Background;
+import de.taz.migrationcontrol.MigrationControlService.BackgroundItem;
 import de.taz.migrationcontrol.MigrationControlService.Country;
 import de.taz.migrationcontrol.MigrationControlService.Thesis;
 
@@ -67,7 +68,7 @@ public class DTOHelper {
 		Element article = doc.select("content > item[type=article]").get(0);
 		Element headline = article.getElementsByTag("headline").get(0);
 		Element lead = article.getElementsByTag("lead").get(0);
-		Element corpus = article.getElementsByTag("corpus").get(0);
+		Element corpus = article.getElementsByTag("corpus").first();
 		
 		json.put("headline", headline.text());
 		json.put("lead", lead.text());
@@ -167,7 +168,84 @@ public class DTOHelper {
 	Background toBackground(List<Topic> backgroundItemTopics) throws JSONException, IOException {
 		BackgroundImpl json = new BackgroundImpl();
 		
+		ArrayList[] cols = {
+				new ArrayList<JSONObject>(),
+				new ArrayList<JSONObject>(),
+				new ArrayList<JSONObject>()
+		};
+
+		for (Topic topic : backgroundItemTopics) {
+			ChildTopics childs = topic.getChildTopics();
+			
+			JSONObject item = new JSONObject();
+			item.put("id", topic.getId());
+			item.put("title", childs.getString(NS("backgrounditem.name")));
+			String link = childs.getStringOrNull(NS("backgrounditem.link"));
+			
+			if (link != null && link.length() > 0) {
+				Document doc = retrieveDocument(link);
+				Element article = doc.select("content > item[type=article]").get(0);
+				Element headline = article.getElementsByTag("headline").get(0);
+				Element lead = article.getElementsByTag("lead").get(0);
+				
+				item.put("headline", headline.text());
+				item.put("lead", lead.text());
+			}
+			
+			int ci = Math.min(childs.getInt(NS("backgrounditem.columnindex")), 2);
+			
+			// Inserts the items sorted by their id: DM gives the IDs monotonically increasing,
+			// as the background items are added during import line by line we can use this.
+			insertSorted(cols[ci], item);
+		}
+		
+		json.put("col0", cols[0]);
+		json.put("col1", cols[1]);
+		json.put("col2", cols[2]);
+		
 		return json;
+	}
+	
+	BackgroundItem toBackgroundItem(Topic backgroundItem) throws JSONException, IOException {
+		BackgroundItemImpl json = new BackgroundItemImpl();
+		
+		ChildTopics childs = backgroundItem.getChildTopics();
+			
+		json.put("id", backgroundItem.getId());
+		String link = childs.getStringOrNull(NS("backgrounditem.link"));
+			
+		if (link != null && link.length() > 0) {
+			Document doc = retrieveDocument(link);
+			Element article = doc.select("content > item[type=article]").get(0);
+			Element headline = article.getElementsByTag("headline").get(0);
+			Element lead = article.getElementsByTag("lead").get(0);
+			Element corpus = article.getElementsByTag("corpus").first();
+			
+			json.put("headline", headline.text());
+			json.put("lead", lead.text());
+			json.put("corpus", fullText(corpus));
+		}
+		
+		return json;
+	}
+	
+	private void insertSorted(List<JSONObject> list, JSONObject item) throws JSONException {
+		int sortKey = item.getInt("id");
+		final int length = list.size();
+		
+		if (length == 0) {
+			list.add(item);
+			return;
+		}
+		
+		int insertPos = 0;
+		for (int i = 0; i < length; i++) {
+			insertPos = i;
+			if (list.get(i).getLong("id") > sortKey) {
+				list.add(insertPos, item);
+				return;
+			}
+		}
 	}
 	
 	private List<RelatedTopic> safe(List<RelatedTopic> originalList){
@@ -229,6 +307,9 @@ public class DTOHelper {
 	}
 
 	private static class BackgroundImpl extends JSONEnabledImpl implements Background {
+	}
+
+	private static class BackgroundItemImpl extends JSONEnabledImpl implements BackgroundItem {
 	}
 
 }

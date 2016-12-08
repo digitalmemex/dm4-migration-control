@@ -24,6 +24,8 @@ public interface MigrationControlService {
 
 	Background getBackground(String languageCode);
 	
+	BackgroundItem getBackgroundItem(String languageCode, long id);
+	
 	void importData(String importDataType, String importDataCsv);
 
 	interface Country extends JSONEnabled {}
@@ -31,5 +33,7 @@ public interface MigrationControlService {
 	interface Thesis extends JSONEnabled {}
 
 	interface Background extends JSONEnabled {}
+
+	interface BackgroundItem extends JSONEnabled {}
 
 }

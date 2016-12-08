@@ -40,7 +40,11 @@ public class Migration4 extends Migration {
 				NS("thesis.text"),
 				NS("thesis.contextualisation"),
 				NS("thesis.sourceinfo"),
-				NS("thesis.diagramtype")
+				NS("thesis.diagramtype"),
+				NS("backgrounditem"),
+				NS("backgrounditem.name"),
+				NS("backgrounditem.link"),
+				NS("backgrounditem.columnindex")
 		);
 
 		// Assigns all the values for the 'type' topics

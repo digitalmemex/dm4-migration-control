@@ -141,6 +141,25 @@
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
             }
+# for BackgroundItem
+            {
+                "value":            "Background Item Name",
+                "uri":              "de.taz.migrationcontrol.backgrounditem.name",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Background Item Link",
+                "uri":              "de.taz.migrationcontrol.backgrounditem.link",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Background Item Column Index",
+                "uri":              "de.taz.migrationcontrol.backgrounditem.columnindex",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            }
        ]
     },
     {

@@ -148,6 +148,9 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "other_treaties":
 				importHelper.importOtherTreaties(parser);
 				break;
+			case "theses":
+				importHelper.importTheses(parser);
+				break;
 			default:
 				throw new IllegalArgumentException("Unkown import data type: " + importDataType);
 			}

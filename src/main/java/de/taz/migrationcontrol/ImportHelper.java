@@ -128,6 +128,16 @@ public class ImportHelper {
 		throw new IllegalStateException("Unknown treaty type: " + treatyTypeName);
 	}
 	
+	private Topic findThesisDiagramType(String diagramType) {		
+		for (Topic t : dm4.getTopicsByType(NS("thesis.diagramtype"))) {
+			if (diagramType.equals(t.getSimpleValue().toString())) {
+				return t;
+			}
+		}
+		
+		throw new IllegalStateException("Unknown thesis diagram type: " + diagramType);
+	}
+	
 	private Topic findCountryOrCreate(String countryName) {		
 		for (Topic country : dm4.getTopicsByType("dm4.contacts.country")) {
 			if (countryName.equals(country.getSimpleValue().toString())) {
@@ -272,5 +282,47 @@ public class ImportHelper {
 			
 		}
 	}
-	
+
+	public void importTheses(CSVParser data) throws IOException {
+		logger.info("importing theses");
+		
+		List<CSVRecord> records = data.getRecords();
+		logger.info("parsed CSV: " + records.size() + " theses");
+		
+		// iterates over all theses
+		for (int i = 1;i < records.size(); i++) {
+			CSVRecord row = records.get(i);
+			try {
+				String thesisName = row.get(1);
+				String thesisText = row.get(2);
+				String thesisDiagramType = row.get(3);
+				
+				if (thesisName.length() == 0) {
+					throw new ParseException("Thesis name should not be empty!", -1);
+				}
+				if (thesisText.length() == 0) {
+					throw new ParseException("Thesis text should not be empty!", -1);
+				}
+				Topic diagramTypeTopic = findThesisDiagramType(thesisDiagramType);
+				if (diagramTypeTopic == null) {
+					throw new ParseException("Thesis diagram type invalid: " + thesisDiagramType, -1);
+				}
+
+				ChildTopicsModel childs = mf.newChildTopicsModel();
+				childs.putRef(NS("thesis.diagramtype"), diagramTypeTopic.getId());
+				childs.put(NS("thesis.name"), thesisName);
+				childs.put(NS("thesis.text"), thesisText);
+
+				// Creates the statistic for one country
+				Topic t = dm4.createTopic(mf.newTopicModel(NS("thesis"), childs));
+				
+				assignToDataWorkspace(t);
+			} catch (ParseException e) {
+				// Ignored - thesis will not be added
+				logger.log(Level.WARNING, "Failed to import thesis", e);
+			}
+			
+		}
+	}
+
 }

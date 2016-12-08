@@ -360,9 +360,6 @@ public class ImportHelper {
 				if (name.length() == 0) {
 					throw new ParseException("Background name should not be empty!", -1);
 				}
-				if (link.length() == 0) {
-					throw new ParseException("Background link should not be empty!", -1);
-				}
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.put(NS("backgrounditem.name"), name);

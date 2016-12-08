@@ -164,7 +164,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "findings":
 				importHelper.importFindingsAndFeatures(parser);
 				break;
-			case "background":
+			case "backgrounditems":
 				importHelper.importBackground(parser);
 				break;
 			default:

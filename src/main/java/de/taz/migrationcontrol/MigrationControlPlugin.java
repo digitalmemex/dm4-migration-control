@@ -106,6 +106,12 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "factsheet":
 				importHelper.importFactSheet(parser);
 				break;
+			case "repatriation_treaties":
+				importHelper.importRepatriationTreaties(parser);
+				break;
+			case "other_treaties":
+				importHelper.importOtherTreaties(parser);
+				break;
 			default:
 				throw new IllegalArgumentException("Unkown import data type: " + importDataType);
 			}

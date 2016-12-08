@@ -118,6 +118,16 @@ public class ImportHelper {
 		throw new IllegalStateException("Unknown statistics type: " + statType);
 	}
 	
+	private Topic findTreatyType(String treatyTypeName) {		
+		for (Topic t : dm4.getTopicsByType(NS("treaty.type"))) {
+			if (treatyTypeName.equals(t.getSimpleValue().toString())) {
+				return t;
+			}
+		}
+		
+		throw new IllegalStateException("Unknown treaty type: " + treatyTypeName);
+	}
+	
 	private Topic findCountryOrCreate(String countryName) {		
 		for (Topic country : dm4.getTopicsByType("dm4.contacts.country")) {
 			if (countryName.equals(country.getSimpleValue().toString())) {
@@ -203,6 +213,61 @@ public class ImportHelper {
 			} catch (NumberFormatException|ParseException e) {
 				// Ignored - factsheet for country will not be added
 				logger.log(Level.WARNING, "Failed to import factsheet for country: " + country, e);
+			}
+			
+		}
+	}
+	
+	public void importRepatriationTreaties(CSVParser data) throws IOException {
+		importTreaties(DTOHelper.TREATYTYPE_REPATRIATION_AGREEMENT, data);
+	}
+
+	public void importOtherTreaties(CSVParser data) throws IOException {
+		importTreaties(DTOHelper.TREATYTYPE_OTHER_AGREEMENT, data);
+	}
+	
+	private void importTreaties(String treatyTypeName, CSVParser data) throws IOException {
+		logger.info("importing treaty: " + treatyTypeName);
+		
+		Topic treatyType = findTreatyType(treatyTypeName);
+		
+		// first row :       just header, not used
+		// other rows: country name, value, value, value, ...
+		// special value: .. -> no value available
+		List<CSVRecord> records = data.getRecords();
+		logger.info("parsed CSV: " + records.size() + " countries");
+		
+		// iterates over all countries
+		for (int i = 1;i < records.size(); i++) {
+			CSVRecord row = records.get(i);
+			String country = row.get(0);
+			logger.info("importing treaty for " + country);
+			try {
+				String partnerCountry = row.get(1);
+				String treatyName = row.get(2);
+				String treatyLink = row.get(3);
+				
+				if (treatyName.length() == 0) {
+					throw new ParseException("Country should not be empty!", -1);
+				}
+
+				ChildTopicsModel childs = mf.newChildTopicsModel();
+				childs.putRef("dm4.contacts.country",
+						findCountryOrCreate(country).getId());
+				childs.putRef(NS("treaty.type"), treatyType.getId());
+				childs.putRef("dm4.contacts.country#" + NS("treaty.partner"),
+						findCountryOrCreate(partnerCountry).getId());
+
+				childs.put(NS("treaty.name"), treatyName);
+				childs.put(NS("treaty.link"), treatyLink);
+
+				// Creates the statistic for one country
+				Topic t = dm4.createTopic(mf.newTopicModel(NS("treaty"), childs));
+				
+				assignToDataWorkspace(t);
+			} catch (NumberFormatException|ParseException e) {
+				// Ignored - factsheet for country will not be added
+				logger.log(Level.WARNING, "Failed to import treaty for country: " + country, e);
 			}
 			
 		}

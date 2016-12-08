@@ -24,8 +24,8 @@ public class DTOHelper {
 	ModelFactory mf;
 	WorkspacesService wsService;
 	
-	private static final String TREATYTYPE_REPATRIATION_AGREEMENT = "Repatriation Agreement";
-	private static final String TREATYTYPE_OTHER_AGREEMENT = "Other Migration Agreement";
+	public static final String TREATYTYPE_REPATRIATION_AGREEMENT = "Repatriation Agreement";
+	public static final String TREATYTYPE_OTHER_AGREEMENT = "Other Migration Agreement";
 
 	public DTOHelper(CoreService dm4, ModelFactory mf, WorkspacesService wsService) {
 		this.dm4 = dm4;

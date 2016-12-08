@@ -113,11 +113,11 @@ public class DTOHelper {
 		ChildTopics childs = thesisTopic.getChildTopics();
 		
 		ThesisImpl json = new ThesisImpl();
-		json.put("title", childs.get(NS("thesis.name")));
+		json.put("title", childs.getString(NS("thesis.name")));
 		
-		json.put("text", childs.get(NS("thesis.text")));
+		json.put("text", childs.getString(NS("thesis.text")));
 		
-		json.put("diagramType", childs.get(NS("thesis.diagramtype")));
+		json.put("diagramType", childs.getString(NS("thesis.diagramtype")));
 		
 		return json;
 	}

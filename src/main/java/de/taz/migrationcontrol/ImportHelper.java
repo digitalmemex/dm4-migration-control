@@ -200,7 +200,7 @@ public class ImportHelper {
 				int applicationsForAsylum = Integer.parseInt(row.get(5));
 				double asylumApprovalRate = nf.parse(row.get(6)).doubleValue();
 				boolean hasFrontexCooperation = "ja".equals(row.get(7));
-				int detentionCentercount = Integer.parseInt(row.get(8));
+				int detentionCentercount = asInt(row.get(8), 0);
 				boolean departureIsIllegal = "ja".equals(row.get(9));
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
@@ -225,6 +225,14 @@ public class ImportHelper {
 				logger.log(Level.WARNING, "Failed to import factsheet for country: " + country, e);
 			}
 			
+		}
+	}
+	
+	private int asInt(String string, int defaultValue) {
+		try {
+			return Integer.parseInt(string);
+		} catch (NumberFormatException nfe) {
+			return defaultValue;
 		}
 	}
 	
@@ -306,12 +314,6 @@ public class ImportHelper {
 				if (featureUrl1.length() == 0) {
 					throw new ParseException("Feature URL 1 should not be empty!", -1);
 				}
-				if (featureUrl2.length() == 0) {
-					throw new ParseException("Feature URL 2 should not be empty!", -1);
-				}
-				if (featureUrl3.length() == 0) {
-					throw new ParseException("Feature URL 3 should not be empty!", -1);
-				}
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
@@ -319,8 +321,14 @@ public class ImportHelper {
 				childs.put(NS("countryoverview.findinglink"), findingUrl);
 				
 				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl1));
-				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl2));
-				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl3));
+				
+				if (featureUrl2.length() > 0) {
+					childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl2));
+				}
+				
+				if (featureUrl3.length() > 0) {
+					childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl3));
+				}
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));

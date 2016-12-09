@@ -468,5 +468,70 @@ public class ImportHelper {
 			
 		}
 	}
+	
+	public void importDetentionCenters(CSVParser data) throws IOException {
+		logger.info("importing detention centers");
+		
+		List<CSVRecord> records = data.getRecords();
+		logger.info("parsed CSV: " + records.size() + " detention centers");
+		
+		// iterates over all theses
+		for (int i = 1;i < records.size(); i++) {
+			CSVRecord row = records.get(i);
+			String name = row.get(0);
+			
+			// Skip empty lines
+			if (name.length() == 0)
+				continue;
+			
+			logger.info("importing detention center " + name);
+			try {
+				String link = row.get(1);
+				String country = row.get(2);
+				String mapPoint = row.get(3);
+				
+				if (country.length() == 0) {
+					throw new ParseException("Finding URL should not be empty!", -1);
+				}
+
+				if (mapPoint.length() == 0) {
+					throw new ParseException("Map Point should not be empty!", -1);
+				}
+
+				ChildTopicsModel childs = mf.newChildTopicsModel();
+				childs.put(NS("detentioncenter.name"), name);
+				childs.put(NS("detentioncenter.link"), link);
+				childs.putRef("dm4.contacts.country",
+						findCountryOrCreate(country).getId());
+				
+				childs.putRef("dm4.geomaps.geo_coordinate", createGeoCoordinateFromMapPoint(mapPoint).getId());
+
+				// Creates the statistic for one country
+				Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));
+				
+				assignToDataWorkspace(t);
+			} catch (ParseException|NumberFormatException e) {
+				// Ignored - thesis will not be added
+				logger.log(Level.WARNING, "Failed to import findings", e);
+			}
+			
+		}
+	}
+	
+	private Topic createGeoCoordinateFromMapPoint(String mapPoint) throws ParseException, NumberFormatException {
+		String[] parts = mapPoint.split(" ");
+		if (parts.length == 2) {
+			double lat = Double.parseDouble(parts[0].trim());
+			double lon = Double.parseDouble(parts[0].trim());
+			
+			ChildTopicsModel childs = mf.newChildTopicsModel();
+			childs.put("dm4.geomaps.latitude", lat);
+			childs.put("dm4.geomaps.longitude", lon);
+			
+			return dm4.createTopic(mf.newTopicModel(childs));
+		} else {
+			throw new ParseException("Map point not well formed: " + mapPoint, parts.length);
+		}
+	}
 
 }

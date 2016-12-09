@@ -192,6 +192,9 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "backgrounditems":
 				importHelper.importBackground(parser);
 				break;
+			case "detentioncenters":
+				importHelper.importDetentionCenters(parser);
+				break;
 			default:
 				throw new IllegalArgumentException("Unkown import data type: " + importDataType);
 			}

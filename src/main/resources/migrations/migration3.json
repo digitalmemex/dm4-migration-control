@@ -239,6 +239,12 @@
                         "child_type_uri":         "dm4.geomaps.geo_coordinate",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                    {
+                        "child_type_uri":         "dm4.contacts.country",
+                        "parent_cardinality_uri":  "dm4.core.one",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.aggregation_def"
                     }
                 ],
                 "view_config_topics": [

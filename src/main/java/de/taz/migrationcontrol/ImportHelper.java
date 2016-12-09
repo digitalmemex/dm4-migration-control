@@ -259,6 +259,12 @@ public class ImportHelper {
 		for (int i = 1;i < records.size(); i++) {
 			CSVRecord row = records.get(i);
 			String country = row.get(0);
+			
+			// If country is missing, skip the line
+			if (country.length() == 0) {
+				continue;
+			}
+			
 			logger.info("importing treaty for " + country);
 			try {
 				String partnerCountry = row.get(1);

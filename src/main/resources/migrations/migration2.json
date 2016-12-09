@@ -161,7 +161,20 @@
                 "uri":              "de.taz.migrationcontrol.backgrounditem.columnindex",
                 "data_type_uri":    "dm4.core.number",
                 "index_mode_uris": ["dm4.core.fulltext"]
-            }
+            },
+# for Detention Center
+            {
+                "value":            "Name",
+                "uri":              "de.taz.migrationcontrol.detentioncenter.name",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Link",
+                "uri":              "de.taz.migrationcontrol.detentioncenter.link",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
        ]
     },
     {

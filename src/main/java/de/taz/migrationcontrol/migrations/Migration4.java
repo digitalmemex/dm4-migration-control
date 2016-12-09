@@ -45,7 +45,10 @@ public class Migration4 extends Migration {
 				NS("backgrounditem"),
 				NS("backgrounditem.name"),
 				NS("backgrounditem.link"),
-				NS("backgrounditem.columnindex")
+				NS("backgrounditem.columnindex"),
+				NS("detentioncenter"),
+				NS("detentioncenter.name"),
+				NS("detentioncenter.link")
 		);
 
 		// Assigns all the values for the 'type' topics

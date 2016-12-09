@@ -317,8 +317,14 @@ public class DTOHelper {
 				item.put("lead", lead.text());
 			} else {
 				// No link, then use built-in text
-				item.put("headline", "89 ABKOMMEN SEIT 1990");
-				item.put("lead", "Eine Geschichte der EU-Migrations-Außenpolitik: Von...");
+				// There is no link, try to get the 
+				RelatedTopic notes = topic.getRelatedTopic(null, null, null, "dm4.notes.note");
+				if (notes != null) {
+					ChildTopics childs2 = notes.getChildTopics();
+					item.put("headline", childs2.getString("dm4.notes.title"));
+					item.put("lead", childs2.getString("dm4.notes.text"));
+				}
+
 				item.put("treaties", toTreaties());
 			}
 			
@@ -391,7 +397,6 @@ public class DTOHelper {
 			json.put("lead", lead.text());
 			json.put("corpus", fullText(corpus));
 		}
-		
 		return json;
 	}
 	

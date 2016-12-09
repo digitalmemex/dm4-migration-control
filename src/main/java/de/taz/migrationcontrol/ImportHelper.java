@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import de.deepamehta.core.Association;
 import de.deepamehta.core.DeepaMehtaObject;
 import de.deepamehta.core.Topic;
 import de.deepamehta.core.model.ChildTopicsModel;
@@ -377,9 +378,30 @@ public class ImportHelper {
 				childs.put(NS("backgrounditem.columnindex"), columnIndex);
 
 				// Creates the statistic for one country
-				Topic t = dm4.createTopic(mf.newTopicModel(NS("backgrounditem"), childs));
+				Topic backgroundItemTopic = dm4.createTopic(mf.newTopicModel(NS("backgrounditem"), childs));
+				assignToDataWorkspace(backgroundItemTopic);
 				
-				assignToDataWorkspace(t);
+				// If the entry does not have a link it is the "Abkommen" item that has the
+				// title and text inline. We store this as a "dm4.notes.note" topic
+				// and associate it with the BackgroundItem.
+				if (link.length() == 0) {
+					String title = row.get(3);
+					String text = row.get(4);
+
+					ChildTopicsModel childs2 = mf.newChildTopicsModel();
+					childs2.put("dm4.notes.title", title);
+					childs2.put("dm4.notes.text", text);
+					assignToDataWorkspace(backgroundItemTopic);
+
+					Topic notesTopic = 
+							dm4.createTopic(mf.newTopicModel("dm4.notes.note", childs2));
+					
+					Association asso = dm4.createAssociation(mf.newAssociationModel("dm4.core.association",
+			    			mf.newTopicRoleModel(backgroundItemTopic.getId(), "dm4.core.default"),
+						mf.newTopicRoleModel(notesTopic.getId(), "dm4.core.default")));
+					
+					assignToDataWorkspace(asso);
+				}
 			} catch (ParseException e) {
 				// Ignored - thesis will not be added
 				logger.log(Level.WARNING, "Failed to import findings", e);

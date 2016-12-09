@@ -24,6 +24,7 @@ import de.deepamehta.workspaces.WorkspacesService;
 import de.taz.migrationcontrol.MigrationControlService.Background;
 import de.taz.migrationcontrol.MigrationControlService.BackgroundItem;
 import de.taz.migrationcontrol.MigrationControlService.Country;
+import de.taz.migrationcontrol.MigrationControlService.CountryOverview;
 import de.taz.migrationcontrol.MigrationControlService.Thesis;
 
 public class DTOHelper {
@@ -39,6 +40,12 @@ public class DTOHelper {
 		this.dm4 = dm4;
 		this.mf = mf;
 		this.wsService = wsService;
+	}
+	
+	CountryOverview toCountryOverview(List<Topic> countryTopics) throws JSONException, IOException {
+		CountryOverviewImpl json = new CountryOverviewImpl();
+		
+		return json;
 	}
 	
 	Country toCountryOrNull(Topic countryTopic) throws JSONException, IOException {
@@ -380,6 +387,9 @@ public class DTOHelper {
 		}
 	}
 	
+	private static class CountryOverviewImpl extends JSONEnabledImpl implements CountryOverview {
+	}
+
 	private static class CountryImpl extends JSONEnabledImpl implements Country {
 	}
 

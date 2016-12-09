@@ -47,6 +47,16 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	}
 
 	@GET
+	@Path("/v1/{languageCode}/countryoverview")
+	public CountryOverview getCountryOverview(@PathParam("languageCode") String languageCode) {
+		try {
+			return dtoHelper.toCountryOverview(dm4.getTopicsByType("dm4.contacts.country"));
+		} catch (JSONException|IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@GET
 	@Path("/v1/{languageCode}/countries")
 	@Override
 	public List<Country> getCountries(@PathParam("languageCode") String languageCode) {

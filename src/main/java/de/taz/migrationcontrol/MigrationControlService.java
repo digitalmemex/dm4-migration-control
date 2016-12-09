@@ -13,6 +13,8 @@ public interface MigrationControlService {
 	static String NS(String type, String associationType) {
 		return "de.taz.migrationcontrol." + type + "#" + "de.taz.migrationcontrol." + associationType;
 	}
+
+	CountryOverview getCountryOverview(String languageCode);
 	
 	List<Country> getCountries(String languageCode);
 	
@@ -28,6 +30,8 @@ public interface MigrationControlService {
 	
 	void importData(String importDataType, String importDataCsv);
 
+	interface CountryOverview extends JSONEnabled {}
+	
 	interface Country extends JSONEnabled {}
 	
 	interface Thesis extends JSONEnabled {}

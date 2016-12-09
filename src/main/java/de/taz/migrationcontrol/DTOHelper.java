@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -23,11 +25,13 @@ import de.deepamehta.core.service.ModelFactory;
 import de.deepamehta.workspaces.WorkspacesService;
 import de.taz.migrationcontrol.MigrationControlService.Background;
 import de.taz.migrationcontrol.MigrationControlService.BackgroundItem;
-import de.taz.migrationcontrol.MigrationControlService.Country;
 import de.taz.migrationcontrol.MigrationControlService.CountriesOverview;
+import de.taz.migrationcontrol.MigrationControlService.Country;
 import de.taz.migrationcontrol.MigrationControlService.Thesis;
 
 public class DTOHelper {
+
+	static Logger logger = Logger.getLogger(DTOHelper.class.getName());
 
 	CoreService dm4;
 	ModelFactory mf;
@@ -62,6 +66,8 @@ public class DTOHelper {
 			JSONObject countryJson = new JSONObject();
 			countryJson.put("id", countryTopic.getId());
 			countryJson.put("countryName", countryTopic.getSimpleValue().toString());
+			
+			logger.log(Level.INFO, "adding country: " + countryJson.getString("countryName"));
 
 			ChildTopics childs = countryOverviewTopic.getChildTopics();
 /*			
@@ -375,10 +381,10 @@ public class DTOHelper {
 		for (int i = 0; i < length; i++) {
 			insertPos = i;
 			if (list.get(i).getLong("id") > sortKey) {
-				list.add(insertPos, item);
-				return;
+				break;
 			}
 		}
+		list.add(insertPos, item);
 	}
 	
 	private List<RelatedTopic> safe(List<RelatedTopic> originalList){

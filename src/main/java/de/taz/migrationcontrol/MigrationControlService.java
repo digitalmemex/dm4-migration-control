@@ -14,7 +14,7 @@ public interface MigrationControlService {
 		return "de.taz.migrationcontrol." + type + "#" + "de.taz.migrationcontrol." + associationType;
 	}
 
-	CountriesOverview getCountryOverview(String languageCode);
+	CountriesOverview getCountriesOverview(String languageCode);
 	
 	List<Country> getCountries(String languageCode);
 	

@@ -307,6 +307,7 @@ public class ImportHelper {
 				String featureUrl1 = row.get(2);
 				String featureUrl2 = row.get(3);
 				String featureUrl3 = row.get(4);
+				int columnIndex = asInt(row.get(5), 0);
 				
 				if (findingUrl.length() == 0) {
 					throw new ParseException("Finding URL should not be empty!", -1);
@@ -318,8 +319,11 @@ public class ImportHelper {
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
 						findCountryOrCreate(country).getId());
-				childs.put(NS("countryoverview.findinglink"), findingUrl);
 				
+				childs.put(NS("countryoverview.columnindex"), columnIndex);
+				
+				childs.put(NS("countryoverview.findinglink"), findingUrl);
+			
 				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl1));
 				
 				if (featureUrl2.length() > 0) {

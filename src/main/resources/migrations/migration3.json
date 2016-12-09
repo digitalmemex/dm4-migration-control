@@ -75,6 +75,12 @@
                         "assoc_type_uri":         "dm4.core.aggregation_def"
                     },
                      {
+                        "child_type_uri":         "de.taz.migrationcontrol.countryoverview.columnindex",
+                        "parent_cardinality_uri":  "dm4.core.one",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                     {
                         "child_type_uri":         "de.taz.migrationcontrol.countryoverview.findinglink",
                         "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",

@@ -29,6 +29,7 @@ public class Migration4 extends Migration {
 				NS("statistic.entry"),
 				NS("statistic.entry.value"),
 				NS("countryoverview"),
+				NS("countryoverview.columnindex"),
 				NS("countryoverview.findinglink"),
 				NS("countryoverview.featurelink"),
 				NS("treaty"),

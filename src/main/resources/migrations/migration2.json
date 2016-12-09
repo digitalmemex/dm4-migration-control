@@ -103,6 +103,12 @@
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
             },
+            {
+                "value":            "Column Index",
+                "uri":              "de.taz.migrationcontrol.countryoverview.columnindex",
+                "data_type_uri":    "dm4.core.number",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
 # for Treaty
             {
                 "value":            "Treaty Name",

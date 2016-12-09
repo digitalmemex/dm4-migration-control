@@ -44,35 +44,74 @@ public class DTOHelper {
 	Country toCountryOrNull(Topic countryTopic) throws JSONException, IOException {
 		CountryImpl json = new CountryImpl();
 		
+		json.put("id", countryTopic.getId());
 		json.put("countryName", countryTopic.getSimpleValue().toString());
 		json.put("data", toStatisticData(countryTopic));
 		json.put("factSheet", toFactSheet(countryTopic));
-		addFinding(json, countryTopic);
+
+		RelatedTopic countryOverviewTopic = countryTopic.getRelatedTopic((String) null, (String) null, (String) null, NS("countryoverview"));
 		
-		// TODO: slug
-		// TODO: features
+		if (countryOverviewTopic == null)
+			return json;
+		
+		ChildTopics childs = countryOverviewTopic.getChildTopics();
+		json.put("finding", toFinding(childs.getStringOrNull(NS("countryoverview.findinglink"))));
+		
+		JSONArray featuresArray = new JSONArray();
+		for (String featureLink : toStringListOrNull(safe(childs.getTopicsOrNull(NS("countryoverview.featurelink"))))) {
+			featuresArray.put(toFeature(featureLink));
+		}
+		json.put("features", featuresArray);
 		
 		return json;
 	}
 	
-	private void addFinding(CountryImpl json, Topic countryTopic) throws JSONException, IOException {
-		RelatedTopic topic = countryTopic.getRelatedTopic((String) null, (String) null, (String) null, NS("countryoverview"));
+	private JSONObject toFinding(String findingLink) throws JSONException, IOException {
+		Document doc;
+		JSONObject json = null;
+		try {
+			doc = retrieveDocument(findingLink);
+			
+			Element article = doc.select("content > item[type=article]").first();
+			Element headline = article.getElementsByTag("headline").first();
+			Element lead = article.getElementsByTag("lead").first();
+			Element corpus = article.getElementsByTag("corpus").first();
+			
+			json = new JSONObject();
+			json.put("headline", headline.text());
+			json.put("lead", lead.text());
+			json.put("corpus", fullText(corpus));
+			
+		} catch (IOException ioe) {
+			return null;
+		}
 		
-		if (topic == null)
-			return;
+		return json;
+	}
+	
+	private JSONObject toFeature(String featureLink) throws JSONException, IOException {
+		Document doc;
+		JSONObject json = null;
+		try {
+			doc = retrieveDocument(featureLink);
+			
+			Element article = doc.select("content > item[type=article]").first();
+			Element headline = article.getElementsByTag("headline").first();
+			Element lead = article.getElementsByTag("lead").first();
+			Element kicker = article.getElementsByTag("kicker").first();
+			Element corpus = article.getElementsByTag("corpus").first();
+			
+			json = new JSONObject();
+			json.put("headline", headline.text());
+			json.put("lead", lead.text());
+			json.put("kicker", kicker.text());
+			json.put("corpus", fullText(corpus));
+			
+		} catch (IOException ioe) {
+			return null;
+		}
 		
-		ChildTopics childs = topic.getChildTopics();
-		String findingLink = childs.getStringOrNull(NS("countryoverview.findinglink"));
-		
-		Document doc = retrieveDocument(findingLink);
-		Element article = doc.select("content > item[type=article]").get(0);
-		Element headline = article.getElementsByTag("headline").get(0);
-		Element lead = article.getElementsByTag("lead").get(0);
-		Element corpus = article.getElementsByTag("corpus").first();
-		
-		json.put("headline", headline.text());
-		json.put("lead", lead.text());
-		json.put("corpus", fullText(corpus));
+		return json;
 	}
 	
 	private String fullText(Element e) {
@@ -122,7 +161,7 @@ public class DTOHelper {
 			data.put("refugeesInEU", childs.getIntOrNull(NS("factsheet.refugeesineu")));
 			data.put("idp", childs.getIntOrNull(NS("factsheet.idp")));
 			data.put("applicationsForAsylum", childs.getIntOrNull(NS("factsheet.applicationsforasylum")));
-			data.put("asylumApprovalRate", childs.getIntOrNull(NS("factsheet.asylumapprovalrate")));
+			data.put("asylumApprovalRate", (Number) childs.getDoubleOrNull(NS("factsheet.asylumapprovalrate")));
 			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
 			data.put("otherMigrationAgreements", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
 			data.put("hasFrontexCooperation", childs.getBooleanOrNull(NS("factsheet.hasfrontexcooperation")));

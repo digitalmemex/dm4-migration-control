@@ -507,7 +507,7 @@ public class ImportHelper {
 				childs.putRef("dm4.geomaps.geo_coordinate", createGeoCoordinateFromMapPoint(mapPoint).getId());
 
 				// Creates the statistic for one country
-				Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));
+				Topic t = dm4.createTopic(mf.newTopicModel(NS("detentioncenter"), childs));
 				
 				assignToDataWorkspace(t);
 			} catch (ParseException|NumberFormatException e) {
@@ -522,13 +522,16 @@ public class ImportHelper {
 		String[] parts = mapPoint.split(" ");
 		if (parts.length == 2) {
 			double lat = Double.parseDouble(parts[0].trim());
-			double lon = Double.parseDouble(parts[0].trim());
+			double lon = Double.parseDouble(parts[1].trim());
 			
 			ChildTopicsModel childs = mf.newChildTopicsModel();
 			childs.put("dm4.geomaps.latitude", lat);
 			childs.put("dm4.geomaps.longitude", lon);
 			
-			return dm4.createTopic(mf.newTopicModel(childs));
+			Topic topic = dm4.createTopic(mf.newTopicModel("dm4.geomaps.geo_coordinate", childs));
+			assignToDataWorkspace(topic);
+			
+			return topic;
 		} else {
 			throw new ParseException("Map point not well formed: " + mapPoint, parts.length);
 		}

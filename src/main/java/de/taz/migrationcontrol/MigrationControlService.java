@@ -28,6 +28,10 @@ public interface MigrationControlService {
 	
 	BackgroundItem getBackgroundItem(String languageCode, long id);
 	
+	List<DetentionCenter> getDetentionCenters(String languageCode);
+	
+	DetentionCenter getDetentionCenter(String languageCode, long id);
+
 	void importData(String importDataType, String importDataCsv);
 
 	interface CountriesOverview extends JSONEnabled {}
@@ -39,5 +43,7 @@ public interface MigrationControlService {
 	interface Background extends JSONEnabled {}
 
 	interface BackgroundItem extends JSONEnabled {}
+
+	interface DetentionCenter extends JSONEnabled {}
 
 }

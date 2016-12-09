@@ -16,6 +16,8 @@ background="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782
 
 imprint="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=966956331&single=true&output=csv"
 
+detentioncenters="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=775777912&single=true&output=csv"
+
 sessionid=${1}
 scratchdir=`mktemp -d`
 
@@ -35,13 +37,15 @@ importFromWeb() {
 	echo "Done"
 }
 
-importFromWeb oda ${oda}
-importFromWeb hdi ${hdi}
-importFromWeb remittances ${remittances}
-importFromWeb migrationintensity ${migrationintensity}
-importFromWeb findings ${findings}
-importFromWeb factsheet ${factsheet}
-importFromWeb repatriation_treaties ${repatration_treaties}
-importFromWeb other_treaties ${other_treaties}
-importFromWeb theses ${theses}
-importFromWeb backgrounditems ${background}
+
+#importFromWeb oda ${oda}
+#importFromWeb hdi ${hdi}
+#importFromWeb remittances ${remittances}
+#importFromWeb migrationintensity ${migrationintensity}
+#importFromWeb findings ${findings}
+#importFromWeb factsheet ${factsheet}
+#importFromWeb repatriation_treaties ${repatration_treaties}
+#importFromWeb other_treaties ${other_treaties}
+#importFromWeb theses ${theses}
+#importFromWeb backgrounditems ${background}
+importFromWeb detentioncenterdata ${detentioncenters}

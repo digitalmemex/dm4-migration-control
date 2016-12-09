@@ -29,6 +29,7 @@ import de.taz.migrationcontrol.MigrationControlService.Background;
 import de.taz.migrationcontrol.MigrationControlService.BackgroundItem;
 import de.taz.migrationcontrol.MigrationControlService.CountriesOverview;
 import de.taz.migrationcontrol.MigrationControlService.Country;
+import de.taz.migrationcontrol.MigrationControlService.DetentionCenter;
 import de.taz.migrationcontrol.MigrationControlService.Thesis;
 
 public class DTOHelper {
@@ -259,6 +260,26 @@ public class DTOHelper {
 		
 		return null;
 	}
+
+	DetentionCenter toDetentionCenterOrNull(Topic topic) throws JSONException {
+		DetentionCenterImpl json = new DetentionCenterImpl();
+		
+		ChildTopics childs = topic.getChildTopics();
+		
+		json.put("id", topic.getId());
+		json.put("name", childs.getStringOrNull(NS("detentioncenter.name"))); 
+		json.put("link", childs.getStringOrNull(NS("detentioncenter.link")));
+		
+		Topic geoCoordTopic = childs.getTopic("dm4.geomaps.geo_coordinate");
+		if (geoCoordTopic == null) {
+			return null;
+		}
+		ChildTopics childs2 = geoCoordTopic.getChildTopics();
+		json.put("lat", childs2.getDouble("dm4.geomaps.latitude"));
+		json.put("lon", childs2.getDouble("dm4.geomaps.longitude"));
+		
+		return json;
+	}
 	
 	private List<RelatedTopic> getTreatiesForCountry(Topic country, String treatyType) {
 		List<RelatedTopic> treaties = country.getRelatedTopics((String) null, (String) null, (String) null, NS("treaty"));
@@ -484,6 +505,9 @@ public class DTOHelper {
 	}
 
 	private static class BackgroundItemImpl extends JSONEnabledImpl implements BackgroundItem {
+	}
+
+	private static class DetentionCenterImpl extends JSONEnabledImpl implements DetentionCenter {
 	}
 
 }

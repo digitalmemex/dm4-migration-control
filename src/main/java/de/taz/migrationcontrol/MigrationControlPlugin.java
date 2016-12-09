@@ -91,6 +91,40 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	}
 
 	@GET
+	@Path("/v1/{languageCode}/detentioncenters")
+	@Override
+	public List<DetentionCenter> getDetentionCenters(@PathParam("languageCode") String languageCode) {
+		List<DetentionCenter> results = new ArrayList<>();
+		
+		for (Topic topic : dm4.getTopicsByType(NS("detentioncenter"))) {
+			try {
+				DetentionCenter dto = dtoHelper.toDetentionCenterOrNull(topic);
+				if (dto != null)
+					results.add(dto);
+			} catch (JSONException e) {
+				// TODO: Log what object was dropped
+			}
+		}
+		
+		return results;
+	}
+
+	@GET
+	@Path("/v1/{languageCode}/detentioncenter/{id}")
+	public DetentionCenter getDetentionCenter(@PathParam("languageCode") String languageCode, @PathParam("id") long id) {
+		Topic topic = dm4.getTopic(id);
+
+		try {
+			if (topic != null)
+				return dtoHelper.toDetentionCenterOrNull(topic);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return null;
+	}
+	
+	@GET
 	@Path("/v1/{languageCode}/theses")
 	@Override
 	public List<Thesis> getTheses(@PathParam("languageCode") String languageCode) {
@@ -192,7 +226,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "backgrounditems":
 				importHelper.importBackground(parser);
 				break;
-			case "detentioncenters":
+			case "detentioncenterdata":
 				importHelper.importDetentionCenters(parser);
 				break;
 			default:

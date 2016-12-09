@@ -3,6 +3,8 @@ package de.taz.migrationcontrol;
 import static de.taz.migrationcontrol.MigrationControlService.NS;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -161,6 +163,27 @@ public class DTOHelper {
 			json.put("lead", lead.text());
 			json.put("kicker", kicker.text());
 			
+			JSONArray imagesArray = new JSONArray();
+			for (Element picture : article.select("extra[type=picture] > picture")) {
+				Element descr = picture.getElementsByTag("descr").first();
+				Element caption = picture.getElementsByTag("caption").first();
+				Element pixmapXL = picture.select("pixmap[size=slideXL").first();
+				
+				// Skip image if somehting is missing.
+				if (descr == null || caption == null || pixmapXL == null) {
+					continue;
+				}
+				
+				JSONObject imageJson = new JSONObject();
+				imageJson.put("alt", descr.text());
+				imageJson.put("caption", caption.text());
+				imageJson.put("src", makeImageUrl(featureLink, pixmapXL.attr("src")));
+				
+				imagesArray.put(imageJson);
+			}
+			
+			json.put("images", imagesArray);
+			
 			if (includeCorpus) {
 				Element corpus = article.getElementsByTag("corpus").first();
 				json.put("corpus", fullText(corpus));
@@ -171,6 +194,10 @@ public class DTOHelper {
 		}
 		
 		return json;
+	}
+	
+	private String makeImageUrl(String articleUrl, String imagePath) throws MalformedURLException {
+		return new URL(new URL(articleUrl), imagePath).toString();
 	}
 	
 	private String fullText(Element e) {

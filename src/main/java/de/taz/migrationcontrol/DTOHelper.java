@@ -68,9 +68,9 @@ public class DTOHelper {
 			
 			JSONObject countryJson = new JSONObject();
 			countryJson.put("id", countryTopic.getId());
-			countryJson.put("countryName", countryTopic.getSimpleValue().toString());
+			countryJson.put("name", countryTopic.getSimpleValue().toString());
 			
-			logger.log(Level.INFO, "adding country: " + countryJson.getString("countryName"));
+			logger.log(Level.INFO, "adding country: " + countryJson.getString("name"));
 
 			ChildTopics childs = countryOverviewTopic.getChildTopics();
 /*			
@@ -101,7 +101,7 @@ public class DTOHelper {
 		CountryImpl json = new CountryImpl();
 		
 		json.put("id", countryTopic.getId());
-		json.put("countryName", countryTopic.getSimpleValue().toString());
+		json.put("name", countryTopic.getSimpleValue().toString());
 		json.put("data", toStatisticData(countryTopic));
 		json.put("factSheet", toFactSheet(countryTopic));
 
@@ -269,6 +269,15 @@ public class DTOHelper {
 		json.put("id", topic.getId());
 		json.put("name", childs.getStringOrNull(NS("detentioncenter.name"))); 
 		json.put("link", childs.getStringOrNull(NS("detentioncenter.link")));
+		
+		Topic countryTopic = childs.getTopic("dm4.contacts.country");
+		if (countryTopic == null) {
+			return null;
+		}
+		JSONObject countryJson = new JSONObject();
+		countryJson.put("id", countryTopic.getId());
+		countryJson.put("name", countryTopic.getSimpleValue().toString());
+		json.put("country", countryJson);
 		
 		Topic geoCoordTopic = childs.getTopic("dm4.geomaps.geo_coordinate");
 		if (geoCoordTopic == null) {

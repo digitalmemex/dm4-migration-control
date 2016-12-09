@@ -14,7 +14,7 @@ public interface MigrationControlService {
 		return "de.taz.migrationcontrol." + type + "#" + "de.taz.migrationcontrol." + associationType;
 	}
 
-	CountryOverview getCountryOverview(String languageCode);
+	CountriesOverview getCountryOverview(String languageCode);
 	
 	List<Country> getCountries(String languageCode);
 	
@@ -30,7 +30,7 @@ public interface MigrationControlService {
 	
 	void importData(String importDataType, String importDataCsv);
 
-	interface CountryOverview extends JSONEnabled {}
+	interface CountriesOverview extends JSONEnabled {}
 	
 	interface Country extends JSONEnabled {}
 	

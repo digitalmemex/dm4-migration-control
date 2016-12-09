@@ -24,7 +24,7 @@ import de.deepamehta.workspaces.WorkspacesService;
 import de.taz.migrationcontrol.MigrationControlService.Background;
 import de.taz.migrationcontrol.MigrationControlService.BackgroundItem;
 import de.taz.migrationcontrol.MigrationControlService.Country;
-import de.taz.migrationcontrol.MigrationControlService.CountryOverview;
+import de.taz.migrationcontrol.MigrationControlService.CountriesOverview;
 import de.taz.migrationcontrol.MigrationControlService.Thesis;
 
 public class DTOHelper {
@@ -42,9 +42,49 @@ public class DTOHelper {
 		this.wsService = wsService;
 	}
 	
-	CountryOverview toCountryOverview(List<Topic> countryTopics) throws JSONException, IOException {
-		CountryOverviewImpl json = new CountryOverviewImpl();
+	CountriesOverview toCountriesOverview(List<Topic> countryTopics) throws JSONException, IOException {
+		CountriesOverviewImpl json = new CountriesOverviewImpl();
 		
+		ArrayList[] cols = {
+				new ArrayList<JSONObject>(),
+				new ArrayList<JSONObject>(),
+				new ArrayList<JSONObject>(),
+				new ArrayList<JSONObject>()
+		};
+
+		for (Topic countryTopic : countryTopics) {
+			RelatedTopic countryOverviewTopic = countryTopic.getRelatedTopic((String) null, (String) null, (String) null, NS("countryoverview"));
+			
+			if (countryOverviewTopic == null) {
+				continue;
+			}
+			
+			JSONObject countryJson = new JSONObject();
+			countryJson.put("id", countryTopic.getId());
+			countryJson.put("countryName", countryTopic.getSimpleValue().toString());
+
+			ChildTopics childs = countryOverviewTopic.getChildTopics();
+/*			
+			countryJson.put("finding", toFinding(childs.getStringOrNull(NS("countryoverview.findinglink")), false));
+			
+			JSONArray featuresArray = new JSONArray();
+			for (String featureLink : toStringListOrNull(safe(childs.getTopicsOrNull(NS("countryoverview.featurelink"))))) {
+				featuresArray.put(toFeature(featureLink, false));
+			}
+			countryJson.put("features", featuresArray);
+*/
+			int ci = Math.min(childs.getInt(NS("countryoverview.columnindex")), 3);
+			
+			// Inserts the items sorted by their id: DM gives the IDs monotonically increasing,
+			// as the background items are added during import line by line we can use this.
+			insertSorted(cols[ci], countryJson);
+		}
+
+		json.put("col0", cols[0]);
+		json.put("col1", cols[1]);
+		json.put("col2", cols[2]);
+		json.put("col3", cols[3]);
+
 		return json;
 	}
 	
@@ -62,18 +102,18 @@ public class DTOHelper {
 			return json;
 		
 		ChildTopics childs = countryOverviewTopic.getChildTopics();
-		json.put("finding", toFinding(childs.getStringOrNull(NS("countryoverview.findinglink"))));
+		json.put("finding", toFinding(childs.getStringOrNull(NS("countryoverview.findinglink")), true));
 		
 		JSONArray featuresArray = new JSONArray();
 		for (String featureLink : toStringListOrNull(safe(childs.getTopicsOrNull(NS("countryoverview.featurelink"))))) {
-			featuresArray.put(toFeature(featureLink));
+			featuresArray.put(toFeature(featureLink, true));
 		}
 		json.put("features", featuresArray);
 		
 		return json;
 	}
 	
-	private JSONObject toFinding(String findingLink) throws JSONException, IOException {
+	private JSONObject toFinding(String findingLink, boolean includeCorpus) throws JSONException, IOException {
 		Document doc;
 		JSONObject json = null;
 		try {
@@ -82,12 +122,15 @@ public class DTOHelper {
 			Element article = doc.select("content > item[type=article]").first();
 			Element headline = article.getElementsByTag("headline").first();
 			Element lead = article.getElementsByTag("lead").first();
-			Element corpus = article.getElementsByTag("corpus").first();
 			
 			json = new JSONObject();
 			json.put("headline", headline.text());
 			json.put("lead", lead.text());
-			json.put("corpus", fullText(corpus));
+			
+			if (includeCorpus) {
+				Element corpus = article.getElementsByTag("corpus").first();
+				json.put("corpus", fullText(corpus));
+			}
 			
 		} catch (IOException ioe) {
 			return null;
@@ -96,7 +139,7 @@ public class DTOHelper {
 		return json;
 	}
 	
-	private JSONObject toFeature(String featureLink) throws JSONException, IOException {
+	private JSONObject toFeature(String featureLink, boolean includeCorpus) throws JSONException, IOException {
 		Document doc;
 		JSONObject json = null;
 		try {
@@ -106,13 +149,16 @@ public class DTOHelper {
 			Element headline = article.getElementsByTag("headline").first();
 			Element lead = article.getElementsByTag("lead").first();
 			Element kicker = article.getElementsByTag("kicker").first();
-			Element corpus = article.getElementsByTag("corpus").first();
 			
 			json = new JSONObject();
 			json.put("headline", headline.text());
 			json.put("lead", lead.text());
 			json.put("kicker", kicker.text());
-			json.put("corpus", fullText(corpus));
+			
+			if (includeCorpus) {
+				Element corpus = article.getElementsByTag("corpus").first();
+				json.put("corpus", fullText(corpus));
+			}
 			
 		} catch (IOException ioe) {
 			return null;
@@ -387,7 +433,7 @@ public class DTOHelper {
 		}
 	}
 	
-	private static class CountryOverviewImpl extends JSONEnabledImpl implements CountryOverview {
+	private static class CountriesOverviewImpl extends JSONEnabledImpl implements CountriesOverview {
 	}
 
 	private static class CountryImpl extends JSONEnabledImpl implements Country {

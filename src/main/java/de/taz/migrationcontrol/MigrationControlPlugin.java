@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
 import de.deepamehta.accesscontrol.AccessControlService;
@@ -48,7 +49,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 
 	@GET
 	@Path("/v1/{languageCode}/countriesoverview")
-	public CountriesOverview getCountriesOverview(@PathParam("languageCode") String languageCode) {
+	public JSONArray getCountriesOverview(@PathParam("languageCode") String languageCode) {
 		try {
 			return dtoHelper.toCountriesOverview(dm4.getTopicsByType("dm4.contacts.country"));
 		} catch (JSONException|IOException e) {

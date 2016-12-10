@@ -49,9 +49,7 @@ public class DTOHelper {
 		this.wsService = wsService;
 	}
 	
-	CountriesOverview toCountriesOverview(List<Topic> countryTopics) throws JSONException, IOException {
-		CountriesOverviewImpl json = new CountriesOverviewImpl();
-		
+	JSONArray toCountriesOverview(List<Topic> countryTopics) throws JSONException, IOException {
 		ArrayList[] cols = {
 				new ArrayList<JSONObject>(),
 				new ArrayList<JSONObject>(),
@@ -88,11 +86,11 @@ public class DTOHelper {
 			// as the background items are added during import line by line we can use this.
 			insertSorted(cols[ci], countryJson);
 		}
-
-		json.put("col0", cols[0]);
-		json.put("col1", cols[1]);
-		json.put("col2", cols[2]);
-		json.put("col3", cols[3]);
+		
+		JSONArray json = new JSONArray();
+		for (ArrayList list : cols) {
+			json.put(new JSONArray(list));
+		}
 
 		return json;
 	}

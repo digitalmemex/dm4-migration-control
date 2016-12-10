@@ -24,7 +24,7 @@ public interface MigrationControlService {
 	
 	Thesis getThesis(String languageCode, long id);
 
-	Background getBackground(String languageCode);
+	List<Background> getBackground(String languageCode);
 	
 	BackgroundItem getBackgroundItem(String languageCode, long id);
 	

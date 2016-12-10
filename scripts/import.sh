@@ -82,3 +82,4 @@ import backgrounditems ${background}
 import detentioncenterdata ${detentioncenters}
 import imprintdata ${imprint}
 
+rm -r $scratchdir

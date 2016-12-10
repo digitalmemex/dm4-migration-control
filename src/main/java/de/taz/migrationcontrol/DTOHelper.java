@@ -117,7 +117,7 @@ public class DTOHelper {
 		json.put("finding", toFinding(childs.getStringOrNull(NS("countryoverview.findinglink")), true));
 		
 		JSONArray featuresArray = new JSONArray();
-		for (String featureLink : toStringListOrNull(safe(childs.getTopicsOrNull(NS("countryoverview.featurelink"))))) {
+		for (String featureLink : safe(toStringListOrNull(childs.getTopicsOrNull(NS("countryoverview.featurelink"))))) {
 			featuresArray.put(toFeature(featureLink, true));
 		}
 		json.put("features", featuresArray);
@@ -491,8 +491,8 @@ public class DTOHelper {
 		list.add(insertPos, item);
 	}
 	
-	private List<RelatedTopic> safe(List<RelatedTopic> originalList){
-		return originalList != null ? originalList : Collections.emptyList();
+	private static <T> List<T> safe(List<T> originalList){
+		return originalList != null ? originalList : Collections.<T>emptyList();
 	}
 	
 	private String statNameToJsonKey(String statName) {

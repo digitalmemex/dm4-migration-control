@@ -21,12 +21,24 @@ detentioncenters="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbS
 scratchdir=`mktemp -d`
 filter=NONE
 
-while getopts "t" opt; do
+while getopts ":t:h" opt; do
     case "$opt" in
-    t|datatype)
+    t)
 	filter=$OPTARG
 	echo "Importing only:" $filter
         ;;
+    h)
+	echo "${0} [-t oda|hdi|remittances|migrationintensity|findings|factsheet|repatriation_treaties|other_treaties|theses|backgrounditems|detentioncenterdata|imprintdata] <session ID>"
+	exit 0;
+	;;
+    \?)
+	echo "Invalid option: -$OPTARG" >&2
+	exit 1
+	;;
+    :)
+	echo "Option -$OPTARG requires an argument." >&2
+	exit 1;
+	;;
     esac
 done
 
@@ -69,3 +81,4 @@ import theses ${theses}
 import backgrounditems ${background}
 import detentioncenterdata ${detentioncenters}
 import imprintdata ${imprint}
+

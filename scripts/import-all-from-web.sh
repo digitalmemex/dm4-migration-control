@@ -49,3 +49,4 @@ importFromWeb other_treaties ${other_treaties}
 importFromWeb theses ${theses}
 importFromWeb backgrounditems ${background}
 importFromWeb detentioncenterdata ${detentioncenters}
+importFromWeb imprintdata ${imprint}

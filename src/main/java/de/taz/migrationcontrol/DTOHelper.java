@@ -91,8 +91,8 @@ public class DTOHelper {
 		
 		for (int i = 0;i<cols.length;i++) {
 			CountriesOverviewImpl json = new CountriesOverviewImpl();
-			json.put("colIndex", i);
-			json.put("elements", new JSONArray(cols[i]));
+			json.put("columnIndex", i);
+			json.put("entries", new JSONArray(cols[i]));
 			
 			result.add(json);
 		}
@@ -254,9 +254,9 @@ public class DTOHelper {
 			data.put("asylumApprovalRate", (Number) childs.getDoubleOrNull(NS("factsheet.asylumapprovalrate")));
 			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
 			data.put("otherMigrationAgreements", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
-			data.put("frontexCooperationInfo", toFrontexCooperationInfo(childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));
-			data.put("detentionCenterInfo", toDetentionCenterInfo(childs.getTopicOrNull(NS("factsheet.detentioncenterinfo"))));
-			data.put("departureLegalityInfo", toDepartureLegalityInfo(childs.getTopicOrNull(NS("factsheet.departurelegalityinfo"))));
+			data.put("frontexCooperation", toFrontexCooperationInfo(childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));
+			data.put("detentionCenter", toDetentionCenterInfo(childs.getTopicOrNull(NS("factsheet.detentioncenterinfo"))));
+			data.put("departureLegality", toDepartureLegalityInfo(childs.getTopicOrNull(NS("factsheet.departurelegalityinfo"))));
 			
 			return data;			
 		}
@@ -297,8 +297,8 @@ public class DTOHelper {
 		JSONObject json = new JSONObject();
 		ChildTopics childs = topic.getChildTopics();
 		
-		json.put("isIllegal", childs.getInt(NS("factsheet.departurelegality.isillegal")));
-		json.put("description", childs.getString(NS("factsheet.departurelegality.description")));
+		json.put("isIllegal", childs.getBoolean(NS("factsheet.departurelegalityinfo.isillegal")));
+		json.put("description", childs.getString(NS("factsheet.departurelegalityinfo.description")));
 		
 		return json;
 	}

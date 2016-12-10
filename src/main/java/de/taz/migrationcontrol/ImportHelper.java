@@ -59,7 +59,7 @@ public class ImportHelper {
 	private void importStatistics(String statName, CSVParser data) throws IOException {
 		Topic statType = findStatisticsType(statName);
 		
-		deleteStatistics(statType);
+		deleteAllWithMatchingChild(NS("statistic"), NS("statistic.type"), statType);
 		logger.info("importing " + statName);
 		
 		
@@ -319,10 +319,11 @@ public class ImportHelper {
 	}
 	
 	private void importTreaties(String treatyTypeName, CSVParser data) throws IOException {
-		deleteAll(NS("treaty"));
+		Topic treatyType = findTreatyType(treatyTypeName);
+		
+		deleteAllWithMatchingChild(NS("treaty"), NS("treaty.type"), treatyType);
 		logger.info("importing treaty: " + treatyTypeName);
 		
-		Topic treatyType = findTreatyType(treatyTypeName);
 		
 		// first row :       just header, not used
 		// other rows: country name, value, value, value, ...
@@ -429,6 +430,7 @@ public class ImportHelper {
 	
 	public void importBackground(CSVParser data) throws IOException {
 		deleteAll(NS("backgrounditem"));
+		deleteTreatyNote();
 		// TODO: Delete the dm4.notes.note topic that is associated with a backgrounditem
 		
 		logger.info("importing background");
@@ -468,10 +470,9 @@ public class ImportHelper {
 					ChildTopicsModel childs2 = mf.newChildTopicsModel();
 					childs2.put("dm4.notes.title", title);
 					childs2.put("dm4.notes.text", text);
-					assignToDataWorkspace(backgroundItemTopic);
-
+					
 					Topic notesTopic = 
-							dm4.createTopic(mf.newTopicModel("dm4.notes.note", childs2));
+							dm4.createTopic(mf.newTopicModel(NS("backgrounditem.treaty.note"), "dm4.notes.note", childs2));
 					assignToDataWorkspace(notesTopic);
 					
 					Association asso = dm4.createAssociation(mf.newAssociationModel("dm4.core.composition",
@@ -657,18 +658,25 @@ public class ImportHelper {
 		}
 	}
 	 
-	private void deleteStatistics(Topic statisticTypeTopic) {
-		for (Topic topic : dm4.getTopicsByType(NS("statistic"))) {
+	private void deleteAllWithMatchingChild(String typeUri, String childTypeUri, Topic statisticTypeTopic) {
+		for (Topic topic : dm4.getTopicsByType(typeUri)) {
 			ChildTopics childs = topic.getChildTopics();
-			if (childs.getTopic(NS("statistic.type")).getId() == statisticTypeTopic.getId()) {
-				dm4.deleteTopic(topic.getId());
+			if (childs.getTopic(childTypeUri).getId() == statisticTypeTopic.getId()) {
+				topic.delete();
 			}
 		}
 	}
 	
 	private void deleteAll(String typeUri) {
 		for (Topic topic : dm4.getTopicsByType(typeUri)) {
-			dm4.deleteTopic(topic.getId());
+			topic.delete();
+		}
+	}
+	
+	private void deleteTreatyNote() {
+		Topic topic = dm4.getTopicByUri(NS("backgrounditem.treaty.note"));
+		if (topic != null) {
+			topic.delete();
 		}
 	}
 	
@@ -684,6 +692,7 @@ public class ImportHelper {
 		deleteAll(NS("statistic"));
 
 		deleteAll("dm4.contacts.country");
-//		deleteAll("dm4.notes.note");
+		
+		deleteTreatyNote();
 	}
 }

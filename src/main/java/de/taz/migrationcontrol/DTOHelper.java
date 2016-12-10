@@ -363,9 +363,7 @@ public class DTOHelper {
 		return json;
 	}
 	
-	Background toBackground(List<Topic> backgroundItemTopics) throws JSONException, IOException {
-		BackgroundImpl json = new BackgroundImpl();
-		
+	List<Background> toBackgroundList(List<Topic> backgroundItemTopics) throws JSONException, IOException {
 		ArrayList[] cols = {
 				new ArrayList<JSONObject>(),
 				new ArrayList<JSONObject>(),
@@ -408,11 +406,17 @@ public class DTOHelper {
 			insertSorted(cols[ci], item);
 		}
 		
-		json.put("col0", cols[0]);
-		json.put("col1", cols[1]);
-		json.put("col2", cols[2]);
+		ArrayList<Background> result = new ArrayList<>();
 		
-		return json;
+		for (int i = 0;i<cols.length;i++) {
+			BackgroundImpl json = new BackgroundImpl();
+			json.put("columnIndex", i);
+			json.put("entries", new JSONArray(cols[i]));
+			
+			result.add(json);
+		}
+
+		return result;
 	}
 	
 	List<JSONObject> toTreaties() throws JSONException {

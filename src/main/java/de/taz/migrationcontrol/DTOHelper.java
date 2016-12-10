@@ -249,14 +249,53 @@ public class DTOHelper {
 			data.put("asylumApprovalRate", (Number) childs.getDoubleOrNull(NS("factsheet.asylumapprovalrate")));
 			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
 			data.put("otherMigrationAgreements", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
-			data.put("hasFrontexCooperation", childs.getBooleanOrNull(NS("factsheet.hasfrontexcooperation")));
-			data.put("detentionCenterCount", childs.getIntOrNull(NS("factsheet.detentioncentercount")));
-			data.put("departureIsIllegal", childs.getBooleanOrNull(NS("factsheet.departureisillegal")));
+			data.put("frontexCooperationInfo", toFrontexCooperationInfo(childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));
+			data.put("detentionCenterInfo", toDetentionCenterInfo(childs.getTopicOrNull(NS("factsheet.detentioncenterinfo"))));
+			data.put("departureLegality", toDepartureLegalityInfo(childs.getTopicOrNull(NS("factsheet.departurelegality"))));
 			
 			return data;			
 		}
 		
 		return null;
+	}
+	
+	JSONObject toFrontexCooperationInfo(Topic topic) throws JSONException {
+		if (topic == null)
+			return null;
+		
+		JSONObject json = new JSONObject();
+		ChildTopics childs = topic.getChildTopics();
+		
+		json.put("state", childs.getString(NS("factsheet.frontexcooperationinfo.state")));
+		json.put("description", childs.getString(NS("factsheet.frontexcooperationinfo.description")));
+		
+		return json;
+	}
+
+	JSONObject toDetentionCenterInfo(Topic topic) throws JSONException {
+		if (topic == null)
+			return null;
+		
+		JSONObject json = new JSONObject();
+		ChildTopics childs = topic.getChildTopics();
+		
+		json.put("count", childs.getInt(NS("factsheet.detentioncenterinfo.count")));
+		json.put("description", childs.getString(NS("factsheet.detentioncenterinfo.description")));
+		
+		return json;
+	}
+	
+	JSONObject toDepartureLegalityInfo(Topic topic) throws JSONException {
+		if (topic == null)
+			return null;
+		
+		JSONObject json = new JSONObject();
+		ChildTopics childs = topic.getChildTopics();
+		
+		json.put("isIllegal", childs.getInt(NS("factsheet.departurelegality.isillegal")));
+		json.put("description", childs.getString(NS("factsheet.departurelegality.description")));
+		
+		return json;
 	}
 
 	DetentionCenter toDetentionCenterOrNull(Topic topic) throws JSONException {

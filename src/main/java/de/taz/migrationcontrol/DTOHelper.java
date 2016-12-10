@@ -30,6 +30,7 @@ import de.taz.migrationcontrol.MigrationControlService.BackgroundItem;
 import de.taz.migrationcontrol.MigrationControlService.CountriesOverview;
 import de.taz.migrationcontrol.MigrationControlService.Country;
 import de.taz.migrationcontrol.MigrationControlService.DetentionCenter;
+import de.taz.migrationcontrol.MigrationControlService.ImprintItem;
 import de.taz.migrationcontrol.MigrationControlService.Thesis;
 
 public class DTOHelper {
@@ -472,6 +473,19 @@ public class DTOHelper {
 		return json;
 	}
 	
+	ImprintItem toImprintItem(Topic topic) throws JSONException {
+		ImprintItemImpl json = new ImprintItemImpl();
+		
+		ChildTopics childs = topic.getChildTopics();
+			
+		json.put("id", topic.getId());
+		json.put("name", childs.getStringOrNull(NS("imprintitem.name")));
+		json.put("text", childs.getStringOrNull(NS("imprintitem.text")));
+		json.put("imageUrl", childs.getStringOrNull(NS("imprintitem.link")));
+			
+		return json;
+	}
+	
 	private void insertSorted(List<JSONObject> list, JSONObject item) throws JSONException {
 		int sortKey = item.getInt("id");
 		final int length = list.size();
@@ -559,6 +573,9 @@ public class DTOHelper {
 	}
 
 	private static class DetentionCenterImpl extends JSONEnabledImpl implements DetentionCenter {
+	}
+
+	private static class ImprintItemImpl extends JSONEnabledImpl implements ImprintItem {
 	}
 
 }

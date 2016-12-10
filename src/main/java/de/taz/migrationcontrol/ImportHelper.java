@@ -361,7 +361,7 @@ public class ImportHelper {
 				assignToDataWorkspace(t);
 			} catch (NumberFormatException|ParseException e) {
 				// Ignored - factsheet for country will not be added
-				logger.log(Level.WARNING, "Failed to import treaty for country: " + country, e);
+				logger.log(Level.WARNING, "Failed to import treaty for country: " + country + ". Skipping.", e);
 			}
 			
 		}
@@ -415,7 +415,7 @@ public class ImportHelper {
 				assignToDataWorkspace(t);
 			} catch (ParseException e) {
 				// Ignored - thesis will not be added
-				logger.log(Level.WARNING, "Failed to import findings", e);
+				logger.log(Level.WARNING, "Failed to import a country overview. Skipping.", e);
 			}
 			
 		}
@@ -472,7 +472,7 @@ public class ImportHelper {
 				}
 			} catch (ParseException e) {
 				// Ignored - thesis will not be added
-				logger.log(Level.WARNING, "Failed to import findings", e);
+				logger.log(Level.WARNING, "Failed to import a background item. Skipping.", e);
 			}
 			
 		}
@@ -531,7 +531,7 @@ public class ImportHelper {
 				assignToDataWorkspace(t);
 			} catch (ParseException e) {
 				// Ignored - thesis will not be added
-				logger.log(Level.WARNING, "Failed to import thesis", e);
+				logger.log(Level.WARNING, "Failed to import a thesis. Skipping", e);
 			}
 			
 		}
@@ -580,7 +580,7 @@ public class ImportHelper {
 				assignToDataWorkspace(t);
 			} catch (ParseException|NumberFormatException e) {
 				// Ignored - thesis will not be added
-				logger.log(Level.WARNING, "Failed to import findings", e);
+				logger.log(Level.WARNING, "Failed to import a detention center. Skipping.", e);
 			}
 			
 		}
@@ -605,4 +605,47 @@ public class ImportHelper {
 		}
 	}
 
+	public void importImprint(CSVParser data) throws IOException {
+		deleteAll(NS("imprintitem"));
+		
+		logger.info("importing imprint");
+		
+		List<CSVRecord> records = data.getRecords();
+		logger.info("parsed CSV: " + records.size() + " imprint items");
+		
+		// iterates over all theses
+		for (int i = 1;i < records.size(); i++) {
+			CSVRecord row = records.get(i);
+			logger.info("importing imprint " + i);
+			try {
+				String name = row.get(0);
+				String text = row.get(1);
+				String link = row.get(2);
+				
+				if (name.length() == 0) {
+					throw new ParseException("name should not be empty!", -1);
+				}
+
+				ChildTopicsModel childs = mf.newChildTopicsModel();
+				childs.put(NS("imprintitem.name"), name);
+				childs.put(NS("imprintitem.text"), text);
+				childs.put(NS("imprintitem.link"), link);
+
+				// Creates the statistic for one country
+				Topic topic = dm4.createTopic(mf.newTopicModel(NS("imprintitem"), childs));
+				assignToDataWorkspace(topic);
+				
+			} catch (ParseException e) {
+				// Ignored - thesis will not be added
+				logger.log(Level.WARNING, "Failed to import imprint item", e);
+			}
+			
+		}
+	}
+
+	private void deleteAll(String typeUri) {
+		for (Topic topic : dm4.getTopicsByType(typeUri)) {
+			dm4.deleteTopic(topic.getId());
+		}
+	}
 }

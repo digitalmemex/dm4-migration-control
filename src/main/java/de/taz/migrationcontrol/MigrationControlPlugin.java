@@ -183,6 +183,40 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 		return null;
 	}
 	
+	@GET
+	@Path("/v1/{languageCode}/imprint")
+	@Override
+	public List<ImprintItem> getImprintItems(@PathParam("languageCode") String languageCode) {
+		List<ImprintItem> results = new ArrayList<>();
+		
+		for (Topic topic : dm4.getTopicsByType(NS("imprintitem"))) {
+			try {
+				ImprintItem dto = dtoHelper.toImprintItem(topic);
+				if (dto != null)
+					results.add(dto);
+			} catch (JSONException e) {
+				// TODO: Log what object was dropped
+			}
+		}
+		
+		return results;
+	}
+
+	@GET
+	@Path("/v1/{languageCode}/imprintitem/{id}")
+	public ImprintItem getImprintItem(@PathParam("languageCode") String languageCode, @PathParam("id") long id) {
+		Topic topic = dm4.getTopic(id);
+
+		try {
+			if (topic != null)
+				return dtoHelper.toImprintItem(topic);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return null;
+	}
+	
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Path("/v1/import/{importDataType}")
@@ -228,6 +262,9 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 				break;
 			case "detentioncenterdata":
 				importHelper.importDetentionCenters(parser);
+				break;
+			case "imprintdata":
+				importHelper.importImprint(parser);
 				break;
 			default:
 				throw new IllegalArgumentException("Unkown import data type: " + importDataType);

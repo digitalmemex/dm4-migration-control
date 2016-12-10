@@ -129,6 +129,16 @@ public class ImportHelper {
 		throw new IllegalStateException("Unknown treaty type: " + treatyTypeName);
 	}
 	
+	private Topic findFrontexCooperationState(String stateName) {		
+		for (Topic t : dm4.getTopicsByType(NS("frontexcooperationinfo.state"))) {
+			if (stateName.equals(t.getSimpleValue().toString())) {
+				return t;
+			}
+		}
+		
+		throw new IllegalStateException("Unknown frontext cooperation state: " + stateName);
+	}
+	
 	private Topic findThesisDiagramType(String diagramType) {		
 		for (Topic t : dm4.getTopicsByType(NS("thesis.diagramtype"))) {
 			if (diagramType.equals(t.getSimpleValue().toString())) {
@@ -200,9 +210,12 @@ public class ImportHelper {
 				int idp = Integer.parseInt(row.get(4));
 				int applicationsForAsylum = Integer.parseInt(row.get(5));
 				double asylumApprovalRate = nf.parse(row.get(6)).doubleValue();
-				boolean hasFrontexCooperation = "ja".equals(row.get(7));
-				int detentionCentercount = asInt(row.get(8), 0);
-				boolean departureIsIllegal = "ja".equals(row.get(9));
+				String frontexCooperationState = row.get(7);
+				String frontexCooperationDescription = row.get(8);
+				int detentionCentercount = asInt(row.get(9), -1);
+				String detentionCenterDescription = row.get(10);
+				boolean departureIsIllegal = "ja".equals(row.get(11));
+				String departureDescription = row.get(12);
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
@@ -213,9 +226,9 @@ public class ImportHelper {
 				childs.put(NS("factsheet.idp"), idp);
 				childs.put(NS("factsheet.applicationsforasylum"), applicationsForAsylum);
 				childs.put(NS("factsheet.asylumapprovalrate"), asylumApprovalRate);
-				childs.put(NS("factsheet.hasfrontexcooperation"), hasFrontexCooperation);
-				childs.put(NS("factsheet.detentioncentercount"), detentionCentercount);
-				childs.put(NS("factsheet.departureisillegal"), departureIsIllegal);
+				childs.putRef(NS("factsheet.frontexcooperationinfo"), makeFrontexCooperationInfo(frontexCooperationState, frontexCooperationDescription).getId());
+				childs.putRef(NS("factsheet.detentioncenterinfo"), makeDetentionCenterInfo(detentionCentercount, detentionCenterDescription).getId());
+				childs.putRef(NS("factsheet.departurelegalityinfo"), makeDepartureLegalityInfo(departureIsIllegal, departureDescription).getId());
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("factsheet"), childs));
@@ -227,6 +240,62 @@ public class ImportHelper {
 			}
 			
 		}
+	}
+	
+	private String tableValueToDMValue(String tableValue) {
+		switch (tableValue) {
+		case "ja":
+			return "yes";
+		case "nein":
+			return "no";
+		case "unbekannt":
+			return "unknown";
+		case "Verhandlung":
+			return "negotiating";
+		default:
+			return null;
+		}
+	}
+	
+	private Topic makeFrontexCooperationInfo(String cooperationStateFromTable, String description) {
+		ChildTopicsModel childs = mf.newChildTopicsModel();
+		
+		childs.putRef(NS("frontexcooperationinfo.state"),
+				findFrontexCooperationState(tableValueToDMValue(cooperationStateFromTable)).getId());
+		
+		childs.put(NS("frontexcooperationinfo.description"), description);
+		
+		Topic t = dm4.createTopic(mf.newTopicModel(NS("detentioncenterinfo"), childs));
+		
+		assignToDataWorkspace(t);
+		
+		return t;
+	}
+	
+	private Topic makeDetentionCenterInfo(int count, String description) {
+		ChildTopicsModel childs = mf.newChildTopicsModel();
+		
+		childs.put(NS("detentioncenterinfo.count"), count);
+		childs.put(NS("detentioncenterinfo.description"), description);
+		
+		Topic t = dm4.createTopic(mf.newTopicModel(NS("detentioncenterinfo"), childs));
+		
+		assignToDataWorkspace(t);
+		
+		return t;
+	}
+	
+	private Topic makeDepartureLegalityInfo(boolean isIllegal, String description) {
+		ChildTopicsModel childs = mf.newChildTopicsModel();
+		
+		childs.put(NS("departurelegalityinfo.isillegal"), isIllegal);
+		childs.put(NS("departurelegalityinfo.description"), description);
+		
+		Topic t = dm4.createTopic(mf.newTopicModel(NS("departurelegalityinfo"), childs));
+		
+		assignToDataWorkspace(t);
+		
+		return t;
 	}
 	
 	private int asInt(String string, int defaultValue) {

@@ -175,6 +175,25 @@
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
             },
+# for Imprint Item
+            {
+                "value":            "Name",
+                "uri":              "de.taz.migrationcontrol.imprintitem.name",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Text",
+                "uri":              "de.taz.migrationcontrol.imprintitem.text",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Link",
+                "uri":              "de.taz.migrationcontrol.imprintitem.link",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
        ]
     },
     {

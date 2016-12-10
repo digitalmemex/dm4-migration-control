@@ -255,6 +255,37 @@
                         }
                     }
                 ]
+            },
+# Imprint Item
+            {
+                "value":            "Imprint Item",
+                "uri":              "de.taz.migrationcontrol.imprintitem",
+                "data_type_uri":    "dm4.core.composite",
+                "assoc_defs": [
+                    {
+                        "child_type_uri":         "de.taz.migrationcontrol.imprintitem.name",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                    {
+                        "child_type_uri":         "de.taz.migrationcontrol.imprintitem.text",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                    {
+                        "child_type_uri":         "de.taz.migrationcontrol.imprintitem.link",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
+                    }
+                ],
+                "view_config_topics": [
+                    {
+                        "type_uri": "dm4.webclient.view_config",
+                        "childs": {
+                            "dm4.webclient.show_in_create_menu": true
+                        }
+                    }
+                ]
             }
         ]
     }

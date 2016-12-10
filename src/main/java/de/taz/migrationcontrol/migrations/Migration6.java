@@ -31,10 +31,18 @@ public class Migration6 extends Migration {
 				NS("factsheet.idp"),
 				NS("factsheet.applicationsforasylum"),
 				NS("factsheet.asylumapprovalrate"),
-				NS("factsheet.hasfrontexcooperation"),
-				NS("factsheet.detentioncentercount"),
-				NS("factsheet.departureisillegal")
+				NS("factsheet.frontexcooperationinfo"),
+				NS("factsheet.frontexcooperationinfo.state"),
+				NS("factsheet.frontexcooperationinfo.description"),
+				NS("factsheet.detentioncenterinfo"),
+				NS("factsheet.detentioncenterinfo.count"),
+				NS("factsheet.detentioncenterinfo.description"),
+				NS("factsheet.departurelegalityinfo"),
+				NS("factsheet.departurelegalityinfo.isillegal"),
+				NS("factsheet.departurelegalityinfo.description")
 		);
+		
+		groupAssignToWorkspace(dataWsId, dm4.getTopicsByType(NS("factsheet.frontexcooperationinfo.state")));
 
 	}
 	
@@ -45,4 +53,10 @@ public class Migration6 extends Migration {
 		}
 	}
 	
+	private void groupAssignToWorkspace(long wsId, Iterable<Topic> topics) {
+		for (Topic topic : topics) {
+			wsService.assignToWorkspace(topic, wsId);
+		}
+	}
+
 }

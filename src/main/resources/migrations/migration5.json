@@ -38,27 +38,149 @@
                 "uri":              "de.taz.migrationcontrol.factsheet.asylumapprovalrate",
                 "data_type_uri":    "dm4.core.number",
                 "index_mode_uris": ["dm4.core.fulltext"]
-            },
+            }
+       ]
+    },
+    {
+        "topic_types": [
+# Frontex Cooperation Info State
             {
-                "value":            "Has Frontex Cooperation",
-                "uri":              "de.taz.migrationcontrol.factsheet.hasfrontexcooperation",
-                "data_type_uri":    "dm4.core.boolean",
+                "value":            "State",
+                "uri":              "de.taz.migrationcontrol.factsheet.frontexcooperationinfo.state",
+                "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
             },
             {
-                "value":            "Detention Center Count",
-                "uri":              "de.taz.migrationcontrol.factsheet.detentioncentercount",
+                "value":            "Description",
+                "uri":              "de.taz.migrationcontrol.factsheet.frontexcooperationinfo.description",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            }
+            
+        ],
+        "topics": [
+# Frontex Cooperation State instances
+            {
+                "value": "yes",
+                "type_uri": "de.taz.migrationcontrol.factsheet.frontexcooperationinfo.state"
+            },
+            {
+                "value": "no",
+                "type_uri": "de.taz.migrationcontrol.factsheet.frontexcooperationinfo.state"
+            },
+            {
+                "value": "unknown",
+                "type_uri": "de.taz.migrationcontrol.factsheet.frontexcooperationinfo.state"
+            },
+            {
+                "value": "negotiating",
+                "type_uri": "de.taz.migrationcontrol.factsheet.frontexcooperationinfo.state"
+            }
+       ]
+    },
+    {
+        "topic_types": [
+# Frontex Cooperation Info
+		    {
+		        "value":            "Frontex Cooperation",
+		        "uri":              "de.taz.migrationcontrol.factsheet.frontexcooperationinfo",
+		        "data_type_uri":    "dm4.core.composite",
+		        "assoc_defs": [
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.frontexcooperationinfo.state",
+		                "parent_cardinality_uri":  "dm4.core.one",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.aggregation_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.frontexcooperationinfo.description",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            }
+		  		]
+		  	}
+		]
+	},
+    {
+        "topic_types": [
+# Detention Center Info types
+            {
+                "value":            "Count",
+                "uri":              "de.taz.migrationcontrol.factsheet.detentioncenterinfo.count",
                 "data_type_uri":    "dm4.core.number",
                 "index_mode_uris": ["dm4.core.fulltext"]
             },
             {
-                "value":            "Departure Is Illegal",
-                "uri":              "de.taz.migrationcontrol.factsheet.departureisillegal",
+                "value":            "Description",
+                "uri":              "de.taz.migrationcontrol.factsheet.detentioncenterinfo.description",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            
+        ]
+    },
+    {
+        "topic_types": [
+# Detention Center Info
+		    {
+		        "value":            "Detention Center Info",
+		        "uri":              "de.taz.migrationcontrol.factsheet.detentioncenterinfo",
+		        "data_type_uri":    "dm4.core.composite",
+		        "assoc_defs": [
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.detentioncenterinfo.count",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.detentioncenterinfo.description",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            }
+	            ]
+            }
+		  ]
+	},
+    {
+        "topic_types": [
+# Departure Legality Info types
+            {
+                "value":            "Is Illegal",
+                "uri":              "de.taz.migrationcontrol.factsheet.departurelegalityinfo.isillegal",
                 "data_type_uri":    "dm4.core.boolean",
                 "index_mode_uris": ["dm4.core.fulltext"]
-            }
-       ]
+            },
+            {
+                "value":            "Description",
+                "uri":              "de.taz.migrationcontrol.factsheet.departurelegalityinfo.description",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            
+        ]
     },
+    {
+        "topic_types": [
+# Departure Legality Info
+		    {
+		        "value":            "Detention Center Info",
+		        "uri":              "de.taz.migrationcontrol.factsheet.departurelegalityinfo",
+		        "data_type_uri":    "dm4.core.composite",
+		        "assoc_defs": [
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.departurelegalityinfo.isillegal",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            },
+		             {
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.departurelegalityinfo.description",
+		                "child_cardinality_uri":  "dm4.core.one",
+		                "assoc_type_uri":         "dm4.core.composition_def"
+		            }
+	            ]
+            }
+		  ]
+	},
     {
         "topic_types": [
 # Fact Sheet
@@ -104,17 +226,17 @@
 		                "assoc_type_uri":         "dm4.core.composition_def"
 		            },
 			        {
-		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.hasfrontexcooperation",
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.frontexcooperationinfo",
 		                "child_cardinality_uri":  "dm4.core.one",
 		                "assoc_type_uri":         "dm4.core.composition_def"
 		            },
 			        {
-		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.detentioncentercount",
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.detentioncenterinfo",
 		                "child_cardinality_uri":  "dm4.core.one",
 		                "assoc_type_uri":         "dm4.core.composition_def"
 		            },
 			        {
-		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.departureisillegal",
+		                "child_type_uri":         "de.taz.migrationcontrol.factsheet.departurelegalityinfo",
 		                "child_cardinality_uri":  "dm4.core.one",
 		                "assoc_type_uri":         "dm4.core.composition_def"
 		            }

@@ -130,7 +130,7 @@ public class ImportHelper {
 	}
 	
 	private Topic findFrontexCooperationState(String stateName) {		
-		for (Topic t : dm4.getTopicsByType(NS("frontexcooperationinfo.state"))) {
+		for (Topic t : dm4.getTopicsByType(NS("factsheet.frontexcooperationinfo.state"))) {
 			if (stateName.equals(t.getSimpleValue().toString())) {
 				return t;
 			}
@@ -260,12 +260,12 @@ public class ImportHelper {
 	private Topic makeFrontexCooperationInfo(String cooperationStateFromTable, String description) {
 		ChildTopicsModel childs = mf.newChildTopicsModel();
 		
-		childs.putRef(NS("frontexcooperationinfo.state"),
+		childs.putRef(NS("factsheet.frontexcooperationinfo.state"),
 				findFrontexCooperationState(tableValueToDMValue(cooperationStateFromTable)).getId());
 		
-		childs.put(NS("frontexcooperationinfo.description"), description);
+		childs.put(NS("factsheet.frontexcooperationinfo.description"), description);
 		
-		Topic t = dm4.createTopic(mf.newTopicModel(NS("detentioncenterinfo"), childs));
+		Topic t = dm4.createTopic(mf.newTopicModel(NS("factsheet.frontexcooperationinfo"), childs));
 		
 		assignToDataWorkspace(t);
 		
@@ -275,10 +275,10 @@ public class ImportHelper {
 	private Topic makeDetentionCenterInfo(int count, String description) {
 		ChildTopicsModel childs = mf.newChildTopicsModel();
 		
-		childs.put(NS("detentioncenterinfo.count"), count);
-		childs.put(NS("detentioncenterinfo.description"), description);
+		childs.put(NS("factsheet.detentioncenterinfo.count"), count);
+		childs.put(NS("factsheet.detentioncenterinfo.description"), description);
 		
-		Topic t = dm4.createTopic(mf.newTopicModel(NS("detentioncenterinfo"), childs));
+		Topic t = dm4.createTopic(mf.newTopicModel(NS("factsheet.detentioncenterinfo"), childs));
 		
 		assignToDataWorkspace(t);
 		
@@ -288,10 +288,10 @@ public class ImportHelper {
 	private Topic makeDepartureLegalityInfo(boolean isIllegal, String description) {
 		ChildTopicsModel childs = mf.newChildTopicsModel();
 		
-		childs.put(NS("departurelegalityinfo.isillegal"), isIllegal);
-		childs.put(NS("departurelegalityinfo.description"), description);
+		childs.put(NS("factsheet.departurelegalityinfo.isillegal"), isIllegal);
+		childs.put(NS("factsheet.departurelegalityinfo.description"), description);
 		
-		Topic t = dm4.createTopic(mf.newTopicModel(NS("departurelegalityinfo"), childs));
+		Topic t = dm4.createTopic(mf.newTopicModel(NS("factsheet.departurelegalityinfo"), childs));
 		
 		assignToDataWorkspace(t);
 		

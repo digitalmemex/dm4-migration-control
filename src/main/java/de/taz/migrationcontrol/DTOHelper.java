@@ -122,6 +122,7 @@ public class DTOHelper {
 			featuresArray.put(toFeature(featureLink, true));
 		}
 		json.put("features", featuresArray);
+		json.put("treaties", toTreatiesForCountry(countryTopic));
 		
 		return json;
 	}
@@ -340,7 +341,7 @@ public class DTOHelper {
 		for (RelatedTopic topic : treaties) {
 			ChildTopics childs = topic.getChildTopics();
 			
-			if (treatyType.equals(childs.getStringOrNull("de.taz.migrationcontrol.treaty.type"))) {
+			if (treatyType == null || treatyType.equals(childs.getStringOrNull("de.taz.migrationcontrol.treaty.type"))) {
 				result.add(topic);
 			}
 		}
@@ -430,29 +431,34 @@ public class DTOHelper {
 	
 	private void addTreatiesForCountries(List<JSONObject> list, List<Topic> countryTopics) throws JSONException {
 		for (Topic countryTopic : countryTopics) {
-			List<RelatedTopic> treaties = safe(countryTopic.getRelatedTopics((String) null, (String) null, (String) null, NS("treaty")));
-			
-			JSONArray treatyArray = new JSONArray();
-			
-			for (RelatedTopic treatyTopic : treaties) {
-				ChildTopics childs = treatyTopic.getChildTopics();
-				
-				JSONObject json = new JSONObject();
-				json.put("name", childs.getString(NS("treaty.name")));
-				json.put("country", childs.getString("dm4.contacts.country"));
-				json.put("partner", childs.getString("dm4.contacts.country#" + NS("treaty.partner")));
-				json.put("link", childs.getString(NS("treaty.link")));
-				
-				treatyArray.put(json);
-			}
 			
 			JSONObject countryJson = new JSONObject();
 			countryJson.put("country", countryTopic.getSimpleValue().toString());
-			countryJson.put("treaties", treatyArray);
-			
+			countryJson.put("treaties", toTreatiesForCountry(countryTopic));
+
 			list.add(countryJson);
 		}
 
+	}
+	
+	private JSONArray toTreatiesForCountry(Topic countryTopic) throws JSONException {
+		List<RelatedTopic> treaties = safe(countryTopic.getRelatedTopics((String) null, (String) null, (String) null, NS("treaty")));
+		
+		JSONArray treatyArray = new JSONArray();
+		
+		for (RelatedTopic treatyTopic : treaties) {
+			ChildTopics childs = treatyTopic.getChildTopics();
+			
+			JSONObject json = new JSONObject();
+			json.put("name", childs.getString(NS("treaty.name")));
+			json.put("country", childs.getString("dm4.contacts.country"));
+			json.put("partner", childs.getString("dm4.contacts.country#" + NS("treaty.partner")));
+			json.put("link", childs.getString(NS("treaty.link")));
+			
+			treatyArray.put(json);
+		}
+
+		return treatyArray;
 	}
 	
 	BackgroundItem toBackgroundItem(Topic backgroundItem) throws JSONException, IOException {

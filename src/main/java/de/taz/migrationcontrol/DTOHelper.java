@@ -49,7 +49,7 @@ public class DTOHelper {
 		this.wsService = wsService;
 	}
 	
-	JSONArray toCountriesOverview(List<Topic> countryTopics) throws JSONException, IOException {
+	List<CountriesOverview> toCountriesOverviewList(List<Topic> countryTopics) throws JSONException, IOException {
 		ArrayList[] cols = {
 				new ArrayList<JSONObject>(),
 				new ArrayList<JSONObject>(),
@@ -87,12 +87,17 @@ public class DTOHelper {
 			insertSorted(cols[ci], countryJson);
 		}
 		
-		JSONArray json = new JSONArray();
-		for (ArrayList list : cols) {
-			json.put(new JSONArray(list));
+		ArrayList<CountriesOverview> result = new ArrayList<>();
+		
+		for (int i = 0;i<cols.length;i++) {
+			CountriesOverviewImpl json = new CountriesOverviewImpl();
+			json.put("colIndex", i);
+			json.put("elements", new JSONArray(cols[i]));
+			
+			result.add(json);
 		}
 
-		return json;
+		return result;
 	}
 	
 	Country toCountryOrNull(Topic countryTopic) throws JSONException, IOException {
@@ -251,7 +256,7 @@ public class DTOHelper {
 			data.put("otherMigrationAgreements", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
 			data.put("frontexCooperationInfo", toFrontexCooperationInfo(childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));
 			data.put("detentionCenterInfo", toDetentionCenterInfo(childs.getTopicOrNull(NS("factsheet.detentioncenterinfo"))));
-			data.put("departureLegality", toDepartureLegalityInfo(childs.getTopicOrNull(NS("factsheet.departurelegality"))));
+			data.put("departureLegalityInfo", toDepartureLegalityInfo(childs.getTopicOrNull(NS("factsheet.departurelegalityinfo"))));
 			
 			return data;			
 		}

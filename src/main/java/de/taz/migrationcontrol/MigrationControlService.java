@@ -2,8 +2,6 @@ package de.taz.migrationcontrol;
 
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONArray;
-
 import de.deepamehta.core.JSONEnabled;
 
 public interface MigrationControlService {
@@ -16,7 +14,7 @@ public interface MigrationControlService {
 		return "de.taz.migrationcontrol." + type + "#" + "de.taz.migrationcontrol." + associationType;
 	}
 
-	JSONArray getCountriesOverview(String languageCode);
+	List<CountriesOverview> getCountriesOverview(String languageCode);
 	
 	List<Country> getCountries(String languageCode);
 	

@@ -309,7 +309,7 @@ public class DTOHelper {
 		ChildTopics childs = thesisTopic.getChildTopics();
 		
 		ThesisImpl json = new ThesisImpl();
-		json.put("title", childs.getString(NS("thesis.name")));
+		json.put("name", childs.getString(NS("thesis.name")));
 		
 		json.put("text", childs.getString(NS("thesis.text")));
 		json.put("contextualisation", childs.getString(NS("thesis.contextualisation")));
@@ -334,7 +334,7 @@ public class DTOHelper {
 			
 			JSONObject item = new JSONObject();
 			item.put("id", topic.getId());
-			item.put("title", childs.getString(NS("backgrounditem.name")));
+			item.put("name", childs.getString(NS("backgrounditem.name")));
 			String link = childs.getStringOrNull(NS("backgrounditem.link"));
 			
 			if (link != null && link.length() > 0) {

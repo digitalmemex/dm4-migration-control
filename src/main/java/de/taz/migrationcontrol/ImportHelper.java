@@ -14,6 +14,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import de.deepamehta.core.Association;
+import de.deepamehta.core.ChildTopics;
 import de.deepamehta.core.DeepaMehtaObject;
 import de.deepamehta.core.Topic;
 import de.deepamehta.core.model.ChildTopicsModel;
@@ -40,25 +41,27 @@ public class ImportHelper {
 	}
 	
 	public void importHDI(CSVParser data) throws IOException {
-		importStatistic("HDI", data);
+		importStatistics("HDI", data);
 	}
 
 	public void importRemittances(CSVParser data) throws IOException {
-		importStatistic("Remittances", data);
+		importStatistics("Remittances", data);
 	}
 
 	public void importMigrationIntensity(CSVParser data) throws IOException {
-		importStatistic("Migration Intensity", data);
+		importStatistics("Migration Intensity", data);
 	}
 
 	public void importODA(CSVParser data) throws IOException {
-		importStatistic("ODA", data);
+		importStatistics("ODA", data);
 	}
 	
-	private void importStatistic(String statName, CSVParser data) throws IOException {
+	private void importStatistics(String statName, CSVParser data) throws IOException {
+		Topic statType = findStatisticsType(statName);
+		
+		deleteStatistics(statType);
 		logger.info("importing " + statName);
 		
-		Topic statType = findStatisticsType(statName);
 		
 		// first row :       <none>,  year,  year,  year, ...
 		// other rows: country name, value, value, value, ...
@@ -190,6 +193,7 @@ public class ImportHelper {
 	}
 
 	public void importFactSheet(CSVParser data) throws IOException {
+		deleteAll(NS("factsheet"));
 		logger.info("importing factsheet");
 		
 		// first row :       just header, not used
@@ -315,6 +319,7 @@ public class ImportHelper {
 	}
 	
 	private void importTreaties(String treatyTypeName, CSVParser data) throws IOException {
+		deleteAll(NS("treaty"));
 		logger.info("importing treaty: " + treatyTypeName);
 		
 		Topic treatyType = findTreatyType(treatyTypeName);
@@ -368,6 +373,7 @@ public class ImportHelper {
 	}
 	
 	public void importFindingsAndFeatures(CSVParser data) throws IOException {
+		deleteAll(NS("countryoverview"));
 		logger.info("importing findings and features");
 		
 		List<CSVRecord> records = data.getRecords();
@@ -422,6 +428,9 @@ public class ImportHelper {
 	}
 	
 	public void importBackground(CSVParser data) throws IOException {
+		deleteAll(NS("backgrounditem"));
+		// TODO: Delete the dm4.notes.note topic that is associated with a backgrounditem
+		
 		logger.info("importing background");
 		
 		List<CSVRecord> records = data.getRecords();
@@ -463,8 +472,9 @@ public class ImportHelper {
 
 					Topic notesTopic = 
 							dm4.createTopic(mf.newTopicModel("dm4.notes.note", childs2));
+					assignToDataWorkspace(notesTopic);
 					
-					Association asso = dm4.createAssociation(mf.newAssociationModel("dm4.core.association",
+					Association asso = dm4.createAssociation(mf.newAssociationModel("dm4.core.composition",
 			    			mf.newTopicRoleModel(backgroundItemTopic.getId(), "dm4.core.default"),
 						mf.newTopicRoleModel(notesTopic.getId(), "dm4.core.default")));
 					
@@ -486,6 +496,8 @@ public class ImportHelper {
 	}
 
 	public void importTheses(CSVParser data) throws IOException {
+		deleteAll(NS("thesis"));
+		
 		logger.info("importing theses");
 		
 		List<CSVRecord> records = data.getRecords();
@@ -538,6 +550,8 @@ public class ImportHelper {
 	}
 	
 	public void importDetentionCenters(CSVParser data) throws IOException {
+		deleteAll(NS("detentioncenter"));
+		
 		logger.info("importing detention centers");
 		
 		List<CSVRecord> records = data.getRecords();
@@ -642,10 +656,34 @@ public class ImportHelper {
 			
 		}
 	}
-
+	 
+	private void deleteStatistics(Topic statisticTypeTopic) {
+		for (Topic topic : dm4.getTopicsByType(NS("statistic"))) {
+			ChildTopics childs = topic.getChildTopics();
+			if (childs.getTopic(NS("statistic.type")).getId() == statisticTypeTopic.getId()) {
+				dm4.deleteTopic(topic.getId());
+			}
+		}
+	}
+	
 	private void deleteAll(String typeUri) {
 		for (Topic topic : dm4.getTopicsByType(typeUri)) {
 			dm4.deleteTopic(topic.getId());
 		}
+	}
+	
+	void resetAllData() {
+		deleteAll(NS("imprintitem"));
+		deleteAll(NS("countryoverview"));
+		deleteAll(NS("detentioncenter"));
+		deleteAll(NS("thesis"));
+		deleteAll(NS("backgrounditem"));
+		deleteAll(NS("countryoverview"));
+		deleteAll(NS("treaty"));
+		deleteAll(NS("factsheet"));
+		deleteAll(NS("statistic"));
+
+		deleteAll("dm4.contacts.country");
+//		deleteAll("dm4.notes.note");
 	}
 }

@@ -36,7 +36,9 @@ public interface MigrationControlService {
 	
 	ImprintItem getImprintItem(String languageCode, long id);
 
-	void importData(String importDataType, String importDataCsv);
+	void importData(String dataType, String dataCsv);
+	
+	void resetAllData();
 
 	interface CountriesOverview extends JSONEnabled {}
 	

@@ -388,9 +388,6 @@ public class ImportHelper {
 				if (findingUrl.length() == 0) {
 					throw new ParseException("Finding URL should not be empty!", -1);
 				}
-				if (featureUrl1.length() == 0) {
-					throw new ParseException("Feature URL 1 should not be empty!", -1);
-				}
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
@@ -400,7 +397,9 @@ public class ImportHelper {
 				
 				childs.put(NS("countryoverview.findinglink"), findingUrl);
 			
-				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl1));
+				if (featureUrl1.length() > 0) {
+					childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl1));
+				}
 				
 				if (featureUrl2.length() > 0) {
 					childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl2));

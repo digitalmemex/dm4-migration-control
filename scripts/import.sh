@@ -18,15 +18,35 @@ imprint="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVh
 
 detentioncenters="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=775777912&single=true&output=csv"
 
-sessionid=${1}
 scratchdir=`mktemp -d`
+filter=NONE
+
+while getopts "t" opt; do
+    case "$opt" in
+    t|datatype)
+	filter=$OPTARG
+	echo "Importing only:" $filter
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+sessionid=${1}
 
 echo "Scratch folder" $scratchdir
 echo "Session Id" $sessionid
+
 import() {
 	local type=$1
+	local url=$2
+
+	# Skips if the filter is set and does not match the datatype
+	if [ $filter != NONE -a $filter != $type ]; then
+		return;
+	fi
+
 	local output=$scratchdir/$type
-	local url=${2}
 
 	echo "Downloading" $type
 	curl -s ${url} --output $output

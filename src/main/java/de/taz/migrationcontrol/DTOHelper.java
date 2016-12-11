@@ -25,7 +25,7 @@ import de.deepamehta.core.Topic;
 import de.deepamehta.core.service.CoreService;
 import de.deepamehta.core.service.ModelFactory;
 import de.deepamehta.workspaces.WorkspacesService;
-import de.taz.migrationcontrol.MigrationControlService.Background;
+import de.taz.migrationcontrol.MigrationControlService.BackgroundOverview;
 import de.taz.migrationcontrol.MigrationControlService.BackgroundItem;
 import de.taz.migrationcontrol.MigrationControlService.CountriesOverview;
 import de.taz.migrationcontrol.MigrationControlService.Country;
@@ -364,7 +364,7 @@ public class DTOHelper {
 		return json;
 	}
 	
-	List<Background> toBackgroundList(List<Topic> backgroundItemTopics) throws JSONException, IOException {
+	List<BackgroundOverview> toBackgroundOverviewList(List<Topic> backgroundItemTopics) throws JSONException, IOException {
 		ArrayList[] cols = {
 				new ArrayList<JSONObject>(),
 				new ArrayList<JSONObject>(),
@@ -377,6 +377,7 @@ public class DTOHelper {
 			JSONObject item = new JSONObject();
 			item.put("id", topic.getId());
 			item.put("name", childs.getString(NS("backgrounditem.name")));
+/*
 			String link = childs.getStringOrNull(NS("backgrounditem.link"));
 			
 			if (link != null && link.length() > 0) {
@@ -399,7 +400,7 @@ public class DTOHelper {
 
 				item.put("treaties", toTreaties());
 			}
-			
+*/			
 			int ci = Math.min(childs.getInt(NS("backgrounditem.columnindex")), 2);
 			
 			// Inserts the items sorted by their id: DM gives the IDs monotonically increasing,
@@ -407,10 +408,10 @@ public class DTOHelper {
 			insertSorted(cols[ci], item);
 		}
 		
-		ArrayList<Background> result = new ArrayList<>();
+		ArrayList<BackgroundOverview> result = new ArrayList<>();
 		
 		for (int i = 0;i<cols.length;i++) {
-			BackgroundImpl json = new BackgroundImpl();
+			BackgroundOverviewImpl json = new BackgroundOverviewImpl();
 			json.put("columnIndex", i);
 			json.put("entries", new JSONArray(cols[i]));
 			
@@ -467,6 +468,8 @@ public class DTOHelper {
 		ChildTopics childs = backgroundItem.getChildTopics();
 			
 		json.put("id", backgroundItem.getId());
+		json.put("name", childs.getString(NS("backgrounditem.name")));
+		
 		String link = childs.getStringOrNull(NS("backgrounditem.link"));
 			
 		if (link != null && link.length() > 0) {
@@ -479,6 +482,17 @@ public class DTOHelper {
 			json.put("headline", headline.text());
 			json.put("lead", lead.text());
 			json.put("corpus", fullText(corpus));
+		} else {
+			// No link, then use built-in text
+			// There is no link, try to get the 
+			RelatedTopic notes = backgroundItem.getRelatedTopic(null, null, null, "dm4.notes.note");
+			if (notes != null) {
+				ChildTopics childs2 = notes.getChildTopics();
+				json.put("headline", childs2.getString("dm4.notes.title"));
+				json.put("lead", childs2.getString("dm4.notes.text"));
+			}
+
+			json.put("treaties", toTreaties());
 		}
 		return json;
 	}
@@ -576,7 +590,7 @@ public class DTOHelper {
 	private static class ThesisImpl extends JSONEnabledImpl implements Thesis {
 	}
 
-	private static class BackgroundImpl extends JSONEnabledImpl implements Background {
+	private static class BackgroundOverviewImpl extends JSONEnabledImpl implements BackgroundOverview {
 	}
 
 	private static class BackgroundItemImpl extends JSONEnabledImpl implements BackgroundItem {

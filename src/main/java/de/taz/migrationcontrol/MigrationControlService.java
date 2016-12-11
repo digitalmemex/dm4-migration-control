@@ -24,7 +24,7 @@ public interface MigrationControlService {
 	
 	Thesis getThesis(String languageCode, long id);
 
-	List<Background> getBackground(String languageCode);
+	List<BackgroundOverview> getBackground(String languageCode);
 	
 	BackgroundItem getBackgroundItem(String languageCode, long id);
 	
@@ -46,7 +46,7 @@ public interface MigrationControlService {
 	
 	interface Thesis extends JSONEnabled {}
 
-	interface Background extends JSONEnabled {}
+	interface BackgroundOverview extends JSONEnabled {}
 
 	interface BackgroundItem extends JSONEnabled {}
 

@@ -160,17 +160,17 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	}
 	
 	@GET
-	@Path("/v1/{languageCode}/background")
-	public List<Background> getBackground(@PathParam("languageCode") String languageCode) {
+	@Path("/v1/{languageCode}/backgroundoverview")
+	public List<BackgroundOverview> getBackground(@PathParam("languageCode") String languageCode) {
 		try {
-			return dtoHelper.toBackgroundList(dm4.getTopicsByType(NS("backgrounditem")));
+			return dtoHelper.toBackgroundOverviewList(dm4.getTopicsByType(NS("backgrounditem")));
 		} catch (JSONException|IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
 	@GET
-	@Path("/v1/{languageCode}/backgrounditem/{id}")
+	@Path("/v1/{languageCode}/background/{id}")
 	public BackgroundItem getBackgroundItem(@PathParam("languageCode") String languageCode, @PathParam("id") long id) {
 		Topic topic = dm4.getTopic(id);
 

@@ -204,7 +204,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	}
 
 	@GET
-	@Path("/v1/{languageCode}/imprintitem/{id}")
+	@Path("/v1/{languageCode}/imprint/{id}")
 	public ImprintItem getImprintItem(@PathParam("languageCode") String languageCode, @PathParam("id") long id) {
 		Topic topic = dm4.getTopic(id);
 

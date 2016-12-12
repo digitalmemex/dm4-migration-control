@@ -129,6 +129,9 @@ public class DTOHelper {
 	}
 	
 	private JSONObject toFinding(String findingLink, boolean includeCorpus) throws JSONException, IOException {
+		if (findingLink == null)
+			return null;
+		
 		Document doc;
 		JSONObject json = null;
 		try {
@@ -361,7 +364,7 @@ public class DTOHelper {
 		json.put("sourceinfo", childs.getString(NS("thesis.sourceinfo")));
 		
 		json.put("diagramType", childs.getStringOrNull(NS("thesis.diagramtype")));
-		json.put("imageLink", childs.getStringOrNull(NS("thesis.imagelink")));
+		json.put("imageUrl", childs.getStringOrNull(NS("thesis.imagelink")));
 		
 		return json;
 	}

@@ -393,47 +393,41 @@ public class ImportHelper {
 			CSVRecord row = records.get(i);
 			String country = row.get(0);
 			logger.info("importing findings and features for " + country);
-			try {
-				String findingUrl = row.get(1);
-				String featureUrl1 = row.get(2);
-				String featureUrl2 = row.get(3);
-				String featureUrl3 = row.get(4);
-				int columnIndex = asInt(row.get(5), 0);
-				boolean isDonorCountry = row.get(6).equals("ja");
-				
-				if (findingUrl.length() == 0) {
-					throw new ParseException("Finding URL should not be empty!", -1);
-				}
 
-				ChildTopicsModel childs = mf.newChildTopicsModel();
-				childs.putRef("dm4.contacts.country",
-						findCountryOrCreate(country).getId());
-				
-				childs.put(NS("countryoverview.columnindex"), columnIndex);
-				
-				childs.put(NS("countryoverview.findinglink"), findingUrl);
+			String findingUrl = row.get(1);
+			String featureUrl1 = row.get(2);
+			String featureUrl2 = row.get(3);
+			String featureUrl3 = row.get(4);
+			int columnIndex = asInt(row.get(5), 0);
+			boolean isDonorCountry = row.get(6).equals("ja");
 			
-				if (featureUrl1.length() > 0) {
-					childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl1));
-				}
-				
-				if (featureUrl2.length() > 0) {
-					childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl2));
-				}
-				
-				if (featureUrl3.length() > 0) {
-					childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl3));
-				}
-				childs.put(NS("countryoverview.isdonorcountry"), isDonorCountry);
-
-				// Creates the statistic for one country
-				Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));
-				
-				assignToDataWorkspace(t);
-			} catch (ParseException e) {
-				// Ignored - thesis will not be added
-				logger.log(Level.WARNING, "Failed to import a country overview. Skipping.", e);
+			ChildTopicsModel childs = mf.newChildTopicsModel();
+			childs.putRef("dm4.contacts.country",
+					findCountryOrCreate(country).getId());
+			
+			childs.put(NS("countryoverview.columnindex"), columnIndex);
+			
+			if (findingUrl.length() > 0 && !findingUrl.equals("..")) {
+				childs.put(NS("countryoverview.findinglink"), findingUrl);
 			}
+		
+			if (featureUrl1.length() > 0 && !featureUrl1.equals("..")) {
+				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl1));
+			}
+			
+			if (featureUrl2.length() > 0 && !featureUrl2.equals("..")) {
+				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl2));
+			}
+			
+			if (featureUrl3.length() > 0 && !featureUrl3.equals("..")) {
+				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl3));
+			}
+			childs.put(NS("countryoverview.isdonorcountry"), isDonorCountry);
+
+			// Creates the statistic for one country
+			Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));
+			
+			assignToDataWorkspace(t);
 			
 		}
 	}

@@ -458,8 +458,8 @@ public class DTOHelper {
 			JSONObject json = new JSONObject();
 			json.put("name", childs.getString(NS("treaty.name")));
 			json.put("country", childs.getString("dm4.contacts.country"));
-			json.put("partner", childs.getString("dm4.contacts.country#" + NS("treaty.partner")));
-			json.put("link", childs.getString(NS("treaty.link")));
+			json.put("partner", childs.getStringOrNull("dm4.contacts.country#" + NS("treaty.partner")));
+			json.put("link", childs.getStringOrNull(NS("treaty.link")));
 			
 			treatyArray.put(json);
 		}

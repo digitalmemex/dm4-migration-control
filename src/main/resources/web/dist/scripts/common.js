@@ -62,7 +62,7 @@
 	
 	(0, _jquery2.default)(function () {
 	  var workspace = new _workspace2.default();
-	  _backbone2.default.history.start({ pushState: true });
+	  _backbone2.default.history.start();
 	});
 
 /***/ },
@@ -14627,7 +14627,7 @@
 	    this.pending = {};
 	    this.store = {};
 	    this.api = {
-	      host: 'http://localhost:8080',
+	      host: '',
 	      language: 'de',
 	      namespace: 'migrationcontrol',
 	      version: 'v1'

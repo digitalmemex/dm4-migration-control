@@ -90,6 +90,11 @@
                         "child_type_uri":         "de.taz.migrationcontrol.countryoverview.featurelink",
                         "child_cardinality_uri":  "dm4.core.many",
                         "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                     {
+                        "child_type_uri":         "de.taz.migrationcontrol.countryoverview.isdonorcountry",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
                     }
                 ],
                 "view_config_topics": [
@@ -177,6 +182,11 @@
                         "parent_cardinality_uri":  "dm4.core.one",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.aggregation_def"
+                    },
+                    {
+                        "child_type_uri":         "de.taz.migrationcontrol.thesis.imagelink",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
                     }
                 ],
                 "view_config_topics": [

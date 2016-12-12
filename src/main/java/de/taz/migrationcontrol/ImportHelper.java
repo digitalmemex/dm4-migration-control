@@ -346,6 +346,7 @@ public class ImportHelper {
 				String partnerCountry = row.get(1);
 				String treatyName = row.get(2);
 				String treatyLink = row.get(3);
+				String treatyDateString = row.get(8);
 				
 				if (treatyName.length() == 0) {
 					throw new ParseException("Country should not be empty!", -1);
@@ -355,11 +356,18 @@ public class ImportHelper {
 				childs.putRef("dm4.contacts.country",
 						findCountryOrCreate(country).getId());
 				childs.putRef(NS("treaty.type"), treatyType.getId());
-				childs.putRef("dm4.contacts.country#" + NS("treaty.partner"),
-						findCountryOrCreate(partnerCountry).getId());
+				
+				if (partnerCountry.length() > 0) {
+					childs.putRef("dm4.contacts.country#" + NS("treaty.partner"),
+							findCountryOrCreate(partnerCountry).getId());
+				}
 
 				childs.put(NS("treaty.name"), treatyName);
 				childs.put(NS("treaty.link"), treatyLink);
+				
+				if (treatyDateString.length() > 0 && !treatyDateString.equals("..")) {
+					// TODO: Make a date instance
+				}
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("treaty"), childs));
@@ -391,6 +399,7 @@ public class ImportHelper {
 				String featureUrl2 = row.get(3);
 				String featureUrl3 = row.get(4);
 				int columnIndex = asInt(row.get(5), 0);
+				boolean isDonorCountry = row.get(6).equals("ja");
 				
 				if (findingUrl.length() == 0) {
 					throw new ParseException("Finding URL should not be empty!", -1);
@@ -415,6 +424,7 @@ public class ImportHelper {
 				if (featureUrl3.length() > 0) {
 					childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl3));
 				}
+				childs.put(NS("countryoverview.isdonorcountry"), isDonorCountry);
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));
@@ -513,6 +523,7 @@ public class ImportHelper {
 				String thesisContextualisation = row.get(3);
 				String thesisSourceInfo = row.get(4);
 				String thesisDiagramType = row.get(5);
+				String thesisImageLink = row.get(6);
 				
 				if (thesisName.length() == 0) {
 					throw new ParseException("Thesis name should not be empty!", -1);
@@ -526,17 +537,22 @@ public class ImportHelper {
 				if (thesisSourceInfo.length() == 0) {
 					throw new ParseException("Thesis source info should not be empty!", -1);
 				}
-				Topic diagramTypeTopic = findThesisDiagramType(thesisDiagramType);
-				if (diagramTypeTopic == null) {
-					throw new ParseException("Thesis diagram type invalid: " + thesisDiagramType, -1);
-				}
-
+				
 				ChildTopicsModel childs = mf.newChildTopicsModel();
-				childs.putRef(NS("thesis.diagramtype"), diagramTypeTopic.getId());
 				childs.put(NS("thesis.name"), thesisName);
 				childs.put(NS("thesis.text"), thesisText);
 				childs.put(NS("thesis.contextualisation"), thesisContextualisation);
 				childs.put(NS("thesis.sourceinfo"), thesisSourceInfo);
+				
+				if (thesisDiagramType.length() > 0) {
+					Topic diagramTypeTopic = findThesisDiagramType(thesisDiagramType);
+					if (diagramTypeTopic == null) {
+						throw new ParseException("Thesis diagram type invalid: " + thesisDiagramType, -1);
+					}
+					childs.putRef(NS("thesis.diagramtype"), diagramTypeTopic.getId());
+				} else if (thesisImageLink.length() > 0) {
+					childs.put(NS("thesis.imagelink"), thesisImageLink);
+				}
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("thesis"), childs));

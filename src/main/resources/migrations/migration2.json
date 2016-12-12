@@ -105,6 +105,12 @@
                 "data_type_uri":    "dm4.core.number",
                 "index_mode_uris": ["dm4.core.fulltext"]
             },
+            {
+                "value":            "Is Donor Country",
+                "uri":              "de.taz.migrationcontrol.countryoverview.isdonorcountry",
+                "data_type_uri":    "dm4.core.boolean",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
 # for Treaty
             {
                 "value":            "Treaty Name",
@@ -140,6 +146,12 @@
             {
                 "value":            "Thesis Source Info",
                 "uri":              "de.taz.migrationcontrol.thesis.sourceinfo",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            },
+            {
+                "value":            "Image URL",
+                "uri":              "de.taz.migrationcontrol.thesis.imagelink",
                 "data_type_uri":    "dm4.core.text",
                 "index_mode_uris": ["dm4.core.fulltext"]
             },

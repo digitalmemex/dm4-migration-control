@@ -116,6 +116,7 @@ public class DTOHelper {
 		
 		ChildTopics childs = countryOverviewTopic.getChildTopics();
 		json.put("finding", toFinding(childs.getStringOrNull(NS("countryoverview.findinglink")), true));
+		json.put("isDonorCountry", childs.getBooleanOrNull(NS("countryoverview.isdonorcountry")));
 		
 		JSONArray featuresArray = new JSONArray();
 		for (String featureLink : safe(toStringListOrNull(childs.getTopicsOrNull(NS("countryoverview.featurelink"))))) {
@@ -359,7 +360,8 @@ public class DTOHelper {
 		json.put("contextualisation", childs.getString(NS("thesis.contextualisation")));
 		json.put("sourceinfo", childs.getString(NS("thesis.sourceinfo")));
 		
-		json.put("diagramType", childs.getString(NS("thesis.diagramtype")));
+		json.put("diagramType", childs.getStringOrNull(NS("thesis.diagramtype")));
+		json.put("imageLink", childs.getStringOrNull(NS("thesis.imagelink")));
 		
 		return json;
 	}

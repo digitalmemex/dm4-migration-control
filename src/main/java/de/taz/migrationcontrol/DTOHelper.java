@@ -86,7 +86,7 @@ public class DTOHelper {
 			
 			// Inserts the items sorted by their id: DM gives the IDs monotonically increasing,
 			// as the background items are added during import line by line we can use this.
-			insertSorted(cols[ci], countryJson);
+			cols[ci].add(countryJson);
 		}
 		
 		ArrayList<CountriesOverview> result = new ArrayList<>();
@@ -439,7 +439,7 @@ public class DTOHelper {
 			
 			// Inserts the items sorted by their id: DM gives the IDs monotonically increasing,
 			// as the background items are added during import line by line we can use this.
-			insertSorted(cols[ci], item);
+			cols[ci].add(item);
 		}
 		
 		ArrayList<BackgroundOverview> result = new ArrayList<>();
@@ -447,7 +447,7 @@ public class DTOHelper {
 		for (int i = 0;i<cols.length;i++) {
 			BackgroundOverviewImpl json = new BackgroundOverviewImpl();
 			json.put("columnIndex", i);
-			json.put("entries", new JSONArray(cols[i]));
+			json.put("entries", new JSONArray(sortByJsonId(cols[i])));
 			
 			result.add(json);
 		}
@@ -475,11 +475,12 @@ public class DTOHelper {
 				ci = Math.min(childs.getInt(NS("countryoverview.columnindex")), 3);
 				weight = countryOverviewTopic.getId();
 			}
-			insertSorted(cols[ci], new Wrapped(countryTopic, weight));
+			
+			cols[ci].add(new Wrapped(countryTopic, weight));
 		}
 		
 		for (ArrayList<Wrapped> col: cols) {
-			addTreatiesForCountries(result, unwrapList(col));
+			addTreatiesForCountries(result, unwrapList(sortByWeight(col)));
 		}
 		
 		return result;
@@ -599,52 +600,41 @@ public class DTOHelper {
 			
 		return json;
 	}
-	
-	private void insertSorted(List<JSONObject> list, JSONObject item) throws JSONException {
-		int sortKey = item.getInt("id");
-		final int length = list.size();
-		
-		if (length == 0) {
-			list.add(item);
-			return;
-		}
-		
-		int insertPos = 0;
-		for (int i = 0; i < length; i++) {
-			insertPos = i;
-			if (list.get(i).getLong("id") > sortKey) {
-				break;
-			}
-		}
-		list.add(insertPos, item);
-	}
-	
-	private void insertSorted(List<Wrapped> list, Wrapped wrapped) {
-		// TODO: Some sorting problem!
-		long sortKey = wrapped.weight;
-		final int length = list.size();
-		
-		if (length == 0) {
-			list.add(wrapped);
-			return;
-		}
-		
-		int insertPos = 0;
-		for (int i = 0; i < length; i++) {
-			insertPos = i;
-			if (list.get(i).weight > sortKey) {
-				break;
-			}
-		}
-		list.add(insertPos, wrapped);
-	}
-	
+
 	private List<Topic> sortById(List<Topic> list) {
 		list.sort(new Comparator<Topic>() {
 
 			@Override
 			public int compare(Topic o1, Topic o2) {
 				return (int) (o1.getId() - o2.getId());
+			}
+		});
+		
+		return list;
+	}
+
+	private List<Wrapped> sortByWeight(List<Wrapped> list) {
+		list.sort(new Comparator<Wrapped>() {
+
+			@Override
+			public int compare(Wrapped o1, Wrapped o2) {
+				return (int) (o1.weight - o2.weight);
+			}
+		});
+		
+		return list;
+	}
+	
+	private List<JSONObject> sortByJsonId(List<JSONObject> list) {
+		list.sort(new Comparator<JSONObject>() {
+
+			@Override
+			public int compare(JSONObject o1, JSONObject o2) {
+				try {
+					return (int) (o1.getLong("id") - o2.getLong("id"));
+				} catch (JSONException jsone) {
+					throw new RuntimeException("id not existing");
+				}
 			}
 		});
 		

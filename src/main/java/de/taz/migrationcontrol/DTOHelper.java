@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -356,12 +357,13 @@ public class DTOHelper {
 	List<Thesis> toTheses() throws JSONException {
 		ArrayList<Wrapped> list = new ArrayList<Wrapped>();
 		
-		for (Topic thesisTopic : safe(dm4.getTopicsByType(NS("thesis")))) {
+		/*
+		for (Topic thesisTopic : ) {
 			insertSorted(list, new Wrapped(thesisTopic, thesisTopic.getId()));
-		}
+		}*/
 		
 		ArrayList<Thesis> result = new ArrayList<Thesis>();
-		for (Topic thesisTopic : unwrapList(list)) {
+		for (Topic thesisTopic : sortById(safe(dm4.getTopicsByType(NS("thesis"))))) {
 			ChildTopics childs = thesisTopic.getChildTopics();
 			ThesisImpl json = new ThesisImpl();
 			json.put("id", thesisTopic.getId());
@@ -611,6 +613,7 @@ public class DTOHelper {
 	}
 	
 	private void insertSorted(List<Wrapped> list, Wrapped wrapped) {
+		// TODO: Some sorting problem!
 		long sortKey = wrapped.weight;
 		final int length = list.size();
 		
@@ -627,6 +630,18 @@ public class DTOHelper {
 			}
 		}
 		list.add(insertPos, wrapped);
+	}
+	
+	private List<Topic> sortById(List<Topic> list) {
+		list.sort(new Comparator<Topic>() {
+
+			@Override
+			public int compare(Topic o1, Topic o2) {
+				return (int) (o1.getId() - o2.getId());
+			}
+		});
+		
+		return list;
 	}
 	
 	private static <T> List<T> safe(List<T> originalList){

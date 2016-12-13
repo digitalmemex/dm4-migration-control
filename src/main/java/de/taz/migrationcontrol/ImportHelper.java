@@ -368,6 +368,7 @@ public class ImportHelper {
 
 				childs.put(NS("treaty.name"), treatyName);
 				childs.put(NS("treaty.link"), treatyLink);
+				addOrder(childs, i);
 				
 				if (treatyDateString.length() > 0 && !treatyDateString.equals("..")) {
 					childs.putRef("dm4.datetime.date", toDateTopicModel(treatyDateString).getId());
@@ -470,6 +471,7 @@ public class ImportHelper {
 				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl3));
 			}
 			childs.put(NS("countryoverview.isdonorcountry"), isDonorCountry);
+			addOrder(childs, i);
 
 			// Creates the statistic for one country
 			Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));
@@ -506,6 +508,7 @@ public class ImportHelper {
 				childs.put(NS("backgrounditem.name"), name);
 				childs.put(NS("backgrounditem.link"), link);
 				childs.put(NS("backgrounditem.columnindex"), columnIndex);
+				addOrder(childs, i);
 
 				// Creates the statistic for one country
 				Topic backgroundItemTopic = dm4.createTopic(mf.newTopicModel(NS("backgrounditem"), childs));
@@ -584,6 +587,7 @@ public class ImportHelper {
 				childs.put(NS("thesis.text"), thesisText);
 				childs.put(NS("thesis.contextualisation"), thesisContextualisation);
 				childs.put(NS("thesis.sourceinfo"), thesisSourceInfo);
+				addOrder(childs, i);
 				
 				if (thesisDiagramType.length() > 0) {
 					Topic diagramTypeTopic = findThesisDiagramType(thesisDiagramType);
@@ -713,6 +717,10 @@ public class ImportHelper {
 			}
 			
 		}
+	}
+	
+	private void addOrder(ChildTopicsModel childs, int order) {
+		childs.put("de.taz.migrationcontrol.order", order);
 	}
 	 
 	private void deleteAllWithMatchingChild(String typeUri, String childTypeUri, Topic statisticTypeTopic) {

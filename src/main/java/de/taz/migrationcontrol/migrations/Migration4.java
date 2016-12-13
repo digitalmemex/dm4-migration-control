@@ -24,6 +24,7 @@ public class Migration4 extends Migration {
 		long dataWsId = wsService.getWorkspace(NS("workspace.types")).getId();
 		
 		groupAssignToWorkspace(dataWsId,
+				NS("order"),
 				NS("statistic"),
 				NS("statistic.type"),
 				NS("statistic.entry"),

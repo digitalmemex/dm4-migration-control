@@ -19,6 +19,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 
 import de.deepamehta.core.ChildTopics;
 import de.deepamehta.core.RelatedTopic;
@@ -26,8 +27,8 @@ import de.deepamehta.core.Topic;
 import de.deepamehta.core.service.CoreService;
 import de.deepamehta.core.service.ModelFactory;
 import de.deepamehta.workspaces.WorkspacesService;
-import de.taz.migrationcontrol.MigrationControlService.BackgroundOverview;
 import de.taz.migrationcontrol.MigrationControlService.BackgroundItem;
+import de.taz.migrationcontrol.MigrationControlService.BackgroundOverview;
 import de.taz.migrationcontrol.MigrationControlService.CountriesOverview;
 import de.taz.migrationcontrol.MigrationControlService.Country;
 import de.taz.migrationcontrol.MigrationControlService.DetentionCenter;
@@ -149,6 +150,15 @@ public class DTOHelper {
 			if (includeCorpus) {
 				Element corpus = article.getElementsByTag("corpus").first();
 				json.put("corpus", fullText(corpus));
+				
+				Elements authorNames = article.select("author > name");
+				if (authorNames != null) {
+					JSONArray jsonArrayNames = new JSONArray();
+					for (Element name : authorNames) {
+						jsonArrayNames.put(name.text());
+					}
+					json.put("authors", jsonArrayNames);
+				}
 			}
 			
 		} catch (IOException ioe) {
@@ -178,17 +188,21 @@ public class DTOHelper {
 			for (Element picture : article.select("extra[type=picture] > picture")) {
 				Element descr = picture.getElementsByTag("descr").first();
 				Element caption = picture.getElementsByTag("caption").first();
+				Element credit = picture.getElementsByTag("credit").first();
 				Element pixmapXL = picture.select("pixmap[size=slideXL").first();
 				
 				// Skip image if somehting is missing.
-				if (descr == null || caption == null || pixmapXL == null) {
+				if (credit == null || caption == null || pixmapXL == null) {
 					continue;
 				}
 				
 				JSONObject imageJson = new JSONObject();
-				imageJson.put("alt", descr.text());
+				if (descr != null) {
+					imageJson.put("alt", descr.text());
+				}
 				imageJson.put("caption", caption.text());
 				imageJson.put("src", makeImageUrl(featureLink, pixmapXL.attr("src")));
+				imageJson.put("credit", credit.text());
 				
 				imagesArray.put(imageJson);
 			}
@@ -198,6 +212,16 @@ public class DTOHelper {
 			if (includeCorpus) {
 				Element corpus = article.getElementsByTag("corpus").first();
 				json.put("corpus", fullText(corpus));
+				
+				Elements authorNames = article.select("author > name");
+				if (authorNames != null) {
+					JSONArray jsonArrayNames = new JSONArray();
+					for (Element name : authorNames) {
+						jsonArrayNames.put(name.text());
+					}
+					json.put("authors", jsonArrayNames);
+				}
+
 			}
 			
 		} catch (IOException ioe) {
@@ -573,6 +597,16 @@ public class DTOHelper {
 			json.put("headline", headline.text());
 			json.put("lead", lead.text());
 			json.put("corpus", fullText(corpus));
+			
+			Elements authorNames = article.select("author > name");
+			if (authorNames != null) {
+				JSONArray jsonArrayNames = new JSONArray();
+				for (Element name : authorNames) {
+					jsonArrayNames.put(name.text());
+				}
+				json.put("authors", jsonArrayNames);
+			}
+
 		} else {
 			// No link, then use built-in text
 			// There is no link, try to get the 

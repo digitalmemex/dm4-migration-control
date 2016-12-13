@@ -352,6 +352,26 @@ public class DTOHelper {
 		
 		return result;
 	}
+	
+	List<Thesis> toTheses() throws JSONException {
+		ArrayList<Wrapped> list = new ArrayList<Wrapped>();
+		
+		for (Topic thesisTopic : safe(dm4.getTopicsByType(NS("thesis")))) {
+			insertSorted(list, new Wrapped(thesisTopic, thesisTopic.getId()));
+		}
+		
+		ArrayList<Thesis> result = new ArrayList<Thesis>();
+		for (Topic thesisTopic : unwrapList(list)) {
+			ChildTopics childs = thesisTopic.getChildTopics();
+			ThesisImpl json = new ThesisImpl();
+			json.put("id", thesisTopic.getId());
+			json.put("name", childs.getString(NS("thesis.name")));
+			
+			result.add(json);
+		}
+		
+		return result;
+	}
 
 	Thesis toThesisOrNull(Topic thesisTopic) throws JSONException {
 		ChildTopics childs = thesisTopic.getChildTopics();

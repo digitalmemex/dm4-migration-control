@@ -129,19 +129,11 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	@Path("/v1/{languageCode}/theses")
 	@Override
 	public List<Thesis> getTheses(@PathParam("languageCode") String languageCode) {
-		List<Thesis> results = new ArrayList<>();
-		
-		for (Topic topic : dm4.getTopicsByType(NS("thesis"))) {
-			try {
-				Thesis thesis = dtoHelper.toThesisOrNull(topic);
-				if (thesis != null)
-					results.add(thesis);
-			} catch (JSONException jsone) {
-				// TODO: Log what object was dropped
-			}
+		try {
+			return dtoHelper.toTheses();
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
 		}
-		
-		return results;
 	}
 
 	@GET

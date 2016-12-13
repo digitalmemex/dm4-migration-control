@@ -26,6 +26,10 @@
             {
                 "value": "ODA",
                 "type_uri": "de.taz.migrationcontrol.statistic.type"
+            },
+            {
+                "value": "Single Payments",
+                "type_uri": "de.taz.migrationcontrol.statistic.type"
             }
        ]
     },

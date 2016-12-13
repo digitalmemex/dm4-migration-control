@@ -614,9 +614,12 @@ public class DTOHelper {
 	}
 	
 	private String statNameToJsonKey(String statName) {
-		if ("Migration Intensity".equals(statName)) {
+		switch (statName) {
+		case "Migration Intensity":
 			return "migrationIntensity";
-		} else {
+		case "Single Payments":
+			return "singlePayments";
+		default:
 			return statName.toLowerCase();
 		}
 	}

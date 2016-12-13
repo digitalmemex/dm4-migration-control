@@ -55,6 +55,10 @@ public class ImportHelper {
 	public void importODA(CSVParser data) throws IOException {
 		importStatistics("ODA", data);
 	}
+
+	public void importSinglePayments(CSVParser data) throws IOException {
+		importStatistics("Single Payments", data);
+	}
 	
 	private void importStatistics(String statName, CSVParser data) throws IOException {
 		Topic statType = findStatisticsType(statName);

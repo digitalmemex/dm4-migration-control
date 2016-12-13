@@ -243,6 +243,9 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "migrationintensity":
 				importHelper.importMigrationIntensity(parser);
 				break;
+			case "singlepayments":
+				importHelper.importSinglePayments(parser);
+				break;
 			case "factsheet":
 				importHelper.importFactSheet(parser);
 				break;

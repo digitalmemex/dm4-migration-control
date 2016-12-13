@@ -4,6 +4,7 @@ oda="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcE
 hdi="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=981027257&single=true&output=csv"
 migrationintensity="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=1539190958&single=true&output=csv"
 remittances="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=234680878&single=true&output=csv"
+singlepayments="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=191481828&single=true&output=csv"
 
 findings="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=192140939&single=true&output=csv"
 factsheet="https://docs.google.com/spreadsheets/d/1INPdNSijx20bvTgyTVlnbSVJo782sVhIfcEterd6r7M/pub?gid=1148106720&single=true&output=csv"
@@ -28,7 +29,7 @@ while getopts ":t:h" opt; do
 	echo "Importing only:" $filter
         ;;
     h)
-	echo "${0} [-t oda|hdi|remittances|migrationintensity|findings|factsheet|repatriation_treaties|other_treaties|theses|backgrounditems|detentioncenterdata|imprintdata] <session ID>"
+	echo "${0} [-t oda|hdi|remittances|migrationintensity|singlepayments|findings|factsheet|repatriation_treaties|other_treaties|theses|backgrounditems|detentioncenterdata|imprintdata] <session ID>"
 	exit 0;
 	;;
     \?)
@@ -73,6 +74,7 @@ import oda ${oda}
 import hdi ${hdi}
 import remittances ${remittances}
 import migrationintensity ${migrationintensity}
+import singlepayments ${singlepayments}
 import findings ${findings}
 import factsheet ${factsheet}
 import repatriation_treaties ${repatration_treaties}
@@ -82,4 +84,4 @@ import backgrounditems ${background}
 import detentioncenterdata ${detentioncenters}
 import imprintdata ${imprint}
 
-rm -r $scratchdir
+#rm -r $scratchdir

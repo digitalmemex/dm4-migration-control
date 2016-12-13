@@ -387,7 +387,7 @@ public class DTOHelper {
 		}*/
 		
 		ArrayList<Thesis> result = new ArrayList<Thesis>();
-		for (Topic thesisTopic : sortById(safe(dm4.getTopicsByType(NS("thesis"))))) {
+		for (Topic thesisTopic : sortByOrder(safe(dm4.getTopicsByType(NS("thesis"))))) {
 			ChildTopics childs = thesisTopic.getChildTopics();
 			ThesisImpl json = new ThesisImpl();
 			json.put("id", thesisTopic.getId());
@@ -424,9 +424,9 @@ public class DTOHelper {
 	
 	List<BackgroundOverview> toBackgroundOverviewList(List<Topic> backgroundItemTopics) throws JSONException, IOException {
 		ArrayList[] cols = {
-				new ArrayList<JSONObject>(),
-				new ArrayList<JSONObject>(),
-				new ArrayList<JSONObject>()
+				new ArrayList<Wrapped<JSONObject>>(),
+				new ArrayList<Wrapped<JSONObject>>(),
+				new ArrayList<Wrapped<JSONObject>>()
 		};
 
 		for (Topic topic : backgroundItemTopics) {
@@ -461,9 +461,11 @@ public class DTOHelper {
 */			
 			int ci = Math.min(childs.getInt(NS("backgrounditem.columnindex")), 2);
 			
+			int order = childs.getInt(NS("order"));
+			
 			// Inserts the items sorted by their id: DM gives the IDs monotonically increasing,
 			// as the background items are added during import line by line we can use this.
-			cols[ci].add(item);
+			cols[ci].add(new Wrapped<JSONObject>(item, order));
 		}
 		
 		ArrayList<BackgroundOverview> result = new ArrayList<>();
@@ -471,7 +473,7 @@ public class DTOHelper {
 		for (int i = 0;i<cols.length;i++) {
 			BackgroundOverviewImpl json = new BackgroundOverviewImpl();
 			json.put("columnIndex", i);
-			json.put("entries", new JSONArray(sortByJsonId(cols[i])));
+			json.put("entries", new JSONArray(unwrapList(sortByWeight((List<Wrapped<JSONObject>>) cols[i]))));
 			
 			result.add(json);
 		}
@@ -483,10 +485,10 @@ public class DTOHelper {
 		ArrayList<JSONObject> result = new ArrayList<>();
 		
 		ArrayList[] cols = {
-				new ArrayList<Wrapped>(),
-				new ArrayList<Wrapped>(),
-				new ArrayList<Wrapped>(),
-				new ArrayList<Wrapped>(),
+				new ArrayList<Wrapped<Topic>>(),
+				new ArrayList<Wrapped<Topic>>(),
+				new ArrayList<Wrapped<Topic>>(),
+				new ArrayList<Wrapped<Topic>>(),
 		};
 		
 		for(Topic countryTopic : safe(dm4.getTopicsByType("dm4.contacts.country"))) {
@@ -500,31 +502,31 @@ public class DTOHelper {
 				weight = countryOverviewTopic.getId();
 			}
 			
-			cols[ci].add(new Wrapped(countryTopic, weight));
+			cols[ci].add(new Wrapped<Topic>(countryTopic, weight));
 		}
 		
-		for (ArrayList<Wrapped> col: cols) {
-			addTreatiesForCountries(result, unwrapList(sortByWeight(col)));
+		for (ArrayList<Wrapped<Topic>> col: cols) {
+			addTreatiesForCountries(result, unwrapList(sortByWeight((col))));
 		}
 		
 		return result;
 	}
 	
-	private static class Wrapped {
+	private static class Wrapped<T> {
 		long weight;
-		Topic topic;
+		T value;
 		
-		Wrapped(Topic topic, long weight) {
-			this.topic = topic;
+		Wrapped(T value, long weight) {
+			this.value = value;
 			this.weight = weight;
 		}
 		
 	}
 	
-	List<Topic> unwrapList(List<Wrapped> sourceList) {
-		ArrayList<Topic> result = new ArrayList<>();
-		for (Wrapped wrapped : sourceList) {
-			result.add(wrapped.topic);
+	private static <T> List<T> unwrapList(List<Wrapped<T>> sourceList) {
+		ArrayList<T> result = new ArrayList<>();
+		for (Wrapped<T> wrapped : sourceList) {
+			result.add(wrapped.value);
 		}
 		
 		return result;
@@ -635,23 +637,29 @@ public class DTOHelper {
 		return json;
 	}
 
-	private List<Topic> sortById(List<Topic> list) {
+	private List<Topic> sortByOrder(List<Topic> list) {
 		list.sort(new Comparator<Topic>() {
+			
+			private int order(Topic t) {
+				Integer l = t.getChildTopics().getIntOrNull(NS("order"));
+				return (l != null) ? l : 0;
+			}
 
 			@Override
 			public int compare(Topic o1, Topic o2) {
-				return (int) (o1.getId() - o2.getId());
+				
+				return (int) (order(o1) - order(o2));
 			}
 		});
 		
 		return list;
 	}
 
-	private List<Wrapped> sortByWeight(List<Wrapped> list) {
-		list.sort(new Comparator<Wrapped>() {
+	private static <T> List<Wrapped<T>> sortByWeight(List<Wrapped<T>> list) {
+		list.sort(new Comparator<Wrapped<T>>() {
 
 			@Override
-			public int compare(Wrapped o1, Wrapped o2) {
+			public int compare(Wrapped<T> o1, Wrapped<T> o2) {
 				return (int) (o1.weight - o2.weight);
 			}
 		});

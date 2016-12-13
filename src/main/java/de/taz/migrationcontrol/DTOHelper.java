@@ -460,11 +460,26 @@ public class DTOHelper {
 			json.put("country", childs.getString("dm4.contacts.country"));
 			json.put("partner", childs.getStringOrNull("dm4.contacts.country#" + NS("treaty.partner")));
 			json.put("link", childs.getStringOrNull(NS("treaty.link")));
+			json.put("date", toDateOrNull(childs.getTopicOrNull("dm4.datetime.date")));
 			
 			treatyArray.put(json);
 		}
 
 		return treatyArray;
+	}
+	
+	private JSONObject toDateOrNull(Topic dateTopic) throws JSONException {
+		if (dateTopic == null)
+			return null;
+		
+		ChildTopics childs = dateTopic.getChildTopics();
+		
+		JSONObject json = new JSONObject();
+		json.put("year", childs.getIntOrNull("dm4.datetime.year"));
+		json.put("month", childs.getIntOrNull("dm4.datetime.month"));
+		json.put("day", childs.getIntOrNull("dm4.datetime.day"));
+		
+		return json;
 	}
 	
 	BackgroundItem toBackgroundItem(Topic backgroundItem) throws JSONException, IOException {

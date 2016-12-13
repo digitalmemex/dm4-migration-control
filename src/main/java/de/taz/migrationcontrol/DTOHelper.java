@@ -369,6 +369,13 @@ public class DTOHelper {
 			json.put("id", thesisTopic.getId());
 			json.put("name", childs.getString(NS("thesis.name")));
 			
+			json.put("text", childs.getString(NS("thesis.text")));
+			json.put("contextualisation", childs.getString(NS("thesis.contextualisation")));
+			json.put("sourceinfo", childs.getString(NS("thesis.sourceinfo")));
+			
+			json.put("diagramType", childs.getStringOrNull(NS("thesis.diagramtype")));
+			json.put("imageUrl", childs.getStringOrNull(NS("thesis.imagelink")));
+			
 			result.add(json);
 		}
 		

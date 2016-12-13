@@ -140,6 +140,11 @@
                         "child_type_uri":         "de.taz.migrationcontrol.treaty.link",
                         "child_cardinality_uri":  "dm4.core.one",
                         "assoc_type_uri":         "dm4.core.composition_def"
+                    },
+                    {
+                        "child_type_uri":         "dm4.datetime.date",
+                        "child_cardinality_uri":  "dm4.core.one",
+                        "assoc_type_uri":         "dm4.core.composition_def"
                     }
                 ],
                 "view_config_topics": [

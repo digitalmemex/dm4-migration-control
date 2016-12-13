@@ -429,8 +429,49 @@ public class DTOHelper {
 	List<JSONObject> toTreaties() throws JSONException {
 		ArrayList<JSONObject> result = new ArrayList<>();
 		
-		// TODO: First EU, then EU countries, then african countries
-		addTreatiesForCountries(result, dm4.getTopicsByType("dm4.contacts.country"));
+		ArrayList[] cols = {
+				new ArrayList<Wrapped>(),
+				new ArrayList<Wrapped>(),
+				new ArrayList<Wrapped>(),
+				new ArrayList<Wrapped>(),
+		};
+		
+		for(Topic countryTopic : safe(dm4.getTopicsByType("dm4.contacts.country"))) {
+			RelatedTopic countryOverviewTopic = countryTopic.getRelatedTopic((String) null, (String) null, (String) null, NS("countryoverview"));
+			int ci = 3;
+			long weight = 0;
+			if (countryOverviewTopic != null) {
+				ChildTopics childs = countryOverviewTopic.getChildTopics();
+				
+				ci = Math.min(childs.getInt(NS("countryoverview.columnindex")), 3);
+				weight = countryOverviewTopic.getId();
+			}
+			insertSorted(cols[ci], new Wrapped(countryTopic, weight));
+		}
+		
+		for (ArrayList<Wrapped> col: cols) {
+			addTreatiesForCountries(result, unwrapList(col));
+		}
+		
+		return result;
+	}
+	
+	private static class Wrapped {
+		long weight;
+		Topic topic;
+		
+		Wrapped(Topic topic, long weight) {
+			this.topic = topic;
+			this.weight = weight;
+		}
+		
+	}
+	
+	List<Topic> unwrapList(List<Wrapped> sourceList) {
+		ArrayList<Topic> result = new ArrayList<>();
+		for (Wrapped wrapped : sourceList) {
+			result.add(wrapped.topic);
+		}
 		
 		return result;
 	}
@@ -460,11 +501,26 @@ public class DTOHelper {
 			json.put("country", childs.getString("dm4.contacts.country"));
 			json.put("partner", childs.getStringOrNull("dm4.contacts.country#" + NS("treaty.partner")));
 			json.put("link", childs.getStringOrNull(NS("treaty.link")));
+			json.put("date", toDateOrNull(childs.getTopicOrNull("dm4.datetime.date")));
 			
 			treatyArray.put(json);
 		}
 
 		return treatyArray;
+	}
+	
+	private JSONObject toDateOrNull(Topic dateTopic) throws JSONException {
+		if (dateTopic == null)
+			return null;
+		
+		ChildTopics childs = dateTopic.getChildTopics();
+		
+		JSONObject json = new JSONObject();
+		json.put("year", childs.getIntOrNull("dm4.datetime.year"));
+		json.put("month", childs.getIntOrNull("dm4.datetime.month"));
+		json.put("day", childs.getIntOrNull("dm4.datetime.day"));
+		
+		return json;
 	}
 	
 	BackgroundItem toBackgroundItem(Topic backgroundItem) throws JSONException, IOException {
@@ -532,6 +588,25 @@ public class DTOHelper {
 			}
 		}
 		list.add(insertPos, item);
+	}
+	
+	private void insertSorted(List<Wrapped> list, Wrapped wrapped) {
+		long sortKey = wrapped.weight;
+		final int length = list.size();
+		
+		if (length == 0) {
+			list.add(wrapped);
+			return;
+		}
+		
+		int insertPos = 0;
+		for (int i = 0; i < length; i++) {
+			insertPos = i;
+			if (list.get(i).weight > sortKey) {
+				break;
+			}
+		}
+		list.add(insertPos, wrapped);
 	}
 	
 	private static <T> List<T> safe(List<T> originalList){

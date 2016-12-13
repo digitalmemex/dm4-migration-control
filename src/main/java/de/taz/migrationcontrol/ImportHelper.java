@@ -366,7 +366,7 @@ public class ImportHelper {
 				childs.put(NS("treaty.link"), treatyLink);
 				
 				if (treatyDateString.length() > 0 && !treatyDateString.equals("..")) {
-					// TODO: Make a date instance
+					childs.putRef("dm4.datetime.date", toDateTopicModel(treatyDateString).getId());
 				}
 
 				// Creates the statistic for one country
@@ -379,6 +379,49 @@ public class ImportHelper {
 			}
 			
 		}
+	}
+	
+	private TopicModel toDateTopicModel(String dateString) throws ParseException {
+		int year = -1;
+		int month = -1;
+		int day = -1;
+		
+		String[] parts = dateString.split("\\.");
+		
+		switch (parts.length) {
+		case 3:
+			day = Integer.parseInt(parts[0]);
+			month = Integer.parseInt(parts[1]);
+			year = Integer.parseInt(parts[2]);
+			break;
+		case 2:
+			month = Integer.parseInt(parts[0]);
+			year = Integer.parseInt(parts[1]);
+			break;
+		case 1:
+			year = Integer.parseInt(parts[0]);
+			break;
+		default:
+			throw new ParseException("Dateformat is wrong.", -1);
+		}
+		
+
+		ChildTopicsModel childs = mf.newChildTopicsModel();
+
+		if (year > -1)
+			putRefOrCreate(childs, "dm4.datetime.year", year);
+		
+		if (month > -1)
+			putRefOrCreate(childs, "dm4.datetime.month", month);
+		
+		if (day > -1)
+			putRefOrCreate(childs, "dm4.datetime.day", day);
+		
+		Topic t = dm4.createTopic(mf.newTopicModel("dm4.datetime.date", childs));
+
+		assignToDataWorkspace(t);
+		
+		return t.getModel();
 	}
 	
 	public void importFindingsAndFeatures(CSVParser data) throws IOException {

@@ -54,10 +54,10 @@ public class DTOHelper {
 	
 	List<CountriesOverview> toCountriesOverviewList(List<Topic> countryTopics) throws JSONException, IOException {
 		ArrayList[] cols = {
-				new ArrayList<JSONObject>(),
-				new ArrayList<JSONObject>(),
-				new ArrayList<JSONObject>(),
-				new ArrayList<JSONObject>()
+				new ArrayList<Wrapped<JSONObject>>(),
+				new ArrayList<Wrapped<JSONObject>>(),
+				new ArrayList<Wrapped<JSONObject>>(),
+				new ArrayList<Wrapped<JSONObject>>()
 		};
 
 		for (Topic countryTopic : countryTopics) {
@@ -85,9 +85,9 @@ public class DTOHelper {
 */
 			int ci = Math.min(childs.getInt(NS("countryoverview.columnindex")), 3);
 			
-			// Inserts the items sorted by their id: DM gives the IDs monotonically increasing,
-			// as the background items are added during import line by line we can use this.
-			cols[ci].add(countryJson);
+			int weight = childs.getInt(NS("order"));
+			
+			cols[ci].add(new Wrapped(countryJson, weight));
 		}
 		
 		ArrayList<CountriesOverview> result = new ArrayList<>();
@@ -95,7 +95,7 @@ public class DTOHelper {
 		for (int i = 0;i<cols.length;i++) {
 			CountriesOverviewImpl json = new CountriesOverviewImpl();
 			json.put("columnIndex", i);
-			json.put("entries", new JSONArray(cols[i]));
+			json.put("entries", new JSONArray(unwrapList(sortByWeight((List<Wrapped<JSONObject>>) cols[i]))));
 			
 			result.add(json);
 		}

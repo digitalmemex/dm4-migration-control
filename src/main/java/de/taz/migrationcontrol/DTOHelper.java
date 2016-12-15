@@ -151,9 +151,10 @@ public class DTOHelper {
 				Element corpus = article.getElementsByTag("corpus").first();
 				json.put("corpus", fullText(corpus));
 				
-				Elements authorNames = article.select("author > name");
-				if (authorNames != null) {
+				Element author = article.select("author").first();
+				if (author != null) {
 					JSONArray jsonArrayNames = new JSONArray();
+					Elements authorNames = author.select("name");
 					for (Element name : authorNames) {
 						jsonArrayNames.put(name.text());
 					}
@@ -213,9 +214,10 @@ public class DTOHelper {
 				Element corpus = article.getElementsByTag("corpus").first();
 				json.put("corpus", fullText(corpus));
 				
-				Elements authorNames = article.select("author > name");
-				if (authorNames != null) {
+				Element author = article.select("author").first();
+				if (author != null) {
 					JSONArray jsonArrayNames = new JSONArray();
+					Elements authorNames = author.select("name");
 					for (Element name : authorNames) {
 						jsonArrayNames.put(name.text());
 					}
@@ -600,9 +602,10 @@ public class DTOHelper {
 			json.put("lead", lead.text());
 			json.put("corpus", fullText(corpus));
 			
-			Elements authorNames = article.select("author > name");
-			if (authorNames != null) {
+			Element author = article.select("author").first();
+			if (author != null) {
 				JSONArray jsonArrayNames = new JSONArray();
+				Elements authorNames = author.select("name");
 				for (Element name : authorNames) {
 					jsonArrayNames.put(name.text());
 				}

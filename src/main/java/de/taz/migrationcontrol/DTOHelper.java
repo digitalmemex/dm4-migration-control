@@ -235,7 +235,8 @@ public class DTOHelper {
 	}
 	
 	private String makeImageUrl(String articleUrl, String imagePath) throws MalformedURLException {
-		return new URL(new URL(articleUrl), imagePath).toString();
+		// change automatically replace "http:" with "https:" to avoid mixed content warnings
+		return new URL(new URL(articleUrl.replace("http:", "https:")), imagePath).toString();
 	}
 	
 	private String fullText(Element e) {

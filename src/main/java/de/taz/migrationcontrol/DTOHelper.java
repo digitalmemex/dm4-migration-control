@@ -103,10 +103,11 @@ public class DTOHelper {
 		return result;
 	}
 	
-	Country toCountryOrNull(Topic countryTopic) throws JSONException, IOException {
+	Country toCountryOrNull(String languageCode, Topic countryTopic) throws JSONException, IOException {
 		CountryImpl json = new CountryImpl();
 		
 		json.put("id", countryTopic.getId());
+		json.put("countryCode", countryTopic.getUri());
 		json.put("name", countryTopic.getSimpleValue().toString());
 		json.put("data", toStatisticData(countryTopic));
 		json.put("factSheet", toFactSheet(countryTopic));

@@ -82,7 +82,7 @@ public class ImportHelper {
 			ChildTopicsModel childs = mf.newChildTopicsModel();
 			childs.putRef(NS("statistic.type"), statType.getId());
 			childs.putRef("dm4.contacts.country",
-					findCountryOrCreate(row.get(0)).getId());
+					findCountryOrCreateByName(row.get(0)).getId());
 			
 			for (int j = 1; j < row.size(); j++) {
 				try {
@@ -156,7 +156,7 @@ public class ImportHelper {
 		throw new IllegalStateException("Unknown thesis diagram type: " + diagramType);
 	}
 	
-	private Topic findCountryOrCreate(String countryName) {		
+	private Topic findCountryOrCreateByName(String countryName) {
 		for (Topic country : dm4.getTopicsByType("dm4.contacts.country")) {
 			if (countryName.equals(country.getSimpleValue().toString())) {
 				return country;
@@ -164,6 +164,34 @@ public class ImportHelper {
 		}
 				
 		Topic topic = dm4.createTopic(mf.newTopicModel("dm4.contacts.country", new SimpleValue(countryName)));
+
+		assignToDataWorkspace(topic);
+		
+		return topic;		
+	}
+	
+	private Topic findCountryOrCreateByCountryCode(String countryCode, String countryName) {
+		String uri = NS("country." + countryCode);
+		
+		// Lookup via URI
+		Topic topic = dm4.getTopicByUri(uri);
+		if (topic != null){
+			return topic;
+		}
+		
+		// Lookup via Name
+		for (Topic country : dm4.getTopicsByType("dm4.contacts.country")) {
+			if (countryName.equals(country.getSimpleValue().toString())) {
+				
+				// Apparently the URI was not set yet. So do now.
+				country.setUri(uri);
+				
+				return country;
+			}
+		}
+
+		// Country does not exist. So create it.
+		topic = dm4.createTopic(mf.newTopicModel(uri, "dm4.contacts.country", new SimpleValue(countryName)));
 
 		assignToDataWorkspace(topic);
 		
@@ -227,7 +255,7 @@ public class ImportHelper {
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
-						findCountryOrCreate(country).getId());
+						findCountryOrCreateByName(country).getId());
 				childs.put(NS("factsheet.refugeesincountry"), refugeesInCountry);
 				childs.put(NS("factsheet.refugeesoutsidecountry"), refugeesOutsideCountry);
 				childs.put(NS("factsheet.refugeesineu"), refugeesInEU);
@@ -358,12 +386,12 @@ public class ImportHelper {
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
-						findCountryOrCreate(country).getId());
+						findCountryOrCreateByName(country).getId());
 				childs.putRef(NS("treaty.type"), treatyType.getId());
 				
 				if (partnerCountry.length() > 0) {
 					childs.putRef("dm4.contacts.country#" + NS("treaty.partner"),
-							findCountryOrCreate(partnerCountry).getId());
+							findCountryOrCreateByName(partnerCountry).getId());
 				}
 
 				childs.put(NS("treaty.name"), treatyName);
@@ -448,10 +476,11 @@ public class ImportHelper {
 			String featureUrl3 = row.get(4);
 			int columnIndex = asInt(row.get(5), 0);
 			boolean isDonorCountry = row.get(6).equals("ja");
+			String countryCode = row.get(7);
 			
 			ChildTopicsModel childs = mf.newChildTopicsModel();
 			childs.putRef("dm4.contacts.country",
-					findCountryOrCreate(country).getId());
+					findCountryOrCreateByCountryCode(countryCode, country).getId());
 			
 			childs.put(NS("countryoverview.columnindex"), columnIndex);
 			
@@ -646,7 +675,7 @@ public class ImportHelper {
 				childs.put(NS("detentioncenter.name"), name);
 				childs.put(NS("detentioncenter.link"), link);
 				childs.putRef("dm4.contacts.country",
-						findCountryOrCreate(country).getId());
+						findCountryOrCreateByName(country).getId());
 				
 				childs.putRef("dm4.geomaps.geo_coordinate", createGeoCoordinateFromMapPoint(mapPoint).getId());
 

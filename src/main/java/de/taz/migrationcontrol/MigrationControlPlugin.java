@@ -65,7 +65,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 		
 		for (Topic topic : dm4.getTopicsByType("dm4.contacts.country")) {
 			try {
-				Country country = dtoHelper.toCountryOrNull(topic);
+				Country country = dtoHelper.toCountryOrNull(languageCode, topic);
 				if (country != null)
 					results.add(country);
 			} catch (JSONException|IOException jsone) {
@@ -83,7 +83,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 
 		try {
 			if (topic != null)
-				return dtoHelper.toCountryOrNull(topic);
+				return dtoHelper.toCountryOrNull(languageCode, topic);
 		} catch (JSONException|IOException e) {
 			throw new RuntimeException(e);
 		}

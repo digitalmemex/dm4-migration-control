@@ -103,11 +103,20 @@ public class DTOHelper {
 		return result;
 	}
 	
+	private String toCountryId(Topic countryTopic) {
+		String uri = countryTopic.getUri();
+		if (uri != null) {
+			return uri.substring(NS("country.").length());			
+		} else {
+			return String.valueOf(countryTopic.getId());
+		}
+		
+	}
+	
 	Country toCountryOrNull(String languageCode, Topic countryTopic) throws JSONException, IOException {
 		CountryImpl json = new CountryImpl();
 		
-		json.put("id", countryTopic.getId());
-		json.put("countryCode", countryTopic.getUri());
+		json.put("id", toCountryId(countryTopic));
 		json.put("name", countryTopic.getSimpleValue().toString());
 		json.put("data", toStatisticData(countryTopic));
 		json.put("factSheet", toFactSheet(countryTopic));
@@ -147,6 +156,31 @@ public class DTOHelper {
 			json = new JSONObject();
 			json.put("headline", headline.text());
 			json.put("lead", lead.text());
+			
+			JSONArray imagesArray = new JSONArray();
+			for (Element picture : article.select("extra[type=picture] > picture")) {
+				Element descr = picture.getElementsByTag("descr").first();
+				Element caption = picture.getElementsByTag("caption").first();
+				Element credit = picture.getElementsByTag("credit").first();
+				Element pixmapXL = picture.select("pixmap[size=slideXL").first();
+				
+				// Skip image if somehting is missing.
+				if (credit == null || caption == null || pixmapXL == null) {
+					continue;
+				}
+				
+				JSONObject imageJson = new JSONObject();
+				if (descr != null) {
+					imageJson.put("alt", descr.text());
+				}
+				imageJson.put("caption", caption.text());
+				imageJson.put("src", makeImageUrl(findingLink, pixmapXL.attr("src")));
+				imageJson.put("credit", credit.text());
+				
+				imagesArray.put(imageJson);
+			}
+			
+			json.put("images", imagesArray);
 			
 			if (includeCorpus) {
 				Element corpus = article.getElementsByTag("corpus").first();

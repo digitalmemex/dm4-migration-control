@@ -85,6 +85,11 @@ public class DTOHelper {
 */
 			int ci = Math.min(childs.getInt(NS("countryoverview.columnindex")), 3);
 			
+			// If the index is -1,then the country is not supposed to appear in the table
+			if (ci == -1) {
+				continue;
+			}
+			
 			int weight = childs.getInt(NS("order"));
 			
 			cols[ci].add(new Wrapped(countryJson, weight));

@@ -20,6 +20,8 @@ public interface MigrationControlService {
 	
 	Country getCountry(String languageCode, long id);
 	
+	Country getCountry(String languageCode, String countryCode);
+
 	List<Thesis> getTheses(String languageCode);
 	
 	Thesis getThesis(String languageCode, long id);

@@ -105,10 +105,10 @@ public class DTOHelper {
 	
 	private String toCountryId(Topic countryTopic) {
 		String uri = countryTopic.getUri();
-		if (uri != null) {
+		if (uri != null && uri.length() > 0) {
 			return uri.substring(NS("country.").length());			
 		} else {
-			return String.valueOf(countryTopic.getId());
+			return null;
 		}
 		
 	}
@@ -116,7 +116,8 @@ public class DTOHelper {
 	Country toCountryOrNull(String languageCode, Topic countryTopic) throws JSONException, IOException {
 		CountryImpl json = new CountryImpl();
 		
-		json.put("id", toCountryId(countryTopic));
+		json.put("id", countryTopic.getId());
+		json.put("countryCode", toCountryId(countryTopic));
 		json.put("name", countryTopic.getSimpleValue().toString());
 		json.put("data", toStatisticData(countryTopic));
 		json.put("factSheet", toFactSheet(countryTopic));

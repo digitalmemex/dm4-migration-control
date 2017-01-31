@@ -78,8 +78,25 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 
 	@GET
 	@Path("/v1/{languageCode}/country/{id}")
+	@Override
 	public Country getCountry(@PathParam("languageCode") String languageCode, @PathParam("id") long id) {
 		Topic topic = dm4.getTopic(id);
+
+		try {
+			if (topic != null)
+				return dtoHelper.toCountryOrNull(languageCode, topic);
+		} catch (JSONException|IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return null;
+	}
+	
+	@GET
+	@Path("/v2/{languageCode}/country/{countryCode}")
+	@Override
+	public Country getCountry(@PathParam("languageCode") String languageCode, @PathParam("countryCode") String countryCode) {
+		Topic topic = dm4.getTopicByUri(NS("country." + countryCode));
 
 		try {
 			if (topic != null)

@@ -69,6 +69,7 @@ public class DTOHelper {
 			
 			JSONObject countryJson = new JSONObject();
 			countryJson.put("id", countryTopic.getId());
+			countryJson.put("countryCode", toCountryId(countryTopic));
 			countryJson.put("name", countryTopic.getSimpleValue().toString());
 			
 			logger.log(Level.INFO, "adding country: " + countryJson.getString("name"));

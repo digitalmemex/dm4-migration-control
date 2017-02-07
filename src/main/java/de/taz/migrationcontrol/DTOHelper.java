@@ -546,7 +546,11 @@ public class DTOHelper {
 				weight = countryOverviewTopic.getId();
 			}
 			
-			cols[ci].add(new Wrapped<Topic>(countryTopic, weight));
+			// columnIndex might be -1 which means it should not appear in the table
+			// at all
+			if (ci >= 0) {
+				cols[ci].add(new Wrapped<Topic>(countryTopic, weight));
+			}
 		}
 		
 		for (ArrayList<Wrapped<Topic>> col: cols) {

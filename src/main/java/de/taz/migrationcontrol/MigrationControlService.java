@@ -40,6 +40,8 @@ public interface MigrationControlService {
 
 	void importData(String dataType, String dataCsv);
 	
+	List<TreatiesOverview> getTreatiesOverview(String languageCode);
+	
 	void resetAllData();
 
 	interface CountriesOverview extends JSONEnabled {}
@@ -56,4 +58,6 @@ public interface MigrationControlService {
 
 	interface ImprintItem extends JSONEnabled {}
 
+	interface TreatiesOverview extends JSONEnabled {}
+	
 }

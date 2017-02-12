@@ -34,6 +34,7 @@ import de.taz.migrationcontrol.MigrationControlService.Country;
 import de.taz.migrationcontrol.MigrationControlService.DetentionCenter;
 import de.taz.migrationcontrol.MigrationControlService.ImprintItem;
 import de.taz.migrationcontrol.MigrationControlService.Thesis;
+import de.taz.migrationcontrol.MigrationControlService.TreatiesOverview;
 
 public class DTOHelper {
 
@@ -408,11 +409,36 @@ public class DTOHelper {
 		return json;
 	}
 	
+	JSONObject toCoordinate(Topic geoCoordTopic) throws JSONException {
+		ChildTopics childs = geoCoordTopic.getChildTopics();
+		
+		JSONObject json = new JSONObject();
+		json.put("lat", childs.getDouble("dm4.geomaps.latitude"));
+		json.put("lon", childs.getDouble("dm4.geomaps.longitude"));
+
+		return json;
+	}
+	
 	private List<RelatedTopic> getTreatiesForCountry(Topic country, String treatyType) {
 		List<RelatedTopic> treaties = country.getRelatedTopics((String) null, (String) null, (String) null, NS("treaty"));
 		
 		ArrayList<RelatedTopic> result = new ArrayList<>();
 		for (RelatedTopic topic : treaties) {
+			ChildTopics childs = topic.getChildTopics();
+			
+			if (treatyType == null || treatyType.equals(childs.getStringOrNull("de.taz.migrationcontrol.treaty.type"))) {
+				result.add(topic);
+			}
+		}
+		
+		return result;
+	}
+	
+	private List<Topic> getTreaties(String treatyType) {
+		List<Topic> treaties = dm4.getTopicsByType(NS("treaty"));
+		
+		ArrayList<Topic> result = new ArrayList<>();
+		for (Topic topic : treaties) {
 			ChildTopics childs = topic.getChildTopics();
 			
 			if (treatyType == null || treatyType.equals(childs.getStringOrNull("de.taz.migrationcontrol.treaty.type"))) {
@@ -558,6 +584,37 @@ public class DTOHelper {
 			addTreatiesForCountries(result, unwrapList(sortByWeight((col))));
 		}
 		
+		return result;
+	}
+	
+	List<TreatiesOverview> toTreatiesOverviewList() throws JSONException, IOException {
+		List<Topic> treaties = getTreaties(TREATYTYPE_REPATRIATION_AGREEMENT);
+		
+		ArrayList<TreatiesOverview> result = new ArrayList<>();
+		for (Topic treaty : treaties) {
+			ChildTopics childs = treaty.getChildTopics();
+			
+			Topic countryTopic = childs.getTopic("dm4.contacts.country");
+			Topic partnerTopic = childs.getTopic("dm4.contacts.country#" + NS("treaty.partner"));
+			
+			TreatiesOverviewImpl json = new TreatiesOverviewImpl();
+			json.put("name", childs.getString(NS("treaty.name")));
+			json.put("country", countryTopic.getSimpleValue().toString());
+			json.put("partner", partnerTopic.getSimpleValue().toString());
+			json.put("link", childs.getStringOrNull(NS("treaty.link")));
+			json.put("date", toDateOrNull(childs.getTopicOrNull("dm4.datetime.date")));
+			
+			RelatedTopic countryCoordsTopic = countryTopic.getRelatedTopic((String) null, (String) null,(String) null, "dm4.geomaps.geo_coordinate");
+			if (countryCoordsTopic != null)
+				json.put("countryCoords", toCoordinate(countryCoordsTopic));
+			
+			RelatedTopic partnerCoordsTopic = partnerTopic.getRelatedTopic((String) null, (String) null,(String) null, "dm4.geomaps.geo_coordinate");
+			if (partnerCoordsTopic != null)
+				json.put("partnerCoords", toCoordinate(partnerCoordsTopic));
+			
+			result.add(json);
+		}
+
 		return result;
 	}
 	
@@ -809,4 +866,6 @@ public class DTOHelper {
 	private static class ImprintItemImpl extends JSONEnabledImpl implements ImprintItem {
 	}
 
+	private static class TreatiesOverviewImpl extends JSONEnabledImpl implements TreatiesOverview {
+	}
 }

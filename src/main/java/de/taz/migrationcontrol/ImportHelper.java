@@ -163,11 +163,27 @@ public class ImportHelper {
 			}
 		}
 				
-		Topic topic = dm4.createTopic(mf.newTopicModel("dm4.contacts.country", new SimpleValue(countryName)));
-
-		assignToDataWorkspace(topic);
+		Topic countryTopic = dm4.createTopic(mf.newTopicModel("dm4.contacts.country", new SimpleValue(countryName)));
 		
-		return topic;		
+		// Do geocoding
+		double[] geoCoords = GeoCodingHelper.geocode(countryName);
+		if (geoCoords != null) {
+			double lat = geoCoords[0];
+			double lon = geoCoords[1];
+			Topic geoTopic = createGeoCoordinateTopic(lat, lon);
+			
+			Association asso = dm4.createAssociation(mf.newAssociationModel("dm4.core.composition",
+	    			mf.newTopicRoleModel(countryTopic.getId(), "dm4.core.default"),
+				mf.newTopicRoleModel(geoTopic.getId(), "dm4.core.default")));
+			
+			assignToDataWorkspace(asso);
+		} else {
+			logger.warning("no geo coordinates for country: " + countryName);
+		}
+
+		assignToDataWorkspace(countryTopic);
+		
+		return countryTopic;		
 	}
 	
 	private Topic findCountryOrCreateByCountryCode(String countryCode, String countryName) {
@@ -179,23 +195,7 @@ public class ImportHelper {
 			return topic;
 		}
 		
-		// Lookup via Name
-		for (Topic country : dm4.getTopicsByType("dm4.contacts.country")) {
-			if (countryName.equals(country.getSimpleValue().toString())) {
-				
-				// Apparently the URI was not set yet. So do now.
-				country.setUri(uri);
-				
-				return country;
-			}
-		}
-
-		// Country does not exist. So create it.
-		topic = dm4.createTopic(mf.newTopicModel(uri, "dm4.contacts.country", new SimpleValue(countryName)));
-
-		assignToDataWorkspace(topic);
-		
-		return topic;		
+		return findCountryOrCreateByName(countryName);		
 	}
 
 	private void putRefOrCreate(ChildTopicsModel childs, String typeUri, Object value) {
@@ -697,17 +697,21 @@ public class ImportHelper {
 			double lat = Double.parseDouble(parts[0].trim());
 			double lon = Double.parseDouble(parts[1].trim());
 			
-			ChildTopicsModel childs = mf.newChildTopicsModel();
-			childs.put("dm4.geomaps.latitude", lat);
-			childs.put("dm4.geomaps.longitude", lon);
-			
-			Topic topic = dm4.createTopic(mf.newTopicModel("dm4.geomaps.geo_coordinate", childs));
-			assignToDataWorkspace(topic);
-			
-			return topic;
+			return createGeoCoordinateTopic(lat, lon);
 		} else {
 			throw new ParseException("Map point not well formed: " + mapPoint, parts.length);
 		}
+	}
+
+	private Topic createGeoCoordinateTopic(double lat, double lon) {
+		ChildTopicsModel childs = mf.newChildTopicsModel();
+		childs.put("dm4.geomaps.latitude", lat);
+		childs.put("dm4.geomaps.longitude", lon);
+		
+		Topic topic = dm4.createTopic(mf.newTopicModel("dm4.geomaps.geo_coordinate", childs));
+		assignToDataWorkspace(topic);
+		
+		return topic;
 	}
 
 	public void importImprint(CSVParser data) throws IOException {

@@ -19,6 +19,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.codehaus.jettison.json.JSONException;
 
+import com.sun.jersey.api.NotFoundException;
+
 import de.deepamehta.accesscontrol.AccessControlService;
 import de.deepamehta.core.Topic;
 import de.deepamehta.core.osgi.PluginActivator;
@@ -185,7 +187,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 
 		try {
 			if (topic != null)
-				return dtoHelper.toBackgroundItem(topic);
+				return catchNull(dtoHelper.toBackgroundItem(topic));
 		} catch (JSONException|IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -304,5 +306,12 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	public void resetAllData() {
 		importHelper.resetAllData();
 	}
-	
+
+	private static <T> T catchNull(T t) {
+		if (t == null) {
+			throw new NotFoundException();
+		} else {
+			return t;
+		}
+	}
 }

@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -295,7 +296,12 @@ public class DTOHelper {
 			tazUrl += "/";
 		}
 		
-		return Jsoup.connect(tazUrl + "c.xml").get();
+		try {
+			return Jsoup.connect(tazUrl + "c.xml").get();
+		} catch (HttpStatusException e) {
+			logger.warning("Failed to retrieve: " + tazUrl);
+			return null;
+		}
 	}
 
 	private JSONObject toStatisticData(Topic country) throws JSONException {
@@ -697,6 +703,10 @@ public class DTOHelper {
 			
 		if (link != null && link.length() > 0) {
 			Document doc = retrieveDocument(link);
+			if (doc == null) {
+				logger.warning("Article cannot be retrieved for background: " + link);
+				return json;
+			}
 			Element article = doc.select("content > item[type=article]").get(0);
 			Element headline = article.getElementsByTag("headline").get(0);
 			Element lead = article.getElementsByTag("lead").get(0);

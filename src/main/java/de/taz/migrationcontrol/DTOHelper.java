@@ -157,7 +157,11 @@ public class DTOHelper {
 		JSONObject json = null;
 		try {
 			doc = retrieveDocument(findingLink);
-			
+			if (doc == null) {
+				logger.warning("Article cannot be retrieved for finding: " + findingLink);
+				return json;
+			}
+
 			Element article = doc.select("content > item[type=article]").first();
 			Element headline = article.getElementsByTag("headline").first();
 			Element lead = article.getElementsByTag("lead").first();
@@ -218,6 +222,10 @@ public class DTOHelper {
 		JSONObject json = null;
 		try {
 			doc = retrieveDocument(featureLink);
+			if (doc == null) {
+				logger.warning("Article cannot be retrieved for feature: " + featureLink);
+				return json;
+			}
 			
 			Element article = doc.select("content > item[type=article]").first();
 			Element headline = article.getElementsByTag("headline").first();

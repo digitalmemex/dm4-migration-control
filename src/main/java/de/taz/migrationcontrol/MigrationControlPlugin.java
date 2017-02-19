@@ -267,6 +267,12 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "singlepayments":
 				importHelper.importSinglePayments(parser);
 				break;
+			case "singlepayments_sources":
+				importHelper.importSinglePaymentsSources(parser);
+				break;
+			case "singlepayments_links":
+				importHelper.importSinglePaymentsLinks(parser);
+				break;
 			case "factsheet":
 				importHelper.importFactSheet(parser);
 				break;

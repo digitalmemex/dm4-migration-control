@@ -59,6 +59,14 @@ public class ImportHelper {
 	public void importSinglePayments(CSVParser data) throws IOException {
 		importStatistics("Single Payments", data);
 	}
+
+	public void importSinglePaymentsSources(CSVParser data) throws IOException {
+		importStatisticsExtra("Single Payments", NS("statistics.entry.source"), data);
+	}
+
+	public void importSinglePaymentsLinks(CSVParser data) throws IOException {
+		importStatisticsExtra("Single Payments", NS("statistics.entry.link"), data);
+	}
 	
 	private void importStatistics(String statName, CSVParser data) throws IOException {
 		Topic statType = findStatisticsType(statName);
@@ -102,7 +110,56 @@ public class ImportHelper {
 			assignToDataWorkspace(t);
 		}
 	}
+
+	private void importStatisticsExtra(String statName, String textEntryUri, CSVParser data) throws IOException {
+		Topic statType = findStatisticsType(statName);
+		
+		logger.info("importing " + statName);
+		
+		// first row :       <none>,  year,  year,  year, ...
+		// other rows: country name, value, value, value, ...
+		// special value: .. -> no value available
+		List<CSVRecord> records = data.getRecords();
+		CSVRecord firstRow = records.get(0);
+		logger.info("parsed CSV: " + records.size() + " countries");
+		
+		// iterates over all countries
+		for (int i = 1;i < records.size(); i++) {
+			CSVRecord row = records.get(i);
+			logger.info("importing " + statName + " for " + row.get(0));
+
+			String countryName = row.get(0);
+			Topic statisticTopic = findStatistic(statType, findCountryOrCreateByName(countryName));
+						
+			for (int j = 1; j < row.size(); j++) {
+				int year = Integer.parseInt(firstRow.get(j));	// this is expected never to fail
+				String value = row.get(j);
+				if (value.length() > 0) {
+					// there is an actual value to store
+					Topic entryTopic = findEntry(statisticTopic, year);
+					
+					if (entryTopic != null) {
+						entryTopic.getChildTopics().set(textEntryUri, value);
+					} else {
+						// Missing statistic entry (no way to add an extra)
+						logger.info("cannot add extra '" + value + "' to statistic of year: " + year);
+					}
+				}
+			}
+			
+		}
+	}
 	
+	private Topic findStatistic(Topic statType, Topic countryTopic) {
+		// TODO: Implement.
+		return null;
+	}
+	
+	private Topic findEntry(Topic statisticTopic, int year) {
+		// TODO: Implement.
+		return null;
+	}
+
 	private Topic createStatisticEntry(int year, double value) {
 		ChildTopicsModel childs = mf.newChildTopicsModel();
 		childs.put(NS("statistic.entry.value"), value);

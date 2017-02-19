@@ -828,9 +828,17 @@ public class DTOHelper {
 		
 		ChildTopics childs = statEntry.getChildTopics();
 		String yearAsString = String.valueOf(childs.getInt("dm4.datetime.year"));
-		double value = childs.getDouble(NS("statistic.entry.value"));
 		
-		obj.put(yearAsString, value);
+		double value = childs.getDouble(NS("statistic.entry.value"));
+		String source = childs.getStringOrNull(NS("statistic.entry.source"));
+		String link = childs.getStringOrNull(NS("statistic.entry.link"));
+		
+		JSONObject valueObject = new JSONObject();
+		valueObject.put("value", value);
+		valueObject.put("source", source);
+		valueObject.put("link", link);
+		
+		obj.put(yearAsString, valueObject);
 		
 		return obj;
 	}

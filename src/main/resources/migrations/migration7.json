@@ -1,0 +1,17 @@
+[
+    {
+        "topic_types": [
+# for Statistic
+            {
+                "value":            "Source",
+                "uri":              "de.taz.migrationcontrol.statistic.entry.source",
+                "data_type_uri":    "dm4.core.text"
+            },
+            {
+                "value":            "Link",
+                "uri":              "de.taz.migrationcontrol.statistic.entry.link",
+                "data_type_uri":    "dm4.core.text"
+            }
+		]
+	}
+]

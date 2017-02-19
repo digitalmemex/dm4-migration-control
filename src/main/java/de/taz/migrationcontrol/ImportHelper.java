@@ -162,8 +162,31 @@ public class ImportHelper {
 				return country;
 			}
 		}
-				
-		Topic countryTopic = dm4.createTopic(mf.newTopicModel("dm4.contacts.country", new SimpleValue(countryName)));
+
+		// TODO: Discouraged because this will miss the country URI!
+		return createCountryTopic(null, countryName);		
+	}
+	
+	private Topic findCountryOrCreateByCountryCode(String countryCode, String countryName) {
+		String uri = NS("country." + countryCode);
+		
+		// Lookup via URI
+		Topic topic = dm4.getTopicByUri(uri);
+		if (topic != null){
+			return topic;
+		}
+
+		for (Topic country : dm4.getTopicsByType("dm4.contacts.country")) {
+			if (countryName.equals(country.getSimpleValue().toString())) {
+				return country;
+			}
+		}
+		
+		return createCountryTopic(uri, countryName);		
+	}
+	
+	private Topic createCountryTopic(String uri, String countryName) {
+		Topic countryTopic = dm4.createTopic(mf.newTopicModel(uri, "dm4.contacts.country", new SimpleValue(countryName)));
 		
 		// Do geocoding
 		double[] geoCoords = GeoCodingHelper.geocode(countryName);
@@ -183,19 +206,7 @@ public class ImportHelper {
 
 		assignToDataWorkspace(countryTopic);
 		
-		return countryTopic;		
-	}
-	
-	private Topic findCountryOrCreateByCountryCode(String countryCode, String countryName) {
-		String uri = NS("country." + countryCode);
-		
-		// Lookup via URI
-		Topic topic = dm4.getTopicByUri(uri);
-		if (topic != null){
-			return topic;
-		}
-		
-		return findCountryOrCreateByName(countryName);		
+		return countryTopic;
 	}
 
 	private void putRefOrCreate(ChildTopicsModel childs, String typeUri, Object value) {

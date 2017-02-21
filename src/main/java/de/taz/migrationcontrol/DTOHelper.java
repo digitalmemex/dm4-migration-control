@@ -808,7 +808,7 @@ public class DTOHelper {
 		return list;
 	}
 	
-	private static <T> List<T> safe(List<T> originalList){
+	static <T> List<T> safe(List<T> originalList){
 		return originalList != null ? originalList : Collections.<T>emptyList();
 	}
 	

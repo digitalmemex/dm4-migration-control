@@ -12,10 +12,12 @@ import java.util.logging.Logger;
 
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.codehaus.jettison.json.JSONArray;
 
 import de.deepamehta.core.Association;
 import de.deepamehta.core.ChildTopics;
 import de.deepamehta.core.DeepaMehtaObject;
+import de.deepamehta.core.RelatedTopic;
 import de.deepamehta.core.Topic;
 import de.deepamehta.core.model.ChildTopicsModel;
 import de.deepamehta.core.model.SimpleValue;
@@ -90,7 +92,7 @@ public class ImportHelper {
 			ChildTopicsModel childs = mf.newChildTopicsModel();
 			childs.putRef(NS("statistic.type"), statType.getId());
 			childs.putRef("dm4.contacts.country",
-					findCountryOrCreateByName(row.get(0)).getId());
+					findCountryOrCreate(row.get(0)).getId());
 			
 			for (int j = 1; j < row.size(); j++) {
 				try {
@@ -129,20 +131,25 @@ public class ImportHelper {
 			logger.info("importing " + statName + " for " + row.get(0));
 
 			String countryName = row.get(0);
-			Topic statisticTopic = findStatistic(statType, findCountryOrCreateByName(countryName));
+			Topic statisticTopic = findStatisticOrNull(statType, findCountryOrCreate(countryName));
+			
+			if (statisticTopic == null) {
+				logger.warning("cannot add statistic extra for country'" + countryName);
+				continue;
+			}
 						
 			for (int j = 1; j < row.size(); j++) {
 				int year = Integer.parseInt(firstRow.get(j));	// this is expected never to fail
 				String value = row.get(j);
 				if (value.length() > 0) {
 					// there is an actual value to store
-					Topic entryTopic = findEntry(statisticTopic, year);
+					Topic entryTopic = findEntryOrNull(statisticTopic, year);
 					
 					if (entryTopic != null) {
 						entryTopic.getChildTopics().set(textEntryUri, value);
 					} else {
 						// Missing statistic entry (no way to add an extra)
-						logger.info("cannot add extra '" + value + "' to statistic of year: " + year);
+						logger.warning("cannot add extra '" + value + "' to statistic of year: " + year);
 					}
 				}
 			}
@@ -150,13 +157,29 @@ public class ImportHelper {
 		}
 	}
 	
-	private Topic findStatistic(Topic statType, Topic countryTopic) {
-		// TODO: Implement.
+	private Topic findStatisticOrNull(Topic statType, Topic countryTopic) {
+		for (RelatedTopic statTopic : countryTopic.getRelatedTopics((String) null, (String) null, (String) null, NS("statistic"))) {
+			ChildTopics childs = statTopic.getChildTopics();
+			
+			
+			if (childs.getTopic(NS("statistic.type")).getId() == statType.getId()) {
+				return statTopic;
+			}
+		}
+		
 		return null;
 	}
 	
-	private Topic findEntry(Topic statisticTopic, int year) {
-		// TODO: Implement.
+	private Topic findEntryOrNull(Topic statisticTopic, int year) {
+		ChildTopics childs = statisticTopic.getChildTopics();
+		
+		for (RelatedTopic statEntry : DTOHelper.safe(childs.getTopicsOrNull(NS("statistic.entry")))) {
+			ChildTopics childs2 = statEntry.getChildTopics();
+			
+			if (year == childs2.getIntOrNull("dm4.datetime.year")) {
+				return statEntry;
+			}
+		}
 		return null;
 	}
 
@@ -200,7 +223,7 @@ public class ImportHelper {
 			}
 		}
 		
-		throw new IllegalStateException("Unknown frontext cooperation state: " + stateName);
+		throw new IllegalStateException("Unknown frontex cooperation state: " + stateName);
 	}
 	
 	private Topic findThesisDiagramType(String diagramType) {		
@@ -213,19 +236,8 @@ public class ImportHelper {
 		throw new IllegalStateException("Unknown thesis diagram type: " + diagramType);
 	}
 	
-	private Topic findCountryOrCreateByName(String countryName) {
-		for (Topic country : dm4.getTopicsByType("dm4.contacts.country")) {
-			if (countryName.equals(country.getSimpleValue().toString())) {
-				return country;
-			}
-		}
-
-		// TODO: Discouraged because this will miss the country URI!
-		return createCountryTopic(null, countryName);		
-	}
-	
-	private Topic findCountryOrCreateByCountryCode(String countryCode, String countryName) {
-		String uri = NS("country." + countryCode);
+	private Topic findCountryOrCreate(String countryName) {
+		String uri = NS("country." + CountryHelper.getCountryCode(countryName));
 		
 		// Lookup via URI
 		Topic topic = dm4.getTopicByUri(uri);
@@ -323,7 +335,7 @@ public class ImportHelper {
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
-						findCountryOrCreateByName(country).getId());
+						findCountryOrCreate(country).getId());
 				childs.put(NS("factsheet.refugeesincountry"), refugeesInCountry);
 				childs.put(NS("factsheet.refugeesoutsidecountry"), refugeesOutsideCountry);
 				childs.put(NS("factsheet.refugeesineu"), refugeesInEU);
@@ -454,12 +466,12 @@ public class ImportHelper {
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
-						findCountryOrCreateByName(country).getId());
+						findCountryOrCreate(country).getId());
 				childs.putRef(NS("treaty.type"), treatyType.getId());
 				
 				if (partnerCountry.length() > 0) {
 					childs.putRef("dm4.contacts.country#" + NS("treaty.partner"),
-							findCountryOrCreateByName(partnerCountry).getId());
+							findCountryOrCreate(partnerCountry).getId());
 				}
 
 				childs.put(NS("treaty.name"), treatyName);
@@ -544,11 +556,13 @@ public class ImportHelper {
 			String featureUrl3 = row.get(4);
 			int columnIndex = asInt(row.get(5), 0);
 			boolean isDonorCountry = row.get(6).equals("ja");
-			String countryCode = row.get(7);
+			
+			// Value exists but is not used.
+			//String countryCode = row.get(7);
 			
 			ChildTopicsModel childs = mf.newChildTopicsModel();
 			childs.putRef("dm4.contacts.country",
-					findCountryOrCreateByCountryCode(countryCode, country).getId());
+					findCountryOrCreate(country).getId());
 			
 			childs.put(NS("countryoverview.columnindex"), columnIndex);
 			
@@ -743,7 +757,7 @@ public class ImportHelper {
 				childs.put(NS("detentioncenter.name"), name);
 				childs.put(NS("detentioncenter.link"), link);
 				childs.putRef("dm4.contacts.country",
-						findCountryOrCreateByName(country).getId());
+						findCountryOrCreate(country).getId());
 				
 				childs.putRef("dm4.geomaps.geo_coordinate", createGeoCoordinateFromMapPoint(mapPoint).getId());
 

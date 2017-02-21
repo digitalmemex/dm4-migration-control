@@ -872,6 +872,7 @@ public class ImportHelper {
 		deleteAll(NS("statistic"));
 
 		deleteAll("dm4.contacts.country");
+		deleteAll("dm4.geomaps.geo_coordinate");
 		
 		deleteTreatyNote();
 	}

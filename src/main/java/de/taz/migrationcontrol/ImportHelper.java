@@ -63,11 +63,11 @@ public class ImportHelper {
 	}
 
 	public void importSinglePaymentsSources(CSVParser data) throws IOException {
-		importStatisticsExtra("Single Payments", NS("statistics.entry.source"), data);
+		importStatisticsExtra("Single Payments", NS("statistic.entry.source"), data);
 	}
 
 	public void importSinglePaymentsLinks(CSVParser data) throws IOException {
-		importStatisticsExtra("Single Payments", NS("statistics.entry.link"), data);
+		importStatisticsExtra("Single Payments", NS("statistic.entry.link"), data);
 	}
 	
 	private void importStatistics(String statName, CSVParser data) throws IOException {
@@ -116,7 +116,7 @@ public class ImportHelper {
 	private void importStatisticsExtra(String statName, String textEntryUri, CSVParser data) throws IOException {
 		Topic statType = findStatisticsType(statName);
 		
-		logger.info("importing " + statName);
+		logger.info("importing statistic extra " + statName + " - extra: " + textEntryUri);
 		
 		// first row :       <none>,  year,  year,  year, ...
 		// other rows: country name, value, value, value, ...
@@ -128,7 +128,7 @@ public class ImportHelper {
 		// iterates over all countries
 		for (int i = 1;i < records.size(); i++) {
 			CSVRecord row = records.get(i);
-			logger.info("importing " + statName + " for " + row.get(0));
+			logger.info("importing " + statName + " (extra) for " + row.get(0));
 
 			String countryName = row.get(0);
 			Topic statisticTopic = findStatisticOrNull(statType, findCountryOrCreate(countryName));
@@ -146,7 +146,9 @@ public class ImportHelper {
 					Topic entryTopic = findEntryOrNull(statisticTopic, year);
 					
 					if (entryTopic != null) {
-						entryTopic.getChildTopics().set(textEntryUri, value);
+						ChildTopics childs = entryTopic.getChildTopics();
+
+						childs.set(textEntryUri, value);
 					} else {
 						// Missing statistic entry (no way to add an extra)
 						logger.warning("cannot add extra '" + value + "' to statistic of year: " + year);
@@ -548,6 +550,11 @@ public class ImportHelper {
 		for (int i = 1;i < records.size(); i++) {
 			CSVRecord row = records.get(i);
 			String country = row.get(0);
+			
+			// Skip invalid country
+			if (country.length() == 0)
+				continue;
+			
 			logger.info("importing findings and features for " + country);
 
 			String findingUrl = row.get(1);

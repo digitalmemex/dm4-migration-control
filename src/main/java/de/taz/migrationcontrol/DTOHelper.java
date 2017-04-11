@@ -55,7 +55,7 @@ public class DTOHelper {
 		this.wsService = wsService;
 	}
 	
-	List<CountriesOverview> toCountriesOverviewList(List<Topic> countryTopics) throws JSONException, IOException {
+	List<CountriesOverview> toCountriesOverviewList(String languageCode, List<Topic> countryTopics) throws JSONException, IOException {
 		ArrayList[] cols = {
 				new ArrayList<Wrapped<JSONObject>>(),
 				new ArrayList<Wrapped<JSONObject>>(),
@@ -73,7 +73,7 @@ public class DTOHelper {
 			JSONObject countryJson = new JSONObject();
 			countryJson.put("id", countryTopic.getId());
 			countryJson.put("countryCode", toCountryId(countryTopic));
-			countryJson.put("name", countryTopic.getSimpleValue().toString());
+			countryJson.put("name", getTranslatedStringOrDefault(languageCode, countryTopic));
 			
 			logger.log(Level.INFO, "adding country: " + countryJson.getString("name"));
 
@@ -137,11 +137,11 @@ public class DTOHelper {
 			return json;
 		
 		ChildTopics childs = countryOverviewTopic.getChildTopics();
-		json.put("finding", toFinding(childs.getStringOrNull(NS("countryoverview.findinglink")), true));
+		json.put("finding", toFinding(getTranslatedStringOrNull(childs, languageCode, NS("countryoverview.findinglink")), true));
 		json.put("isDonorCountry", childs.getBooleanOrNull(NS("countryoverview.isdonorcountry")));
 		
 		JSONArray featuresArray = new JSONArray();
-		for (String featureLink : safe(toStringListOrNull(childs.getTopicsOrNull(NS("countryoverview.featurelink"))))) {
+		for (String featureLink : safe(toStringListOrNull(languageCode, childs.getTopicsOrNull(NS("countryoverview.featurelink"))))) {
 			featuresArray.put(toFeature(featureLink, true));
 		}
 		json.put("features", featuresArray);
@@ -773,6 +773,14 @@ public class DTOHelper {
 			return null;
 		}
 		
+		return getTranslatedStringOrNull(languageCode, topic);
+	}
+
+	private static String getTranslatedStringOrNull(String languageCode, Topic topic) {
+		if (languageCode == null || languageCode.equals("de")) {
+			return topic.getSimpleValue().toString();
+		}
+		
 		// Try to look up translation
 		List<RelatedTopic> translatedTexts = topic.getRelatedTopics(NS("translation"), "dm4.core.default", "dm4.core.default", NS("translatedtext"));
 		for (RelatedTopic possibleTranslationTopic : translatedTexts) {
@@ -784,6 +792,24 @@ public class DTOHelper {
 		
 		// If translation is not found, deliver as non-existing.
 		return null;
+	}
+
+	private static String getTranslatedStringOrDefault(String languageCode, Topic topic) {
+		if (languageCode == null || languageCode.equals("de")) {
+			return topic.getSimpleValue().toString();
+		}
+		
+		// Try to look up translation
+		List<RelatedTopic> translatedTexts = topic.getRelatedTopics(NS("translation"), "dm4.core.default", "dm4.core.default", NS("translatedtext"));
+		for (RelatedTopic possibleTranslationTopic : translatedTexts) {
+			Association association = possibleTranslationTopic.getRelatingAssociation();
+			if (languageCode.equals(association.getSimpleValue().toString())) {
+				return possibleTranslationTopic.getSimpleValue().toString();
+			}
+		}
+		
+		// If translation is not found, deliver as non-existing.
+		return topic.getSimpleValue().toString();
 	}
 
 	private List<Topic> sortByOrder(List<Topic> list) {
@@ -867,11 +893,21 @@ public class DTOHelper {
 		return obj;
 	}
 	
-	private static List<String> toStringListOrNull(List<RelatedTopic> topics) {
+	/** Translation-aware converter of list of topic to strings. Of each topic the translation is looked up
+	 * first and only exiting values added to the result.
+	 * 
+	 * @param languageCode
+	 * @param topics
+	 * @return
+	 */
+	private static List<String> toStringListOrNull(String languageCode, List<RelatedTopic> topics) {
 		if (topics != null && topics.size() > 0) {
 			List<String> list = new ArrayList<String>();
 			for (Topic t : topics) {
-				list.add(t.getSimpleValue().toString());
+				String v = getTranslatedStringOrNull(languageCode, t);
+				if (v != null) {
+					list.add(v);
+				}
 			}
 
 			return list;

@@ -127,7 +127,7 @@ public class DTOHelper {
 		
 		json.put("id", countryTopic.getId());
 		json.put("countryCode", toCountryId(countryTopic));
-		json.put("name", countryTopic.getSimpleValue().toString());
+		json.put("name", getTranslatedStringOrDefault(languageCode, countryTopic));
 		json.put("data", toStatisticData(countryTopic));
 		json.put("factSheet", toFactSheet(countryTopic));
 

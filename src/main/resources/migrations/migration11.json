@@ -1,0 +1,14 @@
+[
+# Simple types for various composite types
+    {
+        "topic_types": [
+# another entry Fact Sheet
+            {
+                "value":            "Informal Treaties Description",
+                "uri":              "de.taz.migrationcontrol.factsheet.informaltreatiesdescription",
+                "data_type_uri":    "dm4.core.text",
+                "index_mode_uris": ["dm4.core.fulltext"]
+            }
+       ]
+    }
+]

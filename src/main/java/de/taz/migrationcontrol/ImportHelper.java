@@ -338,6 +338,7 @@ public class ImportHelper {
 				String detentionCenterDescription = row.get(10);
 				boolean departureIsIllegal = "ja".equals(row.get(11));
 				String departureDescription = row.get(12);
+				String informalTreatiesDescription = row.get(13);
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.putRef("dm4.contacts.country",
@@ -348,6 +349,7 @@ public class ImportHelper {
 				childs.put(NS("factsheet.idp"), idp);
 				childs.put(NS("factsheet.applicationsforasylum"), applicationsForAsylum);
 				childs.put(NS("factsheet.asylumapprovalrate"), asylumApprovalRate);
+				childs.put(NS("factsheet.informaltreatiesdescription"), informalTreatiesDescription);
 				childs.putRef(NS("factsheet.frontexcooperationinfo"), makeFrontexCooperationInfo(frontexCooperationState, frontexCooperationDescription).getId());
 				childs.putRef(NS("factsheet.detentioncenterinfo"), makeDetentionCenterInfo(detentionCentercount, detentionCenterDescription).getId());
 				childs.putRef(NS("factsheet.departurelegalityinfo"), makeDepartureLegalityInfo(departureIsIllegal, departureDescription).getId());
@@ -358,10 +360,12 @@ public class ImportHelper {
 				setTranslationWhenExists(tcm, NS("factsheet.frontexcooperationinfo"), "en", row.get(14));
 				setTranslationWhenExists(tcm, NS("factsheet.detentioncenterinfo"), "en", row.get(15));
 				setTranslationWhenExists(tcm, NS("factsheet.departurelegalityinfo"), "en", row.get(16));
+				setTranslationWhenExists(tcm, NS("factsheet.informaltreatiesdescription"), "en", row.get(17));
 
 				setTranslationWhenExists(tcm, NS("factsheet.frontexcooperationinfo"), "fr", row.get(18));
 				setTranslationWhenExists(tcm, NS("factsheet.detentioncenterinfo"), "fr", row.get(19));
 				setTranslationWhenExists(tcm, NS("factsheet.departurelegalityinfo"), "fr", row.get(20));
+				setTranslationWhenExists(tcm, NS("factsheet.informaltreatiesdescription"), "fr", row.get(21));
 				
 				assignToDataWorkspace(t);
 			} catch (NumberFormatException|ParseException e) {

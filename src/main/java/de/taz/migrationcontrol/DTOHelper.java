@@ -344,6 +344,7 @@ public class DTOHelper {
 			data.put("idp", childs.getIntOrNull(NS("factsheet.idp")));
 			data.put("applicationsForAsylum", childs.getIntOrNull(NS("factsheet.applicationsforasylum")));
 			data.put("asylumApprovalRate", (Number) childs.getDoubleOrNull(NS("factsheet.asylumapprovalrate")));
+			data.put("informalTreatiesDescription", getTranslatedStringOrNull(childs, languageCode, NS("factsheet.informaltreatiesdescription")));
 			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
 			data.put("otherMigrationAgreements", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
 			data.put("frontexCooperation", toFrontexCooperationInfo(languageCode, childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));

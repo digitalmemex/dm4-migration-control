@@ -539,6 +539,10 @@ public class ImportHelper {
 		return t.getModel();
 	}
 	
+	private boolean urlExists(String s) {
+		return s.length() > 0 && !s.equals("..");
+	}
+	
 	public void importFindingsAndFeatures(CSVParser data) throws IOException {
 		deleteAll(NS("countryoverview"));
 		logger.info("importing findings and features");
@@ -573,19 +577,19 @@ public class ImportHelper {
 			
 			childs.put(NS("countryoverview.columnindex"), columnIndex);
 			
-			if (findingUrl.length() > 0 && !findingUrl.equals("..")) {
+			if (urlExists(findingUrl)) {
 				childs.put(NS("countryoverview.findinglink"), findingUrl);
 			}
 		
-			if (featureUrl1.length() > 0 && !featureUrl1.equals("..")) {
+			if (urlExists(featureUrl1)) {
 				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl1));
 			}
 			
-			if (featureUrl2.length() > 0 && !featureUrl2.equals("..")) {
+			if (urlExists(featureUrl2)) {
 				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl2));
 			}
 			
-			if (featureUrl3.length() > 0 && !featureUrl3.equals("..")) {
+			if (urlExists(featureUrl3)) {
 				childs.add(NS("countryoverview.featurelink"), newFeatureLink(featureUrl3));
 			}
 			childs.put(NS("countryoverview.isdonorcountry"), isDonorCountry);

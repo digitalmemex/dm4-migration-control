@@ -187,7 +187,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 
 		try {
 			if (topic != null)
-				return catchNull(dtoHelper.toBackgroundItem(languageCode, topic));
+				return catchNull(dtoHelper.toBackgroundItemOrNull(languageCode, topic));
 		} catch (JSONException|IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -203,7 +203,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 		
 		for (Topic topic : dm4.getTopicsByType(NS("imprintitem"))) {
 			try {
-				ImprintItem dto = dtoHelper.toImprintItem(languageCode, topic);
+				ImprintItem dto = dtoHelper.toImprintItemOrNull(languageCode, topic);
 				if (dto != null)
 					results.add(dto);
 			} catch (JSONException e) {
@@ -221,7 +221,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 
 		try {
 			if (topic != null)
-				return dtoHelper.toImprintItem(languageCode, topic);
+				return dtoHelper.toImprintItemOrNull(languageCode, topic);
 		} catch (JSONException e) {
 			throw new RuntimeException(e);
 		}

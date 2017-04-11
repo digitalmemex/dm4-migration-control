@@ -749,7 +749,7 @@ public class DTOHelper {
 		return json;
 	}
 	
-	BackgroundItem toBackgroundItem(String languageCode, Topic backgroundItem) throws JSONException, IOException {
+	BackgroundItem toBackgroundItemOrNull(String languageCode, Topic backgroundItem) throws JSONException, IOException {
 		BackgroundItemImpl json = new BackgroundItemImpl();
 		
 		ChildTopics childs = backgroundItem.getChildTopics();
@@ -805,14 +805,22 @@ public class DTOHelper {
 		return json;
 	}
 	
-	ImprintItem toImprintItem(String languageCode, Topic topic) throws JSONException {
-		ImprintItemImpl json = new ImprintItemImpl();
+	ImprintItem toImprintItemOrNull(String languageCode, Topic topic) throws JSONException {
 		
 		ChildTopics childs = topic.getChildTopics();
-			
+		
+		String name = getTranslatedStringOrNull(childs, languageCode, NS("imprintitem.name"));
+		String text = getTranslatedStringOrNull(childs, languageCode, NS("imprintitem.text"));
+		
+		if (name == null || text == null) {
+			// Skip entry
+			return null;
+		}
+		
+		ImprintItemImpl json = new ImprintItemImpl();
 		json.put("id", topic.getId());
-		json.put("name", getTranslatedStringOrNull(childs, languageCode, NS("imprintitem.name")));
-		json.put("text", getTranslatedStringOrNull(childs, languageCode, NS("imprintitem.text")));
+		json.put("name", name);
+		json.put("text", text);
 		// TODO: imageUrl was not used anywhere in the imprint
 		//json.put("imageUrl", childs.getStringOrNull(NS("imprintitem.link")));
 			

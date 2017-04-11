@@ -603,9 +603,9 @@ public class ImportHelper {
 			
 			ChildTopics tcm = t.getChildTopics();
 			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), "en", row.get(9));
-			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), 0, "en", row.get(10));
-			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), 1, "en", row.get(11));
-			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), 2, "en", row.get(12));
+			setTranslationWhenExists(tcm, NS("countryoverview.featurelink"), 0, "en", row.get(10));
+			setTranslationWhenExists(tcm, NS("countryoverview.featurelink"), 1, "en", row.get(11));
+			setTranslationWhenExists(tcm, NS("countryoverview.featurelink"), 2, "en", row.get(12));
 
 			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), "fr", row.get(14));
 			setTranslationWhenExists(tcm, NS("countryoverview.featurelink"), 0, "fr", row.get(15));

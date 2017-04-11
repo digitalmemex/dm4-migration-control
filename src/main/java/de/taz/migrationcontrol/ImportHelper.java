@@ -570,10 +570,13 @@ public class ImportHelper {
 			
 			// Value exists but is not used.
 			//String countryCode = row.get(7);
+			Topic countryTopic = findCountryOrCreate(country);
+			setTranslationWhenExists(countryTopic, "en", row.get(8));
+			setTranslationWhenExists(countryTopic, "fr", row.get(13));
 			
 			ChildTopicsModel childs = mf.newChildTopicsModel();
 			childs.putRef("dm4.contacts.country",
-					findCountryOrCreate(country).getId());
+					countryTopic.getId());
 			
 			childs.put(NS("countryoverview.columnindex"), columnIndex);
 			
@@ -597,6 +600,17 @@ public class ImportHelper {
 
 			// Creates the statistic for one country
 			Topic t = dm4.createTopic(mf.newTopicModel(NS("countryoverview"), childs));
+			
+			ChildTopics tcm = t.getChildTopics();
+			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), "en", row.get(9));
+			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), 0, "en", row.get(10));
+			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), 1, "en", row.get(11));
+			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), 2, "en", row.get(12));
+
+			setTranslationWhenExists(tcm, NS("countryoverview.findinglink"), "fr", row.get(14));
+			setTranslationWhenExists(tcm, NS("countryoverview.featurelink"), 0, "fr", row.get(15));
+			setTranslationWhenExists(tcm, NS("countryoverview.featurelink"), 1, "fr", row.get(16));
+			setTranslationWhenExists(tcm, NS("countryoverview.featurelink"), 2, "fr", row.get(17));
 			
 			assignToDataWorkspace(t);
 			
@@ -872,6 +886,9 @@ public class ImportHelper {
 	}
 	
 	void resetAllData() {
+		deleteAll(NS("translation"));
+		deleteAll(NS("translatedtext"));
+		
 		deleteAll(NS("imprintitem"));
 		deleteAll(NS("countryoverview"));
 		deleteAll(NS("detentioncenter"));
@@ -887,4 +904,68 @@ public class ImportHelper {
 		
 		deleteTreatyNote();
 	}
+
+	void setTranslationWhenExists(ChildTopics childs, String typeUri, String languageCode, String translatedString) {
+		if (urlExists(translatedString)){
+			setTranslation(childs, typeUri, languageCode, translatedString);
+		}		
+	}
+	
+	/** Adds translation to a child that is like a property. */
+	void setTranslation(ChildTopics childs, String typeUri, String languageCode, String translatedString) {
+		Topic topic = childs.getTopicOrNull(typeUri);
+		if (topic == null) {
+			logger.warning("cannot add translation because base data does not exist: " + translatedString);
+			return;
+		}
+		
+		setTranslation(topic, languageCode, translatedString);
+	}
+	
+	void setTranslationWhenExists(ChildTopics childs, String typeUri, int index, String languageCode, String translatedString) {
+		if (urlExists(translatedString)){
+			setTranslation(childs, typeUri, index, languageCode, translatedString);
+		}		
+	}
+	
+	/** Adds translation to a child that is like an array. */
+	void setTranslation(ChildTopics childs, String typeUri, int index, String languageCode, String translatedString) {
+		List<RelatedTopic> topics = childs.getTopicsOrNull(typeUri);
+		if (topics == null) {
+			logger.warning("cannot add translation because base data does not exist: " + translatedString);
+			return;
+		}
+		
+		Topic topic;
+		if (topics.size() >= index) {
+			topic = topics.get(index);
+		} else {
+			logger.warning("cannot add translation because base data does not exist: " + translatedString);
+			return;
+		}
+		
+		setTranslation(topic, languageCode, translatedString);
+	}
+
+	void setTranslationWhenExists(Topic topic, String languageCode, String translatedString) {
+		if (urlExists(translatedString)){
+			setTranslation(topic, languageCode, translatedString);
+		}		
+	}
+	
+	/** Sets a translation for the given topic. */
+	void setTranslation(Topic topic, String languageCode, String translatedString) {
+		TopicModel translationModel = mf.newTopicModel(NS("translatedtext"), new SimpleValue(translatedString));
+		Topic translatedTextTopic = dm4.createTopic(translationModel);
+		
+		Association asso = dm4.createAssociation(mf.newAssociationModel(NS("translation"),
+    			mf.newTopicRoleModel(topic.getId(), "dm4.core.default"),
+			mf.newTopicRoleModel(translatedTextTopic.getId(), "dm4.core.default")));
+		asso.setSimpleValue(languageCode);
+		
+		assignToDataWorkspace(translatedTextTopic);
+		assignToDataWorkspace(asso);
+		
+	}
+	
 }

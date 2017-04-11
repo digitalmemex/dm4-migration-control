@@ -22,6 +22,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
+import de.deepamehta.core.Association;
 import de.deepamehta.core.ChildTopics;
 import de.deepamehta.core.RelatedTopic;
 import de.deepamehta.core.Topic;
@@ -760,6 +761,29 @@ public class DTOHelper {
 		json.put("imageUrl", childs.getStringOrNull(NS("imprintitem.link")));
 			
 		return json;
+	}
+	
+	private static String getTranslatedStringOrNull(ChildTopics childs, String languageCode, String typeUri) {
+		if (languageCode == null || languageCode.equals("de")) {
+			return childs.getStringOrNull(typeUri);
+		}
+		
+		Topic topic = childs.getTopicOrNull(typeUri);
+		if (topic == null) {
+			return null;
+		}
+		
+		// Try to look up translation
+		List<RelatedTopic> translatedTexts = topic.getRelatedTopics(NS("translation"), "dm4.core.default", "dm4.core.default", NS("translatedtext"));
+		for (RelatedTopic possibleTranslationTopic : translatedTexts) {
+			Association association = possibleTranslationTopic.getRelatingAssociation();
+			if (languageCode.equals(association.getSimpleValue().toString())) {
+				return possibleTranslationTopic.getSimpleValue().toString();
+			}
+		}
+		
+		// If translation is not found, deliver as non-existing.
+		return null;
 	}
 
 	private List<Topic> sortByOrder(List<Topic> list) {

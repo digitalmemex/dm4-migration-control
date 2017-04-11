@@ -76,7 +76,8 @@ import() {
 import oda ${oda}
 import hdi ${hdi}
 import remittances ${remittances}
-import migrationintensity ${migrationintensity}
+# Not included in default import
+#import migrationintensity ${migrationintensity}
 import singlepayments ${singlepayments}
 import singlepayments_sources ${singlepayments_sources}
 import singlepayments_links ${singlepayments_links}

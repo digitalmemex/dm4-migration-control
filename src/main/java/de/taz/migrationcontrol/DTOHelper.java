@@ -145,7 +145,7 @@ public class DTOHelper {
 			featuresArray.put(toFeature(featureLink, true));
 		}
 		json.put("features", featuresArray);
-		json.put("treaties", toTreatiesForCountry(countryTopic));
+		json.put("treaties", toTreatiesForCountry(languageCode, countryTopic));
 		
 		return json;
 	}
@@ -567,7 +567,7 @@ public class DTOHelper {
 		return result;
 	}
 	
-	List<JSONObject> toTreaties() throws JSONException {
+	List<JSONObject> toTreaties(String languageCode) throws JSONException {
 		ArrayList<JSONObject> result = new ArrayList<>();
 		
 		ArrayList[] cols = {
@@ -596,7 +596,7 @@ public class DTOHelper {
 		}
 		
 		for (ArrayList<Wrapped<Topic>> col: cols) {
-			addTreatiesForCountries(result, unwrapList(sortByWeight((col))));
+			addTreatiesForCountries(languageCode, result, unwrapList(sortByWeight((col))));
 		}
 		
 		return result;
@@ -622,8 +622,8 @@ public class DTOHelper {
 			
 			TreatiesOverviewImpl json = new TreatiesOverviewImpl();
 			json.put("name", name);
-			json.put("country", countryTopic.getSimpleValue().toString());
-			json.put("partner", partnerTopic.getSimpleValue().toString());
+			json.put("country", getTranslatedStringOrDefault(languageCode, countryTopic));
+			json.put("partner", getTranslatedStringOrDefault(languageCode, partnerTopic));
 			json.put("link", link);
 			json.put("date", toDateOrNull(childs.getTopicOrNull("dm4.datetime.date")));
 			
@@ -661,19 +661,19 @@ public class DTOHelper {
 		return result;
 	}
 	
-	private void addTreatiesForCountries(List<JSONObject> list, List<Topic> countryTopics) throws JSONException {
+	private void addTreatiesForCountries(String languageCode, List<JSONObject> list, List<Topic> countryTopics) throws JSONException {
 		for (Topic countryTopic : countryTopics) {
 			
 			JSONObject countryJson = new JSONObject();
 			countryJson.put("country", countryTopic.getSimpleValue().toString());
-			countryJson.put("treaties", toTreatiesForCountry(countryTopic));
+			countryJson.put("treaties", toTreatiesForCountry(languageCode, countryTopic));
 
 			list.add(countryJson);
 		}
 
 	}
 	
-	private JSONArray toTreatiesForCountry(Topic countryTopic) throws JSONException {
+	private JSONArray toTreatiesForCountry(String languageCode, Topic countryTopic) throws JSONException {
 		List<RelatedTopic> treaties = safe(countryTopic.getRelatedTopics((String) null, (String) null, (String) null, NS("treaty")));
 		
 		JSONArray treatyArray = new JSONArray();
@@ -681,11 +681,19 @@ public class DTOHelper {
 		for (RelatedTopic treatyTopic : treaties) {
 			ChildTopics childs = treatyTopic.getChildTopics();
 			
+			String name = getTranslatedStringOrNull(childs, languageCode, NS("treaty.name"));
+			String link = getTranslatedStringOrNull(childs, languageCode, NS("treaty.link"));
+			
+			if (name == null || link == null) {
+				// Skip the treaty if name or link is missing.
+				continue;
+			}
+			
 			JSONObject json = new JSONObject();
-			json.put("name", childs.getString(NS("treaty.name")));
+			json.put("name", name);
 			json.put("country", childs.getString("dm4.contacts.country"));
 			json.put("partner", childs.getStringOrNull("dm4.contacts.country#" + NS("treaty.partner")));
-			json.put("link", childs.getStringOrNull(NS("treaty.link")));
+			json.put("link", link);
 			json.put("date", toDateOrNull(childs.getTopicOrNull("dm4.datetime.date")));
 			
 			treatyArray.put(json);
@@ -708,7 +716,7 @@ public class DTOHelper {
 		return json;
 	}
 	
-	BackgroundItem toBackgroundItem(Topic backgroundItem) throws JSONException, IOException {
+	BackgroundItem toBackgroundItem(String languageCode, Topic backgroundItem) throws JSONException, IOException {
 		BackgroundItemImpl json = new BackgroundItemImpl();
 		
 		ChildTopics childs = backgroundItem.getChildTopics();
@@ -753,7 +761,7 @@ public class DTOHelper {
 				json.put("lead", childs2.getString("dm4.notes.text"));
 			}
 
-			json.put("treaties", toTreaties());
+			json.put("treaties", toTreaties(languageCode));
 		}
 		return json;
 	}

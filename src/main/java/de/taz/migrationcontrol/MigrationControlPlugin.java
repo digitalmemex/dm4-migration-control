@@ -187,7 +187,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 
 		try {
 			if (topic != null)
-				return catchNull(dtoHelper.toBackgroundItem(topic));
+				return catchNull(dtoHelper.toBackgroundItem(languageCode, topic));
 		} catch (JSONException|IOException e) {
 			throw new RuntimeException(e);
 		}

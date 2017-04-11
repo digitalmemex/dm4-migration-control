@@ -350,6 +350,14 @@ public class ImportHelper {
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("factsheet"), childs));
+				ChildTopics tcm = t.getChildTopics();
+				setTranslationWhenExists(tcm, NS("factsheet.frontexcooperationinfo"), "en", row.get(14));
+				setTranslationWhenExists(tcm, NS("factsheet.detentioncenterinfo"), "en", row.get(15));
+				setTranslationWhenExists(tcm, NS("factsheet.departurelegalityinfo"), "en", row.get(16));
+
+				setTranslationWhenExists(tcm, NS("factsheet.frontexcooperationinfo"), "fr", row.get(18));
+				setTranslationWhenExists(tcm, NS("factsheet.detentioncenterinfo"), "fr", row.get(19));
+				setTranslationWhenExists(tcm, NS("factsheet.departurelegalityinfo"), "fr", row.get(20));
 				
 				assignToDataWorkspace(t);
 			} catch (NumberFormatException|ParseException e) {

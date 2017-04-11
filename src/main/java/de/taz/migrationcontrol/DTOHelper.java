@@ -346,9 +346,9 @@ public class DTOHelper {
 			data.put("asylumApprovalRate", (Number) childs.getDoubleOrNull(NS("factsheet.asylumapprovalrate")));
 			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
 			data.put("otherMigrationAgreements", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
-			data.put("frontexCooperation", toFrontexCooperationInfo(childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));
-			data.put("detentionCenter", toDetentionCenterInfo(childs.getTopicOrNull(NS("factsheet.detentioncenterinfo"))));
-			data.put("departureLegality", toDepartureLegalityInfo(childs.getTopicOrNull(NS("factsheet.departurelegalityinfo"))));
+			data.put("frontexCooperation", toFrontexCooperationInfo(languageCode, childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));
+			data.put("detentionCenter", toDetentionCenterInfo(languageCode, childs.getTopicOrNull(NS("factsheet.detentioncenterinfo"))));
+			data.put("departureLegality", toDepartureLegalityInfo(languageCode, childs.getTopicOrNull(NS("factsheet.departurelegalityinfo"))));
 			
 			return data;			
 		}
@@ -356,7 +356,7 @@ public class DTOHelper {
 		return null;
 	}
 	
-	JSONObject toFrontexCooperationInfo(Topic topic) throws JSONException {
+	JSONObject toFrontexCooperationInfo(String languageCode, Topic topic) throws JSONException {
 		if (topic == null)
 			return null;
 		
@@ -364,12 +364,12 @@ public class DTOHelper {
 		ChildTopics childs = topic.getChildTopics();
 		
 		json.put("state", childs.getString(NS("factsheet.frontexcooperationinfo.state")));
-		json.put("description", childs.getString(NS("factsheet.frontexcooperationinfo.description")));
+		json.put("description", getTranslatedStringOrNull(childs, languageCode, NS("factsheet.frontexcooperationinfo.description")));
 		
 		return json;
 	}
 
-	JSONObject toDetentionCenterInfo(Topic topic) throws JSONException {
+	JSONObject toDetentionCenterInfo(String languageCode, Topic topic) throws JSONException {
 		if (topic == null)
 			return null;
 		
@@ -377,12 +377,12 @@ public class DTOHelper {
 		ChildTopics childs = topic.getChildTopics();
 		
 		json.put("count", childs.getInt(NS("factsheet.detentioncenterinfo.count")));
-		json.put("description", childs.getString(NS("factsheet.detentioncenterinfo.description")));
+		json.put("description", getTranslatedStringOrNull(childs, languageCode, NS("factsheet.detentioncenterinfo.description")));
 		
 		return json;
 	}
 	
-	JSONObject toDepartureLegalityInfo(Topic topic) throws JSONException {
+	JSONObject toDepartureLegalityInfo(String languageCode, Topic topic) throws JSONException {
 		if (topic == null)
 			return null;
 		
@@ -390,7 +390,7 @@ public class DTOHelper {
 		ChildTopics childs = topic.getChildTopics();
 		
 		json.put("isIllegal", childs.getBoolean(NS("factsheet.departurelegalityinfo.isillegal")));
-		json.put("description", childs.getString(NS("factsheet.departurelegalityinfo.description")));
+		json.put("description", getTranslatedStringOrNull(childs, languageCode, NS("factsheet.departurelegalityinfo.description")));
 		
 		return json;
 	}

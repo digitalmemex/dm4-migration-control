@@ -928,6 +928,8 @@ public class DTOHelper {
 	
 	private String statNameToJsonKey(String statName) {
 		switch (statName) {
+		case "Asylum Figures":
+			return "asylumFigures";
 		case "Migration Intensity":
 			return "migrationIntensity";
 		case "Single Payments":

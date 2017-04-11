@@ -886,7 +886,6 @@ public class ImportHelper {
 	}
 	
 	void resetAllData() {
-		deleteAll(NS("translation"));
 		deleteAll(NS("translatedtext"));
 		
 		deleteAll(NS("imprintitem"));

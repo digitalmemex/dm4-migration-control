@@ -655,6 +655,13 @@ public class ImportHelper {
 				Topic backgroundItemTopic = dm4.createTopic(mf.newTopicModel(NS("backgrounditem"), childs));
 				assignToDataWorkspace(backgroundItemTopic);
 				
+				ChildTopics tcm = backgroundItemTopic.getChildTopics();
+				setTranslationWhenExists(tcm, NS("backgrounditem.name"), "en", row.get(5));
+				setTranslationWhenExists(tcm, NS("backgrounditem.link"), "en", row.get(6));
+
+				setTranslationWhenExists(tcm, NS("backgrounditem.name"), "fr", row.get(9));
+				setTranslationWhenExists(tcm, NS("backgrounditem.link"), "fr", row.get(10));
+				
 				// If the entry does not have a link it is the "Abkommen" item that has the
 				// title and text inline. We store this as a "dm4.notes.note" topic
 				// and associate it with the BackgroundItem.
@@ -669,6 +676,13 @@ public class ImportHelper {
 					Topic notesTopic = 
 							dm4.createTopic(mf.newTopicModel(NS("backgrounditem.treaty.note"), "dm4.notes.note", childs2));
 					assignToDataWorkspace(notesTopic);
+
+					tcm = notesTopic.getChildTopics();
+					setTranslationWhenExists(tcm, "dm4.notes.title", "en", row.get(7));
+					setTranslationWhenExists(tcm, "dm4.notes.text", "en", row.get(8));
+
+					setTranslationWhenExists(tcm, "dm4.notes.title", "fr", row.get(11));
+					setTranslationWhenExists(tcm, "dm4.notes.text", "fr", row.get(12));
 					
 					Association asso = dm4.createAssociation(mf.newAssociationModel("dm4.core.composition",
 			    			mf.newTopicRoleModel(backgroundItemTopic.getId(), "dm4.core.default"),

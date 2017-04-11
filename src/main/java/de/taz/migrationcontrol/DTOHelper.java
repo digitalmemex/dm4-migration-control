@@ -534,7 +534,7 @@ public class DTOHelper {
 		return json;
 	}
 	
-	List<BackgroundOverview> toBackgroundOverviewList(List<Topic> backgroundItemTopics) throws JSONException, IOException {
+	List<BackgroundOverview> toBackgroundOverviewList(String languageCode, List<Topic> backgroundItemTopics) throws JSONException, IOException {
 		ArrayList[] cols = {
 				new ArrayList<Wrapped<JSONObject>>(),
 				new ArrayList<Wrapped<JSONObject>>(),
@@ -544,9 +544,16 @@ public class DTOHelper {
 		for (Topic topic : backgroundItemTopics) {
 			ChildTopics childs = topic.getChildTopics();
 			
+			String name = getTranslatedStringOrNull(childs, languageCode, NS("backgrounditem.name"));
+			
+			if (name == null) {
+				// Skip the entry
+				continue;
+			}
+			
 			JSONObject item = new JSONObject();
 			item.put("id", topic.getId());
-			item.put("name", childs.getString(NS("backgrounditem.name")));
+			item.put("name", name);
 /*
 			String link = childs.getStringOrNull(NS("backgrounditem.link"));
 			
@@ -746,11 +753,16 @@ public class DTOHelper {
 		BackgroundItemImpl json = new BackgroundItemImpl();
 		
 		ChildTopics childs = backgroundItem.getChildTopics();
+		
+		String name = getTranslatedStringOrNull(childs, languageCode, NS("backgrounditem.name"));
+		if (name == null) {
+			return null;
+		}
 			
 		json.put("id", backgroundItem.getId());
-		json.put("name", childs.getString(NS("backgrounditem.name")));
+		json.put("name", name);
 		
-		String link = childs.getStringOrNull(NS("backgrounditem.link"));
+		String link = getTranslatedStringOrNull(childs, languageCode, NS("backgrounditem.link"));
 			
 		if (link != null && link.length() > 0) {
 			Document doc = retrieveDocument(link);
@@ -771,8 +783,8 @@ public class DTOHelper {
 			if (author != null) {
 				JSONArray jsonArrayNames = new JSONArray();
 				Elements authorNames = author.select("name");
-				for (Element name : authorNames) {
-					jsonArrayNames.put(name.text());
+				for (Element authorName : authorNames) {
+					jsonArrayNames.put(authorName.text());
 				}
 				json.put("authors", jsonArrayNames);
 			}
@@ -783,8 +795,9 @@ public class DTOHelper {
 			RelatedTopic notes = backgroundItem.getRelatedTopic(null, null, null, "dm4.notes.note");
 			if (notes != null) {
 				ChildTopics childs2 = notes.getChildTopics();
-				json.put("headline", childs2.getString("dm4.notes.title"));
-				json.put("lead", childs2.getString("dm4.notes.text"));
+				
+				json.put("headline", getTranslatedStringOrNull(childs2, languageCode, "dm4.notes.title"));
+				json.put("lead", getTranslatedStringOrNull(childs2, languageCode, "dm4.notes.text"));
 			}
 
 			json.put("treaties", toTreaties(languageCode));

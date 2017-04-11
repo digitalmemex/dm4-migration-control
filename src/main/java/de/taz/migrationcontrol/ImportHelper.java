@@ -742,6 +742,16 @@ public class ImportHelper {
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("thesis"), childs));
+				ChildTopics tcm = t.getChildTopics();
+				setTranslationWhenExists(tcm, NS("thesis.name"), "en", row.get(7));
+				setTranslationWhenExists(tcm, NS("thesis.text"), "en", row.get(8));
+				setTranslationWhenExists(tcm, NS("thesis.contextualisation"), "en", row.get(9));
+				setTranslationWhenExists(tcm, NS("thesis.sourceinfo"), "en", row.get(10));
+
+				setTranslationWhenExists(tcm, NS("thesis.name"), "fr", row.get(11));
+				setTranslationWhenExists(tcm, NS("thesis.text"), "fr", row.get(12));
+				setTranslationWhenExists(tcm, NS("thesis.contextualisation"), "fr", row.get(13));
+				setTranslationWhenExists(tcm, NS("thesis.sourceinfo"), "fr", row.get(14));
 				
 				assignToDataWorkspace(t);
 			} catch (ParseException e) {

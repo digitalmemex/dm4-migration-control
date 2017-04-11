@@ -464,7 +464,7 @@ public class DTOHelper {
 		return result;
 	}
 	
-	List<Thesis> toTheses() throws JSONException {
+	List<Thesis> toTheses(String languageCode) throws JSONException {
 		ArrayList<Wrapped> list = new ArrayList<Wrapped>();
 		
 		/*
@@ -475,13 +475,26 @@ public class DTOHelper {
 		ArrayList<Thesis> result = new ArrayList<Thesis>();
 		for (Topic thesisTopic : sortByOrder(safe(dm4.getTopicsByType(NS("thesis"))))) {
 			ChildTopics childs = thesisTopic.getChildTopics();
+			
+			String name = getTranslatedStringOrNull(childs, languageCode, NS("thesis.name"));
+			String text = getTranslatedStringOrNull(childs, languageCode, NS("thesis.text"));
+			String contextualisation = getTranslatedStringOrNull(childs, languageCode, NS("thesis.contextualisation"));
+			String sourceinfo = getTranslatedStringOrNull(childs, languageCode, NS("thesis.sourceinfo"));
+			
+			if (name == null
+					|| text == null
+					|| contextualisation == null
+					|| sourceinfo == null) {
+				// Skip because something is missing
+				continue;
+			}
+			
 			ThesisImpl json = new ThesisImpl();
 			json.put("id", thesisTopic.getId());
-			json.put("name", childs.getString(NS("thesis.name")));
-			
-			json.put("text", childs.getString(NS("thesis.text")));
-			json.put("contextualisation", childs.getString(NS("thesis.contextualisation")));
-			json.put("sourceinfo", childs.getString(NS("thesis.sourceinfo")));
+			json.put("name", name);
+			json.put("text", text);
+			json.put("contextualisation", contextualisation);
+			json.put("sourceinfo", sourceinfo);
 			
 			json.put("diagramType", childs.getStringOrNull(NS("thesis.diagramtype")));
 			json.put("imageUrl", childs.getStringOrNull(NS("thesis.imagelink")));
@@ -492,15 +505,28 @@ public class DTOHelper {
 		return result;
 	}
 
-	Thesis toThesisOrNull(Topic thesisTopic) throws JSONException {
+	Thesis toThesisOrNull(String languageCode, Topic thesisTopic) throws JSONException {
 		ChildTopics childs = thesisTopic.getChildTopics();
 		
-		ThesisImpl json = new ThesisImpl();
-		json.put("name", childs.getString(NS("thesis.name")));
+		String name = getTranslatedStringOrNull(childs, languageCode, NS("thesis.name"));
+		String text = getTranslatedStringOrNull(childs, languageCode, NS("thesis.text"));
+		String contextualisation = getTranslatedStringOrNull(childs, languageCode, NS("thesis.contextualisation"));
+		String sourceinfo = getTranslatedStringOrNull(childs, languageCode, NS("thesis.sourceinfo"));
 		
-		json.put("text", childs.getString(NS("thesis.text")));
-		json.put("contextualisation", childs.getString(NS("thesis.contextualisation")));
-		json.put("sourceinfo", childs.getString(NS("thesis.sourceinfo")));
+		if (name == null
+				|| text == null
+				|| contextualisation == null
+				|| sourceinfo == null) {
+			// Skip because something is missing
+			return null;
+		}
+		
+		ThesisImpl json = new ThesisImpl();
+		json.put("id", thesisTopic.getId());
+		json.put("name", name);
+		json.put("text", text);
+		json.put("contextualisation", contextualisation);
+		json.put("sourceinfo", sourceinfo);
 		
 		json.put("diagramType", childs.getStringOrNull(NS("thesis.diagramtype")));
 		json.put("imageUrl", childs.getStringOrNull(NS("thesis.imagelink")));

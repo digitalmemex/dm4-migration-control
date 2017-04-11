@@ -149,7 +149,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	@Override
 	public List<Thesis> getTheses(@PathParam("languageCode") String languageCode) {
 		try {
-			return dtoHelper.toTheses();
+			return dtoHelper.toTheses(languageCode);
 		} catch (JSONException e) {
 			throw new RuntimeException(e);
 		}
@@ -162,7 +162,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 
 		try {
 			if (topic != null)
-				return dtoHelper.toThesisOrNull(topic);
+				return dtoHelper.toThesisOrNull(languageCode, topic);
 		} catch (JSONException e) {
 			throw new RuntimeException(e);
 		}

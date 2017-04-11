@@ -805,15 +805,16 @@ public class DTOHelper {
 		return json;
 	}
 	
-	ImprintItem toImprintItem(Topic topic) throws JSONException {
+	ImprintItem toImprintItem(String languageCode, Topic topic) throws JSONException {
 		ImprintItemImpl json = new ImprintItemImpl();
 		
 		ChildTopics childs = topic.getChildTopics();
 			
 		json.put("id", topic.getId());
-		json.put("name", childs.getStringOrNull(NS("imprintitem.name")));
-		json.put("text", childs.getStringOrNull(NS("imprintitem.text")));
-		json.put("imageUrl", childs.getStringOrNull(NS("imprintitem.link")));
+		json.put("name", getTranslatedStringOrNull(childs, languageCode, NS("imprintitem.name")));
+		json.put("text", getTranslatedStringOrNull(childs, languageCode, NS("imprintitem.text")));
+		// TODO: imageUrl was not used anywhere in the imprint
+		//json.put("imageUrl", childs.getStringOrNull(NS("imprintitem.link")));
 			
 		return json;
 	}

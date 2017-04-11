@@ -874,11 +874,17 @@ public class ImportHelper {
 				ChildTopicsModel childs = mf.newChildTopicsModel();
 				childs.put(NS("imprintitem.name"), name);
 				childs.put(NS("imprintitem.text"), text);
-				childs.put(NS("imprintitem.link"), link);
+				//childs.put(NS("imprintitem.link"), link);
 
 				// Creates the statistic for one country
 				Topic topic = dm4.createTopic(mf.newTopicModel(NS("imprintitem"), childs));
 				assignToDataWorkspace(topic);
+				ChildTopics tcm = topic.getChildTopics();
+				setTranslationWhenExists(tcm, NS("imprintitem.name"), "en", row.get(2));
+				setTranslationWhenExists(tcm, NS("imprintitem.text"), "en", row.get(3));
+
+				setTranslationWhenExists(tcm, NS("imprintitem.name"), "en", row.get(4));
+				setTranslationWhenExists(tcm, NS("imprintitem.text"), "en", row.get(5));
 				
 			} catch (ParseException e) {
 				// Ignored - thesis will not be added

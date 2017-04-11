@@ -463,7 +463,7 @@ public class ImportHelper {
 				String treatyDateString = row.get(8);
 				
 				if (treatyName.length() == 0) {
-					throw new ParseException("Country should not be empty!", -1);
+					throw new ParseException("Treatyname should not be empty!", -1);
 				}
 
 				ChildTopicsModel childs = mf.newChildTopicsModel();
@@ -486,6 +486,11 @@ public class ImportHelper {
 
 				// Creates the statistic for one country
 				Topic t = dm4.createTopic(mf.newTopicModel(NS("treaty"), childs));
+				ChildTopics tcm = t.getChildTopics();
+				setTranslationWhenExists(tcm, NS("treaty.name"), "en", row.get(4));
+				setTranslationWhenExists(tcm, NS("treaty.link"), "en", row.get(5));
+				setTranslationWhenExists(tcm, NS("treaty.name"), "fr", row.get(6));
+				setTranslationWhenExists(tcm, NS("treaty.link"), "fr", row.get(7));
 				
 				assignToDataWorkspace(t);
 			} catch (NumberFormatException|ParseException e) {

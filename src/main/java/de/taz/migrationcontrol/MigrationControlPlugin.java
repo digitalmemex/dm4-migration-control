@@ -233,7 +233,7 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 	@Path("/v1/{languageCode}/treatiesoverview")
 	public List<TreatiesOverview> getTreatiesOverview(@PathParam("languageCode") String languageCode) {
 		try {
-			return dtoHelper.toTreatiesOverviewList();
+			return dtoHelper.toTreatiesOverviewList(languageCode);
 		} catch (JSONException|IOException e) {
 			throw new RuntimeException(e);
 		}

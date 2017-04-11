@@ -129,7 +129,7 @@ public class DTOHelper {
 		json.put("countryCode", toCountryId(countryTopic));
 		json.put("name", getTranslatedStringOrDefault(languageCode, countryTopic));
 		json.put("data", toStatisticData(countryTopic));
-		json.put("factSheet", toFactSheet(countryTopic));
+		json.put("factSheet", toFactSheet(languageCode, countryTopic));
 
 		RelatedTopic countryOverviewTopic = countryTopic.getRelatedTopic((String) null, (String) null, (String) null, NS("countryoverview"));
 		
@@ -331,7 +331,7 @@ public class DTOHelper {
 		return data;
 	}
 	
-	private JSONObject toFactSheet(Topic country) throws JSONException {
+	private JSONObject toFactSheet(String languageCode, Topic country) throws JSONException {
 		Topic factSheetTopic = country.getRelatedTopic((String) null, (String) null, (String) null, NS("factsheet"));
 
 		if (factSheetTopic != null) {
@@ -344,8 +344,8 @@ public class DTOHelper {
 			data.put("idp", childs.getIntOrNull(NS("factsheet.idp")));
 			data.put("applicationsForAsylum", childs.getIntOrNull(NS("factsheet.applicationsforasylum")));
 			data.put("asylumApprovalRate", (Number) childs.getDoubleOrNull(NS("factsheet.asylumapprovalrate")));
-			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
-			data.put("otherMigrationAgreements", toStringListOfChildTopic(getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
+			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
+			data.put("otherMigrationAgreements", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
 			data.put("frontexCooperation", toFrontexCooperationInfo(childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));
 			data.put("detentionCenter", toDetentionCenterInfo(childs.getTopicOrNull(NS("factsheet.detentioncenterinfo"))));
 			data.put("departureLegality", toDepartureLegalityInfo(childs.getTopicOrNull(NS("factsheet.departurelegalityinfo"))));
@@ -602,7 +602,7 @@ public class DTOHelper {
 		return result;
 	}
 	
-	List<TreatiesOverview> toTreatiesOverviewList() throws JSONException, IOException {
+	List<TreatiesOverview> toTreatiesOverviewList(String languageCode) throws JSONException, IOException {
 		List<Topic> treaties = getTreaties(TREATYTYPE_REPATRIATION_AGREEMENT);
 		
 		ArrayList<TreatiesOverview> result = new ArrayList<>();
@@ -612,11 +612,19 @@ public class DTOHelper {
 			Topic countryTopic = childs.getTopic("dm4.contacts.country");
 			Topic partnerTopic = childs.getTopic("dm4.contacts.country#" + NS("treaty.partner"));
 			
+			String name = getTranslatedStringOrNull(childs, languageCode, NS("treaty.name"));
+			String link = getTranslatedStringOrNull(childs, languageCode, NS("treaty.link"));
+			
+			if (name == null || link == null){
+				// Skipping treaty because either its name or link is missing.
+				continue;
+			}
+			
 			TreatiesOverviewImpl json = new TreatiesOverviewImpl();
-			json.put("name", childs.getString(NS("treaty.name")));
+			json.put("name", name);
 			json.put("country", countryTopic.getSimpleValue().toString());
 			json.put("partner", partnerTopic.getSimpleValue().toString());
-			json.put("link", childs.getStringOrNull(NS("treaty.link")));
+			json.put("link", link);
 			json.put("date", toDateOrNull(childs.getTopicOrNull("dm4.datetime.date")));
 			
 			RelatedTopic countryCoordsTopic = countryTopic.getRelatedTopic((String) null, (String) null,(String) null, "dm4.geomaps.geo_coordinate");
@@ -921,6 +929,21 @@ public class DTOHelper {
 		if (topics != null && topics.size() > 0) {
 			for (Topic t : topics) {
 				String string = t.getChildTopics().getStringOrNull(typeUri);
+				if (string != null)
+					list.add(string);
+			}
+
+			return list;
+		} else {
+			return list;
+		}
+	}
+
+	private List<String> toStringListOfChildTopic(String languageCode, List<RelatedTopic> topics, String typeUri) {
+		List<String> list = new ArrayList<String>();
+		if (topics != null && topics.size() > 0) {
+			for (Topic t : topics) {
+				String string = getTranslatedStringOrNull(t.getChildTopics(), languageCode, typeUri);
 				if (string != null)
 					list.add(string);
 			}

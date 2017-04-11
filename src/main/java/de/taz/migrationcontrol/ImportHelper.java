@@ -50,6 +50,10 @@ public class ImportHelper {
 		importStatistics("Remittances", data);
 	}
 
+	public void importAsylumFigures(CSVParser data) throws IOException {
+		importStatistics("Asylum Figures", data);
+	}
+
 	public void importMigrationIntensity(CSVParser data) throws IOException {
 		importStatistics("Migration Intensity", data);
 	}

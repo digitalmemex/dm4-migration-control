@@ -28,8 +28,11 @@ public class Migration10 extends Migration {
 				NS("translation")
 		);
 
-		// Assigns all the values for the 'type' topics
+		// Assigns all the values for the 'language' topics
 		groupAssignToWorkspace(dataWsId, dm4.getTopicsByType(NS("language")));
+		
+		// Assigns all the values for the 'static type' (for the new asylum figures entry)
+		groupAssignToWorkspace(dataWsId, dm4.getTopicsByType(NS("statistic.type")));
 	}
 	
 	private void groupAssignToWorkspace(long wsId, String... topicTypeUris) {

@@ -261,6 +261,9 @@ public class MigrationControlPlugin extends PluginActivator implements Migration
 			case "remittances":
 				importHelper.importRemittances(parser);
 				break;
+			case "asylumfigures":
+				importHelper.importAsylumFigures(parser);
+				break;
 			case "migrationintensity":
 				importHelper.importMigrationIntensity(parser);
 				break;

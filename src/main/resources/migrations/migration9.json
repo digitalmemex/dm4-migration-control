@@ -35,6 +35,11 @@
                 "value": "fr",
                 "uri": "de.taz.migrationcontrol.fre",
                 "type_uri": "de.taz.migrationcontrol.language"
+            },
+# another Statistic type            
+            {
+                "value": "Asylum Figures",
+                "type_uri": "de.taz.migrationcontrol.statistic.type"
             }
        ]
     },

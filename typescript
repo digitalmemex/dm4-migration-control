@@ -1,0 +1,86 @@
+Script started on Sun Mar  5 11:16:14 2017
+/usr/local/opt/python/bin/python2.7: No module named virtualenvwrapper
+virtualenvwrapper.sh: There was a problem running the initialization hooks. 
+
+If Python could not import the module virtualenvwrapper.hook_loader,
+check that virtualenv has been installed for
+VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python and that PATH is
+set properly.
+[1m[7m%[27m[1m[0m                                                                                                                                                               ]2;gustavpursche@MacBook-Pro-2: ~/Development/dm4-migration-control]1;..ation-control[0m[27m[24m[JMacBook-Pro-2 :: Development/dm4-migration-control [1m»[0m [K[?1h=[?2004hscripts[?1l>[?2004l
+]2;scripts]1;scripts[1m[7m%[27m[1m[0m                                                                                                                                                               ]2;gustavpursche@MacBook-Pro-2: ~/Development/dm4-migration-control/scripts]1;..ntrol/scripts[0m[27m[24m[JMacBook-Pro-2 :: dm4-migration-control/scripts [1m»[0m [K[?1h=[?2004hlll[?1l>[?2004l
+]2;ls -G -lh]1;lltotal 16
+-rwxr-xr-x  1 gustavpursche  staff   3.7K Mar  5 11:16 [31mimport.sh[39;49m[0m
+-rwxr-xr-x  1 gustavpursche  staff   127B Dec 12 13:27 [31mreset.sh[39;49m[0m
+[1m[7m%[27m[1m[0m                                                                                                                                                               ]2;gustavpursche@MacBook-Pro-2: ~/Development/dm4-migration-control/scripts]1;..ntrol/scripts[0m[27m[24m[JMacBook-Pro-2 :: dm4-migration-control/scripts [1m»[0m [K[?1h=[?2004h../import.sh[1m [0m[0m [7m1wgw348ifuqyg2wuvc1cs9fwr[27m[25D[27m1[27mw[27mg[27mw[27m3[27m4[27m8[27mi[27mf[27mu[27mq[27my[27mg[27m2[27mw[27mu[27mv[27mc[27m1[27mc[27ms[27m9[27mf[27mw[27mr[?1l>[?2004l
+]2;./import.sh 1wgw348ifuqyg2wuvc1cs9fwr]1;./import.shScratch folder /var/folders/6x/jt94srkj5kgclmwlknhjh0j40000gn/T/tmp.f4EGWMNC
+Session Id 1wgw348ifuqyg2wuvc1cs9fwr
+Downloading oda
+Importing oda
+Done
+Downloading hdi
+Importing hdi
+Done
+Downloading remittances
+Importing remittances
+Done
+Downloading migrationintensity
+Importing migrationintensity
+Done
+Downloading singlepayments
+Importing singlepayments
+Done
+Downloading singlepayments_sources
+Importing singlepayments_sources
+Done
+Downloading singlepayments_links
+Importing singlepayments_links
+Done
+Downloading findings
+Importing findings
+Done
+Downloading factsheet
+Importing factsheet
+Done
+Downloading repatriation_treaties
+Importing repatriation_treaties
+Done
+Downloading other_treaties
+Importing other_treaties
+Done
+Downloading theses
+Importing theses
+Done
+Downloading backgrounditems
+Importing backgrounditems
+Done
+Downloading detentioncenterdata
+Importing detentioncenterdata
+Done
+Downloading imprintdata
+Importing imprintdata
+Done
+[1m[7m%[27m[1m[0m                                                                                                                                                               ]2;gustavpursche@MacBook-Pro-2: ~/Development/dm4-migration-control/scripts]1;..ntrol/scripts[0m[27m[24m[JMacBook-Pro-2 :: dm4-migration-control/scripts [1m»[0m [K[?1h=[?2004h.../../tinder-desktop[1m/[0m[0m [?1l>[?2004l
+]2;../../tinder-desktop]1;../../tinder-desktop[1m[7m%[27m[1m[0m                                                                                                                                                               ]2;gustavpursche@MacBook-Pro-2: ~/Development/tinder-desktop]1;..inder-desktop[0m[27m[24m[JMacBook-Pro-2 :: Development/tinder-desktop [1m»[0m [K[?1h=[?2004hggulp run[?1l>[?2004l
+]2;gulp run]1;gulp[[90m11:47:11[39m] Using gulpfile [35m~/Development/tinder-desktop/gulpfile.js[39m
+[[90m11:47:11[39m] Starting '[36mcompile:scripts[39m'...
+[[90m11:47:11[39m] Starting '[36mcompile:stylesheets[39m'...
+[[90m11:47:11[39m] Starting '[36mcompile:fonts[39m'...
+[[90m11:47:11[39m] Finished '[36mcompile:stylesheets[39m' after [35m31 ms[39m
+[[90m11:47:11[39m] Finished '[36mcompile:fonts[39m' after [35m40 ms[39m
+[[90m11:47:11[39m] Finished '[36mcompile:scripts[39m' after [35m78 ms[39m
+[[90m11:47:11[39m] Starting '[36mcompile:all[39m'...
+[[90m11:47:11[39m] Finished '[36mcompile:all[39m' after [35m7.85 μs[39m
+[[90m11:47:11[39m] Starting '[36mrun[39m'...
+stderr: [warn] kq_init: detected broken kqueue; not using.: Undefined error: 0
+
+stderr: [warn] kq_init: detected broken kqueue; not using.: Undefined error: 0
+
+stderr: [warn] kq_init: detected broken kqueue; not using.: Undefined error: 0
+
+stderr: [warn] kq_init: detected broken kqueue; not using.: Undefined error: 0
+[warn] kq_init: detected broken kqueue; not using.: Undefined error: 0
+
+stderr: [warn] kq_init: detected broken kqueue; not using.: Undefined error: 0
+
+stderr: [warn] kq_init: detected broken kqueue; not using.: Undefined error: 0
+

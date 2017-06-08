@@ -346,7 +346,10 @@ public class DTOHelper {
 			data.put("asylumApprovalRate", (Number) childs.getDoubleOrNull(NS("factsheet.asylumapprovalrate")));
 			data.put("informalTreatiesDescription", getTranslatedStringOrNull(childs, languageCode, NS("factsheet.informaltreatiesdescription")));
 			data.put("countriesRepatriationAgreement", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_REPATRIATION_AGREEMENT), "dm4.contacts.country#" + NS("treaty.partner")));
-			data.put("otherMigrationAgreements", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
+			
+			// Apparently not needed anymore.
+			//data.put("otherMigrationAgreements", toStringListOfChildTopic(languageCode, getTreatiesForCountry(country, TREATYTYPE_OTHER_AGREEMENT), NS("treaty.name")));
+			
 			data.put("frontexCooperation", toFrontexCooperationInfo(languageCode, childs.getTopicOrNull(NS("factsheet.frontexcooperationinfo"))));
 			data.put("detentionCenter", toDetentionCenterInfo(languageCode, childs.getTopicOrNull(NS("factsheet.detentioncenterinfo"))));
 			data.put("departureLegality", toDepartureLegalityInfo(languageCode, childs.getTopicOrNull(NS("factsheet.departurelegalityinfo"))));

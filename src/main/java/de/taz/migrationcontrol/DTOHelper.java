@@ -699,7 +699,7 @@ public class DTOHelper {
 		for (Topic countryTopic : countryTopics) {
 			
 			JSONObject countryJson = new JSONObject();
-			countryJson.put("country", countryTopic.getSimpleValue().toString());
+			countryJson.put("country", getTranslatedStringOrDefault(languageCode, countryTopic));
 			countryJson.put("treaties", toTreatiesForCountry(languageCode, countryTopic));
 
 			list.add(countryJson);
@@ -723,10 +723,13 @@ public class DTOHelper {
 				continue;
 			}
 			
+			Topic treatyCountryTopic = childs.getTopic("dm4.contacts.country");
+			Topic partnerTopic = childs.getTopic("dm4.contacts.country#" + NS("treaty.partner"));
+
 			JSONObject json = new JSONObject();
 			json.put("name", name);
-			json.put("country", childs.getString("dm4.contacts.country"));
-			json.put("partner", childs.getStringOrNull("dm4.contacts.country#" + NS("treaty.partner")));
+			json.put("country", getTranslatedStringOrDefault(languageCode, treatyCountryTopic));
+			json.put("partner", getTranslatedStringOrDefault(languageCode, partnerTopic));
 			json.put("link", link);
 			json.put("date", toDateOrNull(childs.getTopicOrNull("dm4.datetime.date")));
 			

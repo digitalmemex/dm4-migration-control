@@ -648,7 +648,7 @@ public class ImportHelper {
 		List<CSVRecord> records = data.getRecords();
 		logger.info("parsed CSV: " + records.size() + " background items");
 		
-		// iterates over all theses
+		// iterates over all background items
 		for (int i = 1;i < records.size(); i++) {
 			CSVRecord row = records.get(i);
 			logger.info("importing background " + i);
@@ -707,7 +707,7 @@ public class ImportHelper {
 					assignToDataWorkspace(asso);
 				}
 			} catch (ParseException e) {
-				// Ignored - thesis will not be added
+				// Ignored - background item will not be added
 				logger.log(Level.WARNING, "Failed to import a background item. Skipping.", e);
 			}
 			

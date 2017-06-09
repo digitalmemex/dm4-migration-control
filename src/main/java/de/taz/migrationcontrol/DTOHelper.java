@@ -646,7 +646,7 @@ public class DTOHelper {
 			ChildTopics childs = treaty.getChildTopics();
 			
 			Topic countryTopic = childs.getTopic("dm4.contacts.country");
-			Topic partnerTopic = childs.getTopic("dm4.contacts.country#" + NS("treaty.partner"));
+			Topic partnerTopic = childs.getTopicOrNull("dm4.contacts.country#" + NS("treaty.partner"));
 			
 			String name = getTranslatedStringOrNull(childs, languageCode, NS("treaty.name"));
 			String link = getTranslatedStringOrNull(childs, languageCode, NS("treaty.link"));
@@ -726,7 +726,7 @@ public class DTOHelper {
 			}
 			
 			Topic treatyCountryTopic = childs.getTopic("dm4.contacts.country");
-			Topic partnerTopic = childs.getTopic("dm4.contacts.country#" + NS("treaty.partner"));
+			Topic partnerTopic = childs.getTopicOrNull("dm4.contacts.country#" + NS("treaty.partner"));
 
 			JSONObject json = new JSONObject();
 			json.put("name", name);
@@ -865,6 +865,11 @@ public class DTOHelper {
 	}
 
 	private static String getTranslatedStringOrDefault(String languageCode, Topic topic) {
+		// Shortcut: If the untranslated topic does not exist, then return null.
+		if (topic == null) {
+			return null;
+		}
+		
 		if (languageCode == null || languageCode.equals("de")) {
 			return topic.getSimpleValue().toString();
 		}

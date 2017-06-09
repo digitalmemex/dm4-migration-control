@@ -571,7 +571,7 @@ public class ImportHelper {
 		List<CSVRecord> records = data.getRecords();
 		logger.info("parsed CSV: " + records.size() + " countries");
 		
-		// iterates over all theses
+		// iterates over all findings & features
 		for (int i = 1;i < records.size(); i++) {
 			CSVRecord row = records.get(i);
 			String country = row.get(0);

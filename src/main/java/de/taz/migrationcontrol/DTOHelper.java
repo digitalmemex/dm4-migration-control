@@ -487,8 +487,7 @@ public class DTOHelper {
 			
 			if (name == null
 					|| text == null
-					|| contextualisation == null
-					|| sourceinfo == null) {
+					|| contextualisation == null) {
 				// Skip because something is missing
 				continue;
 			}

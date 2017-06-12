@@ -649,10 +649,10 @@ public class DTOHelper {
 			Topic partnerTopic = childs.getTopicOrNull("dm4.contacts.country#" + NS("treaty.partner"));
 			
 			String name = getTranslatedStringOrNull(childs, languageCode, NS("treaty.name"));
-			String link = getTranslatedStringOrNull(childs, languageCode, NS("treaty.link"));
+			String link = getTranslatedStringOrDefault(childs, languageCode, NS("treaty.link"));
 			
-			if (name == null || link == null){
-				// Skipping treaty because either its name or link is missing.
+			if (name == null){
+				// Skipping treaty because when name is missing.
 				continue;
 			}
 			
@@ -844,6 +844,19 @@ public class DTOHelper {
 		}
 		
 		return getTranslatedStringOrNull(languageCode, topic);
+	}
+
+	private static String getTranslatedStringOrDefault(ChildTopics childs, String languageCode, String typeUri) {
+		if (languageCode == null || languageCode.equals("de")) {
+			return childs.getStringOrNull(typeUri);
+		}
+		
+		Topic topic = childs.getTopicOrNull(typeUri);
+		if (topic == null) {
+			return childs.getStringOrNull(typeUri);
+		}
+		
+		return getTranslatedStringOrDefault(languageCode, topic);
 	}
 
 	private static String getTranslatedStringOrNull(String languageCode, Topic topic) {
